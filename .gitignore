@@ -1,0 +1,56 @@
+# Build results
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+
+# Rider / ReSharper
+.idea/
+*.sln.iml
+_ReSharper*/
+*.DotSettings.user
+
+# VS / VS Code
+.vs/
+.vscode/
+*.code-workspace
+
+# User-specific
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+*.lock.json
+
+# Logs & dumps
+*.log
+*.tlog
+*.dmp
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Coverage / test artifacts
+TestResult*/
+TestResults/
+*.coverage*
+*.trx
+
+# Publish / artifacts
+[Bb]uild[Aa]rtifacts/
+artifacts/
+publish/
+
+# Tooling caches
+.ncrunch*
+.vscode-test/
+
+# If you check in a solution file at the root, still OK.
+# This .gitignore applies repo-wide.
