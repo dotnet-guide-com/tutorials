@@ -1,9 +1,9 @@
-# .NET 8 Essentials – sample code
+### Run HelloDotNet
+cd HelloDotNet
+dotnet run
 
-This folder contains the small, runnable samples used in the article.
-
-## Projects
-- **HelloDotNet** – console “Hello, World!” app to verify SDK.
-- **TodoApi** – minimal Web API with in-memory storage (Swagger enabled).
-
-> Requires .NET SDK 8.0 or later.
+### Run TodoApi (with Swagger)
+cd TodoApi
+dotnet restore
+dotnet run
+# then open https://localhost:5001/swagger (or the URL shown in console)
