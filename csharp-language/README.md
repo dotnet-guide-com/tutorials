@@ -41,7 +41,7 @@ Alice is 30 years old.
 Bob is 25 years old.
 
 
-For more: [Primary Constructors](https://staging.dotnet-guide.com/tutorials/csharp-language/#primary-constructors)
+For more: [Primary Constructors](https://www.dotnet-guide.com/tutorials/csharp-language/#primary-constructors)
 
 2) Run CollectionsDemo (collections)
 
@@ -73,7 +73,7 @@ Diana: 28
 People older than 28: Alice, Charlie
 
 
-For more: [Collections](https://staging.dotnet-guide.com/tutorials/csharp-language/#collections)
+For more: [Collections](https://www.dotnet-guide.com/tutorials/csharp-language/#collections)
 
 3) Run RefactorApp (refactoring)
 
@@ -97,7 +97,7 @@ Processed: PROCESED: DLROW OLLEH
 Processed: PROCESED: DLROW OLLEH
 
 
-For more: [Methods](https://staging.dotnet-guide.com/tutorials/csharp-language/#methods) & [Classes](https://staging.dotnet-guide.com/tutorials/csharp-language/#classes)
+For more: [Methods](https://www.dotnet-guide.com/tutorials/csharp-language/#methods) & [Classes](https://www.dotnet-guide.com/tutorials/csharp-language/#classes)
 
 Troubleshooting
 
