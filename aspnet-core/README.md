@@ -20,3 +20,56 @@ This folder contains two runnable Web API projects used in the guide **“ASP.NE
 cd tutorials/aspnet-core/TodoApiBasic
 dotnet restore
 dotnet run
+
+Open Swagger UI:
+
+https://localhost:5001/swagger
+
+2) TodoApiEfJwt (EF Core + JWT)
+
+What it shows
+
+Minimal API + EF Core (SQLite)
+
+JWT authentication with a simple token-issuing endpoint
+
+Protected CRUD endpoints
+
+Run (first time)
+
+cd tutorials/aspnet-core/TodoApiEfJwt
+dotnet restore
+dotnet ef database update   # creates the SQLite DB using the included migration if present, or skip if not needed
+dotnet run
+
+Get a JWT:
+
+# POST to /auth/token with a demo username (no password for demo)
+# You can use Swagger UI or curl
+
+Then call protected endpoints by clicking Authorize in Swagger and pasting the token.
+
+Note
+The JWT setup here is intentionally simple for learning. For production, use secure secret storage, HTTPS, refresh tokens, and proper user management.
+
+Project map
+
+aspnet-core/
+  README.md
+  TodoApiBasic/
+    TodoApiBasic.csproj
+    Program.cs
+    Todo.cs
+  TodoApiEfJwt/
+    TodoApiEfJwt.csproj
+    Program.cs
+    Todo.cs
+    TodoDb.cs
+    appsettings.json
+
+Troubleshooting
+
+If Swagger isn’t loading on HTTPS, try the HTTP URL shown in the console output.
+EF Core tools: dotnet tool install --global dotnet-ef (if dotnet ef isn’t found).
+Delete bin/ and obj/ and rerun dotnet restore if builds fail after edits.
+
