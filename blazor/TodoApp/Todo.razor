@@ -1,0 +1,49 @@
+@page "/todo"
+@inject TodoService TodoService
+@implements IDisposable
+
+<h1>Todo List</h1>
+
+<EditForm Model="@newTodo" OnValidSubmit="@HandleValidSubmit">
+    <InputText @bind-Value="newTodo.Title" placeholder="Enter todo title" />
+    <button type="submit" class="btn btn-primary">Add Todo</button>
+</EditForm>
+
+@if (todos.Any())
+{
+    <ul class="list-group">
+        @foreach (var todo in todos)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>@todo.Title</span>
+                <button class="btn btn-danger" @onclick="() => TodoService.RemoveTodo(todo)">Delete</button>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No todos yet!</p>
+}
+
+@code {
+    private TodoItem newTodo = new();
+    private List<TodoItem> todos = new();
+
+    protected override void OnInitialized()
+    {
+        todos = TodoService.GetTodos();
+        TodoService.OnChange += StateHasChanged;
+    }
+
+    private void HandleValidSubmit()
+    {
+        TodoService.AddTodo(newTodo);
+        newTodo = new();
+    }
+
+    public void Dispose()
+    {
+        TodoService.OnChange -= StateHasChanged;
+    }
+}
