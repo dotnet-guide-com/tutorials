@@ -1,7 +1,7 @@
 # EF Core 8 Fundamentals – sample code for the tutorial
 
 This folder contains a runnable .NET 8 console app demo used in the guide
-"[EF Core 8 Fundamentals: Modern Data Access with .NET 8](https://staging.dotnet-guide.com/tutorials/ef-core/modern-data-access-dotnet/)."
+"[EF Core 8 Fundamentals: Modern Data Access with .NET 8](https://www.dotnet-guide.com/tutorials/ef-core/modern-data-access-dotnet/)."
 
     🗄️ BlogApp – Models, DbContext, migrations, seeding, and CRUD with LINQ
 
@@ -59,7 +59,7 @@ Deleted the updated post.
 Remaining Posts Count: 2
 
 
-For more: [Models](https://staging.dotnet-guide.com/tutorials/ef-core/modern-data-access-dotnet/#models-and-configurations), [DbContext](https://staging.dotnet-guide.com/tutorials/ef-core/modern-data-access-dotnet/#dbcontext-and-configurations), [Migrations](https://staging.dotnet-guide.com/tutorials/ef-core/modern-data-access-dotnet/#migrations-and-seeding), [CRUD](https://staging.dotnet-guide.com/tutorials/ef-core/modern-data-access-dotnet/#crud-operations)
+For more: [Models](https://www.dotnet-guide.com/tutorials/ef-core/modern-data-access-dotnet/#models-and-configurations), [DbContext](https://www.dotnet-guide.com/tutorials/ef-core/modern-data-access-dotnet/#dbcontext-and-configurations), [Migrations](https://www.dotnet-guide.com/tutorials/ef-core/modern-data-access-dotnet/#migrations-and-seeding), [CRUD](https://www.dotnet-guide.com/tutorials/ef-core/modern-data-access-dotnet/#crud-operations)
 
 ## Troubleshooting
 
