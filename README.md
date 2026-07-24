@@ -1,11 +1,105 @@
-# dotnet-guide.com Tutorials
+# dotnet-guide.com - Tutorial Code Samples
 
-This folder contains all tutorial code organized by topic.
+Runnable .NET code samples that accompany tutorials published on
+[dotnet-guide.com](https://www.dotnet-guide.com/).
 
-## Available Tutorials
-- [.NET 8 Essentials](dotnet-8-essentials/) - Core features, setup, and first API.
-- [C# Language](csharp-language/) - Advanced C# 12 features
-- [ASP.NET Core](aspnet-core/) - Building Web APIs
-- [Blazor Web Development](blazor/) - Create Interactive UIs with C# 12
-- [EF Core 8 Fundamentals](ef-core-modern-data-access-dotnet/) - Modern Data Access with .NET 8 
+Each sample folder contains a focused implementation of one tutorial topic. The full explanation, design reasoning, production considerations, and step-by-step walkthrough remain on the corresponding DOTNET GUIDE tutorial page.
 
+## Available samples
+
+| Sample | What it demonstrates | Full tutorial |
+| --- | --- | --- |
+| [`dotnet-ai/provider-agnostic-chat-gateway`](dotnet-ai/provider-agnostic-chat-gateway/) | One HTTP chat endpoint using Ollama and optional OpenAI providers through `Microsoft.Extensions.AI.IChatClient` | [Build a switchable multi-provider AI gateway with IChatClient](https://www.dotnet-guide.com/tutorials/dotnet-ai/provider-agnostic-chat-gateway/) |
+
+## Companion article
+
+[Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
+
+## Download and run
+
+1. Click the green **Code** button.
+2. Choose **Download ZIP**.
+3. Extract the downloaded archive.
+4. Open PowerShell in the required sample folder.
+5. Follow that folder's `README.md`.
+
+Example:
+
+```powershell
+cd dotnet-ai\provider-agnostic-chat-gateway
+dotnet restore
+dotnet run --urls http://localhost:5123
+```
+
+## Repository structure
+
+```text
+tutorials/
+|-- dotnet-ai/
+|   `-- provider-agnostic-chat-gateway/
+|       |-- ChatGatewayMinimal.csproj
+|       |-- Program.cs
+|       `-- README.md
+|-- .gitignore
+|-- LICENSE
+`-- README.md
+```
+
+## Repository boundaries
+
+This repository contains educational code samples only.
+
+It does not contain:
+
+- the DOTNET GUIDE website source code
+- production credentials
+- analytics configuration
+- private deployment paths
+- API keys
+- complete production applications
+
+## Versions and verification
+
+Each sample identifies:
+
+- its target .NET version
+- exact NuGet package versions in the project file
+- its default local model or service requirements
+- its last-reviewed date
+- the commands needed to restore, build, and run it
+
+Libraries related to AI, authentication, Aspire, distributed systems, and vector search may change quickly. Check the sample's review date and current official documentation before adapting it to a newer SDK or package version.
+
+## Independence
+
+dotnet-guide.com is an independent educational website. It is not affiliated with, endorsed by, or connected to Microsoft Corporation.
+
+Microsoft, .NET, C#, ASP.NET Core, Azure, and related names may be trademarks of Microsoft Corporation. Other product names belong to their respective owners.
+
+## Corrections
+
+Found a compile error or outdated API?
+
+Open an issue and include:
+
+- the sample path
+- your .NET SDK version
+- the command you ran
+- the complete error message
+- your operating system
+
+Small and focused pull requests are also welcome.
+
+## License
+
+Repository-owned sample code is available under the [MIT License](LICENSE).
+
+Third-party libraries remain subject to their own licenses.
+
+## Website links
+
+- [DOTNET GUIDE home](https://www.dotnet-guide.com/)
+- [Tutorials](https://www.dotnet-guide.com/tutorials/)
+- [Articles](https://www.dotnet-guide.com/articles/)
+- [Editorial policy](https://www.dotnet-guide.com/editorial/)
+- [About DOTNET GUIDE](https://www.dotnet-guide.com/about/)
