@@ -21,12 +21,20 @@ _ReSharper*/
 *.userosscache
 *.sln.docstates
 
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/appsettings.*.Local.json
+secrets.json
+
 # NuGet
 *.nupkg
 *.snupkg
 packages/
 .nuget/
-*.lock.json
 
 # Logs & dumps
 *.log
