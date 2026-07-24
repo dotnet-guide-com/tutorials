@@ -1,0 +1,44 @@
+name: Build tutorial samples
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "dotnet-ai/provider-agnostic-chat-gateway/**"
+      - ".github/workflows/build-samples.yml"
+
+  pull_request:
+    paths:
+      - "dotnet-ai/provider-agnostic-chat-gateway/**"
+      - ".github/workflows/build-samples.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-chat-gateway:
+    name: Build provider-agnostic chat gateway
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          dotnet-ai/provider-agnostic-chat-gateway/ChatGatewayMinimal.csproj
+
+      - name: Build
+        run: >
+          dotnet build
+          dotnet-ai/provider-agnostic-chat-gateway/ChatGatewayMinimal.csproj
+          --configuration Release
+          --no-restore
