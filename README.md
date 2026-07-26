@@ -11,6 +11,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | --- | --- | --- |
 | [`dotnet-ai/provider-agnostic-chat-gateway`](dotnet-ai/provider-agnostic-chat-gateway/) | One HTTP chat endpoint using Ollama and optional OpenAI providers through `Microsoft.Extensions.AI.IChatClient` | [Build a switchable multi-provider AI gateway with IChatClient](https://www.dotnet-guide.com/tutorials/dotnet-ai/provider-agnostic-chat-gateway/) |
 | [`dotnet-ai/hybrid-search-ef-core-pgvector`](dotnet-ai/hybrid-search-ef-core-pgvector/) | Minimal Reciprocal Rank Fusion demo combining pre-ranked keyword and vector results | [Hybrid Search in .NET with EF Core 10 and pgvector](https://www.dotnet-guide.com/tutorials/dotnet-ai/hybrid-search-ef-core-pgvector/) |
+| [`dotnet-aspire/orchestrate-distributed-system`](dotnet-aspire/orchestrate-distributed-system/) | Minimal Aspire AppHost coordinating a web project and API with service discovery and startup ordering | [Aspire in .NET: Orchestrate, Run, and Deploy a Distributed System from One App Host](https://www.dotnet-guide.com/tutorials/dotnet-aspire/orchestrate-distributed-system/) |
 
 ## Companion articles
 
@@ -54,6 +55,19 @@ tutorials/
 |       |-- HybridSearchMinimal.csproj
 |       |-- Program.cs
 |       `-- README.md
+|-- dotnet-aspire/
+|   `-- orchestrate-distributed-system/
+|       |-- AspireOrchestrationMinimal.slnx
+|       |-- README.md
+|       |-- AspireOrchestrationMinimal.AppHost/
+|       |   |-- AppHost.cs
+|       |   `-- AspireOrchestrationMinimal.AppHost.csproj
+|       |-- AspireOrchestrationMinimal.Api/
+|       |   |-- Program.cs
+|       |   `-- AspireOrchestrationMinimal.Api.csproj
+|       `-- AspireOrchestrationMinimal.Web/
+|           |-- Program.cs
+|           `-- AspireOrchestrationMinimal.Web.csproj
 |-- .github/
 |   `-- workflows/
 |       `-- build-samples.yml
