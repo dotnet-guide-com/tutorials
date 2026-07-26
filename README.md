@@ -125,5 +125,3 @@ Third-party libraries remain subject to their own licenses.
 * [Editorial policy](https://www.dotnet-guide.com/editorial/)
 * [About DOTNET GUIDE](https://www.dotnet-guide.com/about/)
 
-```
-```
