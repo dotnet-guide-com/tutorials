@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="13.4.6" />
+    <ProjectReference Include="..\AspireOrchestrationMinimal.Api\AspireOrchestrationMinimal.Api.csproj" IsAspireProjectResource="true" />
+    <ProjectReference Include="..\AspireOrchestrationMinimal.Web\AspireOrchestrationMinimal.Web.csproj" IsAspireProjectResource="true" />
+  </ItemGroup>
+
+</Project>

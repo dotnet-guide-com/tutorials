@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="AspireOrchestrationMinimal.AppHost/AspireOrchestrationMinimal.AppHost.csproj" />
+  <Project Path="AspireOrchestrationMinimal.Api/AspireOrchestrationMinimal.Api.csproj" />
+  <Project Path="AspireOrchestrationMinimal.Web/AspireOrchestrationMinimal.Web.csproj" />
+</Solution>
