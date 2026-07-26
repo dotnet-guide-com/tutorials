@@ -10,12 +10,12 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | Sample | What it demonstrates | Full tutorial |
 | --- | --- | --- |
 | [`dotnet-ai/provider-agnostic-chat-gateway`](dotnet-ai/provider-agnostic-chat-gateway/) | One HTTP chat endpoint using Ollama and optional OpenAI providers through `Microsoft.Extensions.AI.IChatClient` | [Build a switchable multi-provider AI gateway with IChatClient](https://www.dotnet-guide.com/tutorials/dotnet-ai/provider-agnostic-chat-gateway/) |
+| [`dotnet-ai/hybrid-search-ef-core-pgvector`](dotnet-ai/hybrid-search-ef-core-pgvector/) | Minimal Reciprocal Rank Fusion demo combining pre-ranked keyword and vector results | [Hybrid Search in .NET with EF Core 10 and pgvector](https://www.dotnet-guide.com/tutorials/dotnet-ai/hybrid-search-ef-core-pgvector/) |
 
-| [dotnet-ai/hybrid-search-ef-core-pgvector](dotnet-ai/hybrid-search-ef-core-pgvector/) | Minimal Reciprocal Rank Fusion demo combining pre-ranked keyword and vector results | [Hybrid Search in .NET with EF Core 10 and pgvector](https://www.dotnet-guide.com/tutorials/dotnet-ai/hybrid-search-ef-core-pgvector/) |
+## Companion articles
 
-## Companion article
-
-[Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
+- [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
+- [Vector search in .NET: Common mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/vector-search-common-mistakes/)
 
 ## Download and run
 
@@ -25,12 +25,20 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 4. Open PowerShell in the required sample folder.
 5. Follow that folder's `README.md`.
 
-Example:
+### Provider-agnostic chat gateway
 
 ```powershell
 cd dotnet-ai\provider-agnostic-chat-gateway
 dotnet restore
 dotnet run --urls http://localhost:5123
+````
+
+### Hybrid search RRF sample
+
+```powershell
+cd dotnet-ai\hybrid-search-ef-core-pgvector
+dotnet restore
+dotnet run
 ```
 
 ## Repository structure
@@ -38,10 +46,17 @@ dotnet run --urls http://localhost:5123
 ```text
 tutorials/
 |-- dotnet-ai/
-|   `-- provider-agnostic-chat-gateway/
-|       |-- ChatGatewayMinimal.csproj
+|   |-- provider-agnostic-chat-gateway/
+|   |   |-- ChatGatewayMinimal.csproj
+|   |   |-- Program.cs
+|   |   `-- README.md
+|   `-- hybrid-search-ef-core-pgvector/
+|       |-- HybridSearchMinimal.csproj
 |       |-- Program.cs
 |       `-- README.md
+|-- .github/
+|   `-- workflows/
+|       `-- build-samples.yml
 |-- .gitignore
 |-- LICENSE
 `-- README.md
@@ -53,24 +68,28 @@ This repository contains educational code samples only.
 
 It does not contain:
 
-- the DOTNET GUIDE website source code
-- production credentials
-- analytics configuration
-- private deployment paths
-- API keys
-- complete production applications
+* the DOTNET GUIDE website source code
+* production credentials
+* analytics configuration
+* private deployment paths
+* API keys
+* complete production applications
+
+The sample folders are intentionally smaller than their corresponding tutorials. Advanced setup, design discussion, database configuration, production hardening, and extended implementation guidance remain on the DOTNET GUIDE website.
 
 ## Versions and verification
 
 Each sample identifies:
 
-- its target .NET version
-- exact NuGet package versions in the project file
-- its default local model or service requirements
-- its last-reviewed date
-- the commands needed to restore, build, and run it
+* its target .NET version
+* its required NuGet package versions, when applicable
+* its local model, database, or service requirements
+* its last-reviewed date
+* the commands needed to restore, build, and run it
 
-Libraries related to AI, authentication, Aspire, distributed systems, and vector search may change quickly. Check the sample's review date and current official documentation before adapting it to a newer SDK or package version.
+Some lightweight samples may have no external package dependencies or service requirements.
+
+Libraries and platforms related to AI, authentication, Aspire, distributed systems, databases, and vector search may change quickly. Check the sample's review date and current official documentation before adapting it to a newer SDK or package version.
 
 ## Independence
 
@@ -84,11 +103,11 @@ Found a compile error or outdated API?
 
 Open an issue and include:
 
-- the sample path
-- your .NET SDK version
-- the command you ran
-- the complete error message
-- your operating system
+* the sample path
+* your .NET SDK version
+* the command you ran
+* the complete error message
+* your operating system
 
 Small and focused pull requests are also welcome.
 
@@ -100,8 +119,11 @@ Third-party libraries remain subject to their own licenses.
 
 ## Website links
 
-- [DOTNET GUIDE home](https://www.dotnet-guide.com/)
-- [Tutorials](https://www.dotnet-guide.com/tutorials/)
-- [Articles](https://www.dotnet-guide.com/articles/)
-- [Editorial policy](https://www.dotnet-guide.com/editorial/)
-- [About DOTNET GUIDE](https://www.dotnet-guide.com/about/)
+* [DOTNET GUIDE home](https://www.dotnet-guide.com/)
+* [Tutorials](https://www.dotnet-guide.com/tutorials/)
+* [Articles](https://www.dotnet-guide.com/articles/)
+* [Editorial policy](https://www.dotnet-guide.com/editorial/)
+* [About DOTNET GUIDE](https://www.dotnet-guide.com/about/)
+
+```
+```
