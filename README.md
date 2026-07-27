@@ -12,6 +12,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`dotnet-ai/provider-agnostic-chat-gateway`](dotnet-ai/provider-agnostic-chat-gateway/) | One HTTP chat endpoint using Ollama and optional OpenAI providers through `Microsoft.Extensions.AI.IChatClient` | [Build a switchable multi-provider AI gateway with IChatClient](https://www.dotnet-guide.com/tutorials/dotnet-ai/provider-agnostic-chat-gateway/) |
 | [`dotnet-ai/hybrid-search-ef-core-pgvector`](dotnet-ai/hybrid-search-ef-core-pgvector/) | Minimal Reciprocal Rank Fusion demo combining pre-ranked keyword and vector results | [Hybrid Search in .NET with EF Core 10 and pgvector](https://www.dotnet-guide.com/tutorials/dotnet-ai/hybrid-search-ef-core-pgvector/) |
 | [`dotnet-aspire/orchestrate-distributed-system`](dotnet-aspire/orchestrate-distributed-system/) | Minimal Aspire AppHost coordinating a web project and API with service discovery and startup ordering | [Aspire in .NET: Orchestrate, Run, and Deploy a Distributed System from One App Host](https://www.dotnet-guide.com/tutorials/dotnet-aspire/orchestrate-distributed-system/) |
+| [`software-architecture/architecture-testing-dotnet`](software-architecture/architecture-testing-dotnet/) | Minimal NetArchTest.eNhancedEdition rule that prevents Domain from depending on outer layers | [Architecture Testing in .NET: Enforce Layer and Module Boundaries with NetArchTest and ArchUnitNET](https://www.dotnet-guide.com/tutorials/software-architecture/architecture-testing-dotnet/) |
 
 ## Companion articles
 
@@ -68,6 +69,27 @@ tutorials/
 |       `-- AspireOrchestrationMinimal.Web/
 |           |-- Program.cs
 |           `-- AspireOrchestrationMinimal.Web.csproj
+|-- software-architecture/
+|   `-- architecture-testing-dotnet/
+|       |-- ArchitectureGuardMinimal.slnx
+|       |-- README.md
+|       |-- src/
+|       |   |-- ArchitectureGuard.Domain/
+|       |   |   |-- ArchitectureGuard.Domain.csproj
+|       |   |   |-- DomainAssemblyMarker.cs
+|       |   |   `-- Order.cs
+|       |   |-- ArchitectureGuard.Application/
+|       |   |   |-- ArchitectureGuard.Application.csproj
+|       |   |   |-- ApplicationAssemblyMarker.cs
+|       |   |   `-- GetOrderSummary.cs
+|       |   `-- ArchitectureGuard.Infrastructure/
+|       |       |-- ArchitectureGuard.Infrastructure.csproj
+|       |       |-- InfrastructureAssemblyMarker.cs
+|       |       `-- InMemoryOrderRepository.cs
+|       `-- tests/
+|           `-- ArchitectureGuard.ArchitectureTests/
+|               |-- ArchitectureGuard.ArchitectureTests.csproj
+|               `-- LayerRules.cs
 |-- .github/
 |   `-- workflows/
 |       `-- build-samples.yml
