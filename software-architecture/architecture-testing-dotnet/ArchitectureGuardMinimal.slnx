@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/ArchitectureGuard.Domain/ArchitectureGuard.Domain.csproj" />
+  <Project Path="src/ArchitectureGuard.Application/ArchitectureGuard.Application.csproj" />
+  <Project Path="src/ArchitectureGuard.Infrastructure/ArchitectureGuard.Infrastructure.csproj" />
+  <Project Path="tests/ArchitectureGuard.ArchitectureTests/ArchitectureGuard.ArchitectureTests.csproj" />
+</Solution>

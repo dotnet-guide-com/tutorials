@@ -1,0 +1,3 @@
+namespace ArchitectureGuard.Infrastructure;
+
+public sealed class InfrastructureAssemblyMarker;
