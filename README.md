@@ -13,7 +13,8 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`dotnet-ai/hybrid-search-ef-core-pgvector`](dotnet-ai/hybrid-search-ef-core-pgvector/) | Minimal Reciprocal Rank Fusion demo combining pre-ranked keyword and vector results | [Hybrid Search in .NET with EF Core 10 and pgvector](https://www.dotnet-guide.com/tutorials/dotnet-ai/hybrid-search-ef-core-pgvector/) |
 | [`dotnet-aspire/orchestrate-distributed-system`](dotnet-aspire/orchestrate-distributed-system/) | Minimal Aspire AppHost coordinating a web project and API with service discovery and startup ordering | [Aspire in .NET: Orchestrate, Run, and Deploy a Distributed System from One App Host](https://www.dotnet-guide.com/tutorials/dotnet-aspire/orchestrate-distributed-system/) |
 | [`software-architecture/architecture-testing-dotnet`](software-architecture/architecture-testing-dotnet/) | Minimal NetArchTest.eNhancedEdition rule that prevents Domain from depending on outer layers | [Architecture Testing in .NET: Enforce Layer and Module Boundaries with NetArchTest and ArchUnitNET](https://www.dotnet-guide.com/tutorials/software-architecture/architecture-testing-dotnet/) |
-
+| [`distributed-systems/transactional-outbox-ef-core`](distributed-systems/transactional-outbox-ef-core/) | Minimal EF Core and SQLite demonstration that saves business state and an outbox message atomically, then publishes it through a one-shot relay | [Transactional Outbox Pattern in .NET with EF Core (.NET 10): Fix the Dual-Write Problem](https://www.dotnet-guide.com/tutorials/distributed-systems/transactional-outbox-ef-core/) |
+|
 ## Companion articles
 
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -90,6 +91,30 @@ tutorials/
 |           `-- ArchitectureGuard.ArchitectureTests/
 |               |-- ArchitectureGuard.ArchitectureTests.csproj
 |               `-- LayerRules.cs
+|-- distributed-systems/
+|   `-- transactional-outbox-ef-core/
+|       |-- TransactionalOutboxMinimal.slnx
+|       |-- README.md
+|       |-- src/
+|       |   `-- TransactionalOutboxMinimal/
+|       |       |-- TransactionalOutboxMinimal.csproj
+|       |       |-- Program.cs
+|       |       |-- Data/
+|       |       |   `-- OrdersDbContext.cs
+|       |       |-- Domain/
+|       |       |   `-- Order.cs
+|       |       |-- Messaging/
+|       |       |   |-- OrderPlaced.cs
+|       |       |   |-- OutboxMessage.cs
+|       |       |   |-- IPublisher.cs
+|       |       |   |-- InMemoryPublisher.cs
+|       |       |   `-- OutboxRelay.cs
+|       |       `-- Services/
+|       |           `-- OrderService.cs
+|       `-- tests/
+|           `-- TransactionalOutboxMinimal.Tests/
+|               |-- TransactionalOutboxMinimal.Tests.csproj
+|               `-- OutboxFlowTests.cs
 |-- .github/
 |   `-- workflows/
 |       `-- build-samples.yml
