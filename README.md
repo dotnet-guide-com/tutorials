@@ -14,6 +14,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`dotnet-aspire/orchestrate-distributed-system`](dotnet-aspire/orchestrate-distributed-system/) | Minimal Aspire AppHost coordinating a web project and API with service discovery and startup ordering | [Aspire in .NET: Orchestrate, Run, and Deploy a Distributed System from One App Host](https://www.dotnet-guide.com/tutorials/dotnet-aspire/orchestrate-distributed-system/) |
 | [`software-architecture/architecture-testing-dotnet`](software-architecture/architecture-testing-dotnet/) | Minimal NetArchTest.eNhancedEdition rule that prevents Domain from depending on outer layers | [Architecture Testing in .NET: Enforce Layer and Module Boundaries with NetArchTest and ArchUnitNET](https://www.dotnet-guide.com/tutorials/software-architecture/architecture-testing-dotnet/) |
 | [`distributed-systems/transactional-outbox-ef-core`](distributed-systems/transactional-outbox-ef-core/) | Minimal EF Core and SQLite demonstration that saves business state and an outbox message atomically, then publishes it through a one-shot relay | [Transactional Outbox Pattern in .NET with EF Core (.NET 10): Fix the Dual-Write Problem](https://www.dotnet-guide.com/tutorials/distributed-systems/transactional-outbox-ef-core/) |
+| [`aspnet-core/api-security-in-practice`](aspnet-core/api-security-in-practice/) | Minimal JWT bearer authentication, note ownership enforcement, and rate limiting for an ASP.NET Core API | [ASP.NET Core 8 API Security: JWT Authentication, CSRF Protection & Rate Limiting](https://www.dotnet-guide.com/tutorials/aspnet-core/api-security-in-practice/) |
 |
 ## Companion articles
 
@@ -115,6 +116,22 @@ tutorials/
 |           `-- TransactionalOutboxMinimal.Tests/
 |               |-- TransactionalOutboxMinimal.Tests.csproj
 |               `-- OutboxFlowTests.cs
+|-- aspnet-core/
+|   `-- api-security-in-practice/
+|       |-- ApiSecurityMinimal.slnx
+|       |-- README.md
+|       |-- src/
+|       |   `-- ApiSecurityMinimal/
+|       |       |-- ApiSecurityMinimal.csproj
+|       |       |-- Program.cs
+|       |       |-- Models.cs
+|       |       |-- DemoStore.cs
+|       |       |-- JwtTokenService.cs
+|       |       `-- appsettings.json
+|       `-- tests/
+|           `-- ApiSecurityMinimal.Tests/
+|               |-- ApiSecurityMinimal.Tests.csproj
+|               `-- ApiSecurityTests.cs
 |-- .github/
 |   `-- workflows/
 |       `-- build-samples.yml

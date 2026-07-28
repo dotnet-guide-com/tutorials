@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>6e2e3e9a-7c4b-4f1a-9d8b-3c5f2a1e8d7b</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.10" />
+  </ItemGroup>
+
+</Project>
