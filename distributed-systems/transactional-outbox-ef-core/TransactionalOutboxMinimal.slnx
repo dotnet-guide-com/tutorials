@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/TransactionalOutboxMinimal/TransactionalOutboxMinimal.csproj" />
+  <Project Path="tests/TransactionalOutboxMinimal.Tests/TransactionalOutboxMinimal.Tests.csproj" />
+</Solution>
