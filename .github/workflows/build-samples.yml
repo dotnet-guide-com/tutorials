@@ -9,6 +9,7 @@ on:
       - "dotnet-aspire/orchestrate-distributed-system/**"
       - "software-architecture/architecture-testing-dotnet/**"
       - "distributed-systems/transactional-outbox-ef-core/**"
+      - "aspnet-core/api-security-in-practice/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -18,6 +19,7 @@ on:
       - "dotnet-aspire/orchestrate-distributed-system/**"
       - "software-architecture/architecture-testing-dotnet/**"
       - "distributed-systems/transactional-outbox-ef-core/**"
+      - "aspnet-core/api-security-in-practice/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -176,5 +178,39 @@ jobs:
         run: >
           dotnet run
           --project distributed-systems/transactional-outbox-ef-core/src/TransactionalOutboxMinimal/TransactionalOutboxMinimal.csproj
+          --configuration Release
+          --no-build
+
+  test-api-security:
+    name: Test API security sample
+    runs-on: ubuntu-latest
+    env:
+      Jwt__Key: "CI-only-test-key-at-least-32-bytes-long"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          aspnet-core/api-security-in-practice/ApiSecurityMinimal.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          aspnet-core/api-security-in-practice/ApiSecurityMinimal.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test API security
+        run: >
+          dotnet test
+          aspnet-core/api-security-in-practice/tests/ApiSecurityMinimal.Tests/ApiSecurityMinimal.Tests.csproj
           --configuration Release
           --no-build
