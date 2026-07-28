@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/ApiSecurityMinimal/ApiSecurityMinimal.csproj" />
+  <Project Path="tests/ApiSecurityMinimal.Tests/ApiSecurityMinimal.Tests.csproj" />
+</Solution>
