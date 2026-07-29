@@ -15,11 +15,14 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`software-architecture/architecture-testing-dotnet`](software-architecture/architecture-testing-dotnet/) | Minimal NetArchTest.eNhancedEdition rule that prevents Domain from depending on outer layers | [Architecture Testing in .NET: Enforce Layer and Module Boundaries with NetArchTest and ArchUnitNET](https://www.dotnet-guide.com/tutorials/software-architecture/architecture-testing-dotnet/) |
 | [`distributed-systems/transactional-outbox-ef-core`](distributed-systems/transactional-outbox-ef-core/) | Minimal EF Core and SQLite demonstration that saves business state and an outbox message atomically, then publishes it through a one-shot relay | [Transactional Outbox Pattern in .NET with EF Core (.NET 10): Fix the Dual-Write Problem](https://www.dotnet-guide.com/tutorials/distributed-systems/transactional-outbox-ef-core/) |
 | [`aspnet-core/api-security-in-practice`](aspnet-core/api-security-in-practice/) | Minimal JWT bearer authentication, note ownership enforcement, and rate limiting for an ASP.NET Core API | [ASP.NET Core 8 API Security: JWT Authentication, CSRF Protection & Rate Limiting](https://www.dotnet-guide.com/tutorials/aspnet-core/api-security-in-practice/) |
-|
+
 ## Companion articles
 
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
 - [Vector search in .NET: Common mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/vector-search-common-mistakes/)
+- [NetArchTest, ArchUnitNET, and Roslyn analyzers](https://www.dotnet-guide.com/articles/software-architecture/netarchtest-archunitnet-roslyn-analyzers/)
+- [Transactional outbox relay: Common mistakes](https://www.dotnet-guide.com/articles/distributed-systems/outbox-relay-common-mistakes/)
+- [ASP.NET Core API security checklist](https://www.dotnet-guide.com/articles/aspnet-core-api-security-checklist/)
 
 ## Download and run
 
@@ -202,4 +205,3 @@ Third-party libraries remain subject to their own licenses.
 * [Articles](https://www.dotnet-guide.com/articles/)
 * [Editorial policy](https://www.dotnet-guide.com/editorial/)
 * [About DOTNET GUIDE](https://www.dotnet-guide.com/about/)
-
