@@ -21,6 +21,9 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
 - [Vector search in .NET: Common mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/vector-search-common-mistakes/)
+- [NetArchTest, ArchUnitNET, and Roslyn analyzers](https://www.dotnet-guide.com/articles/software-architecture/netarchtest-archunitnet-roslyn-analyzers/)
+- [Transactional outbox relay: Common mistakes](https://www.dotnet-guide.com/articles/distributed-systems/outbox-relay-common-mistakes/)
+- [ASP.NET Core API security checklist](https://www.dotnet-guide.com/articles/aspnet-core-api-security-checklist/)
 
 ## Download and run
 
@@ -225,4 +228,3 @@ Third-party libraries remain subject to their own licenses.
 * [Articles](https://www.dotnet-guide.com/articles/)
 * [Editorial policy](https://www.dotnet-guide.com/editorial/)
 * [About DOTNET GUIDE](https://www.dotnet-guide.com/about/)
-
