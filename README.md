@@ -15,6 +15,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`software-architecture/architecture-testing-dotnet`](software-architecture/architecture-testing-dotnet/) | Minimal NetArchTest.eNhancedEdition rule that prevents Domain from depending on outer layers | [Architecture Testing in .NET: Enforce Layer and Module Boundaries with NetArchTest and ArchUnitNET](https://www.dotnet-guide.com/tutorials/software-architecture/architecture-testing-dotnet/) |
 | [`distributed-systems/transactional-outbox-ef-core`](distributed-systems/transactional-outbox-ef-core/) | Minimal EF Core and SQLite demonstration that saves business state and an outbox message atomically, then publishes it through a one-shot relay | [Transactional Outbox Pattern in .NET with EF Core (.NET 10): Fix the Dual-Write Problem](https://www.dotnet-guide.com/tutorials/distributed-systems/transactional-outbox-ef-core/) |
 | [`aspnet-core/api-security-in-practice`](aspnet-core/api-security-in-practice/) | Minimal JWT bearer authentication, note ownership enforcement, and rate limiting for an ASP.NET Core API | [ASP.NET Core 8 API Security: JWT Authentication, CSRF Protection & Rate Limiting](https://www.dotnet-guide.com/tutorials/aspnet-core/api-security-in-practice/) |
+| [`aspnet-core/passkey-first-identity`](aspnet-core/passkey-first-identity/) | Minimal .NET 10 Identity sample for passkey enrollment, username-first passkey sign-in, antiforgery protection, and stored credential listing | [Passkeys in ASP.NET Core Identity (.NET 10): Build a Passwordless-First Web App with WebAuthn](https://www.dotnet-guide.com/tutorials/aspnet-core/passkey-first-identity/) |
 |
 ## Companion articles
 
@@ -132,6 +133,28 @@ tutorials/
 |           `-- ApiSecurityMinimal.Tests/
 |               |-- ApiSecurityMinimal.Tests.csproj
 |               `-- ApiSecurityTests.cs
+|   `-- passkey-first-identity/
+|       |-- PasskeyIdentityMinimal.slnx
+|       |-- README.md
+|       |-- src/
+|       |   `-- PasskeyIdentityMinimal/
+|       |       |-- PasskeyIdentityMinimal.csproj
+|       |       |-- Program.cs
+|       |       |-- appsettings.json
+|       |       |-- Data/
+|       |       |   |-- ApplicationDbContext.cs
+|       |       |   `-- ApplicationUser.cs
+|       |       |-- Endpoints/
+|       |       |   |-- AntiforgeryEndpointExtensions.cs
+|       |       |   `-- PasskeyEndpoints.cs
+|       |       `-- wwwroot/
+|       |           |-- index.html
+|       |           `-- passkeys.js
+|       `-- tests/
+|           `-- PasskeyIdentityMinimal.Tests/
+|               |-- PasskeyIdentityMinimal.Tests.csproj
+|               |-- PasskeyEndpointTests.cs
+|               `-- PasskeyIdentityFactory.cs
 |-- .github/
 |   `-- workflows/
 |       `-- build-samples.yml
