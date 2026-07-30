@@ -10,6 +10,7 @@ on:
       - "software-architecture/architecture-testing-dotnet/**"
       - "distributed-systems/transactional-outbox-ef-core/**"
       - "aspnet-core/api-security-in-practice/**"
+      - "aspnet-core/passkey-first-identity/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -20,6 +21,7 @@ on:
       - "software-architecture/architecture-testing-dotnet/**"
       - "distributed-systems/transactional-outbox-ef-core/**"
       - "aspnet-core/api-security-in-practice/**"
+      - "aspnet-core/passkey-first-identity/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -212,5 +214,40 @@ jobs:
         run: >
           dotnet test
           aspnet-core/api-security-in-practice/tests/ApiSecurityMinimal.Tests/ApiSecurityMinimal.Tests.csproj
+          --configuration Release
+          --no-build
+
+  test-passkey-identity:
+    name: Test passkey identity sample
+    runs-on: ubuntu-latest
+    env:
+      ASPNETCORE_ENVIRONMENT: Testing
+      Passkeys__ServerDomain: localhost
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          aspnet-core/passkey-first-identity/PasskeyIdentityMinimal.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          aspnet-core/passkey-first-identity/PasskeyIdentityMinimal.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test server-side passkey boundaries
+        run: >
+          dotnet test
+          aspnet-core/passkey-first-identity/tests/PasskeyIdentityMinimal.Tests/PasskeyIdentityMinimal.Tests.csproj
           --configuration Release
           --no-build
