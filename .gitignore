@@ -51,6 +51,11 @@ TestResults/
 *.coverage*
 *.trx
 
+# Database files
+*.db
+*.db-shm
+*.db-wal
+
 # Publish / artifacts
 [Bb]uild[Aa]rtifacts/
 artifacts/
