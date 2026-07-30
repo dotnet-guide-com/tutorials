@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/PasskeyIdentityMinimal/PasskeyIdentityMinimal.csproj" />
+  <Project Path="tests/PasskeyIdentityMinimal.Tests/PasskeyIdentityMinimal.Tests.csproj" />
+</Solution>
