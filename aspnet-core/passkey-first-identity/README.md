@@ -91,12 +91,14 @@ The application starts on `https://localhost:5001` and `http://localhost:5000`.
 
 ## Development credentials
 
+The following are sample development credentials used for local development and testing only.
+
 | Field    | Value            |
 |----------|------------------|
-| Email    | demo@example.com |
-| Password | DemoPass123!     |
+| Email    | `demo@example.com` |
+| Password | `DemoPass123!`     |
 
-**These are development-only credentials.** The bootstrap user exists only in Development and Testing environments. The password exists only to enroll the first passkey. Do not use these credentials in production.
+> **Development only:** These sample credentials are intended exclusively for local Development and Testing environments. The bootstrap user exists only to enroll the initial passkey during setup and is never intended for production use. Do not deploy, reuse, or rely on these credentials in any production environment.
 
 ## Manual browser test
 
