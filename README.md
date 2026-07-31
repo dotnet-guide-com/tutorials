@@ -16,6 +16,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`distributed-systems/transactional-outbox-ef-core`](distributed-systems/transactional-outbox-ef-core/) | Minimal EF Core and SQLite demonstration that saves business state and an outbox message atomically, then publishes it through a one-shot relay | [Transactional Outbox Pattern in .NET with EF Core (.NET 10): Fix the Dual-Write Problem](https://www.dotnet-guide.com/tutorials/distributed-systems/transactional-outbox-ef-core/) |
 | [`aspnet-core/api-security-in-practice`](aspnet-core/api-security-in-practice/) | Minimal JWT bearer authentication, note ownership enforcement, and rate limiting for an ASP.NET Core API | [ASP.NET Core 8 API Security: JWT Authentication, CSRF Protection & Rate Limiting](https://www.dotnet-guide.com/tutorials/aspnet-core/api-security-in-practice/) |
 | [`aspnet-core/passkey-first-identity`](aspnet-core/passkey-first-identity/) | Minimal .NET 10 Identity sample for passkey enrollment, username-first passkey sign-in, antiforgery protection, and stored credential listing | [Passkeys in ASP.NET Core Identity (.NET 10): Build a Passwordless-First Web App with WebAuthn](https://www.dotnet-guide.com/tutorials/aspnet-core/passkey-first-identity/) |
+| [`aspnet-core/build-web-api-dotnet-8`](aspnet-core/build-web-api-dotnet-8/) | Minimal .NET 10 Todo API demonstrating route groups, dependency injection, CRUD status codes, validation, middleware, and integration testing | [ASP.NET Core Fundamentals: Build Web APIs on .NET 8](https://www.dotnet-guide.com/tutorials/aspnet-core/build-web-api-dotnet-8/) |
 |
 ## Companion articles
 
@@ -136,7 +137,7 @@ tutorials/
 |           `-- ApiSecurityMinimal.Tests/
 |               |-- ApiSecurityMinimal.Tests.csproj
 |               `-- ApiSecurityTests.cs
-|   `-- passkey-first-identity/
+|   |-- passkey-first-identity/
 |       |-- PasskeyIdentityMinimal.slnx
 |       |-- README.md
 |       |-- src/
@@ -158,6 +159,17 @@ tutorials/
 |               |-- PasskeyIdentityMinimal.Tests.csproj
 |               |-- PasskeyEndpointTests.cs
 |               `-- PasskeyIdentityFactory.cs
+|   `-- build-web-api-dotnet-8/
+|       |-- TodoApiMinimal.slnx
+|       |-- README.md
+|       |-- src/
+|       |   `-- TodoApiMinimal/
+|       |       |-- TodoApiMinimal.csproj
+|       |       `-- Program.cs
+|       `-- tests/
+|           `-- TodoApiMinimal.Tests/
+|               |-- TodoApiMinimal.Tests.csproj
+|               `-- TodoApiTests.cs
 |-- .github/
 |   `-- workflows/
 |       `-- build-samples.yml
