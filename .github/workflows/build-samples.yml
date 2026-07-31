@@ -11,6 +11,7 @@ on:
       - "distributed-systems/transactional-outbox-ef-core/**"
       - "aspnet-core/api-security-in-practice/**"
       - "aspnet-core/passkey-first-identity/**"
+      - "aspnet-core/build-web-api-dotnet-8/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -22,6 +23,7 @@ on:
       - "distributed-systems/transactional-outbox-ef-core/**"
       - "aspnet-core/api-security-in-practice/**"
       - "aspnet-core/passkey-first-identity/**"
+      - "aspnet-core/build-web-api-dotnet-8/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -249,5 +251,37 @@ jobs:
         run: >
           dotnet test
           aspnet-core/passkey-first-identity/tests/PasskeyIdentityMinimal.Tests/PasskeyIdentityMinimal.Tests.csproj
+          --configuration Release
+          --no-build
+
+  test-web-api-fundamentals:
+    name: Test ASP.NET Core Todo API sample
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          aspnet-core/build-web-api-dotnet-8/TodoApiMinimal.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          aspnet-core/build-web-api-dotnet-8/TodoApiMinimal.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test
+        run: >
+          dotnet test
+          aspnet-core/build-web-api-dotnet-8/TodoApiMinimal.slnx
           --configuration Release
           --no-build
