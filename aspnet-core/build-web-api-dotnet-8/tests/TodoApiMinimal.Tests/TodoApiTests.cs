@@ -16,9 +16,13 @@ public sealed class TodoApiTests
         using HttpClient client =
             factory.CreateClient();
 
+        CancellationToken ct =
+            TestContext.Current.CancellationToken;
+
         HttpResponseMessage response =
             await client.GetAsync(
-                "/api/todos");
+                "/api/todos",
+                ct);
 
         Assert.Equal(
             HttpStatusCode.OK,
@@ -26,7 +30,8 @@ public sealed class TodoApiTests
 
         TodoItem[]? todos =
             await response.Content
-                .ReadFromJsonAsync<TodoItem[]>();
+                .ReadFromJsonAsync<TodoItem[]>(
+                    ct);
 
         Assert.NotNull(todos);
         Assert.Equal(2, todos.Length);
@@ -44,9 +49,13 @@ public sealed class TodoApiTests
         using HttpClient client =
             factory.CreateClient();
 
+        CancellationToken ct =
+            TestContext.Current.CancellationToken;
+
         HttpResponseMessage response =
             await client.GetAsync(
-                "/api/todos/999");
+                "/api/todos/999",
+                ct);
 
         Assert.Equal(
             HttpStatusCode.NotFound,
@@ -63,11 +72,15 @@ public sealed class TodoApiTests
         using HttpClient client =
             factory.CreateClient();
 
+        CancellationToken ct =
+            TestContext.Current.CancellationToken;
+
         HttpResponseMessage response =
             await client.PostAsJsonAsync(
                 "/api/todos",
                 new CreateTodoRequest(
-                    "Write integration tests"));
+                    "Write integration tests"),
+                ct);
 
         Assert.Equal(
             HttpStatusCode.Created,
@@ -75,7 +88,8 @@ public sealed class TodoApiTests
 
         TodoItem? created =
             await response.Content
-                .ReadFromJsonAsync<TodoItem>();
+                .ReadFromJsonAsync<TodoItem>(
+                    ct);
 
         Assert.NotNull(created);
         Assert.Equal(
@@ -97,10 +111,14 @@ public sealed class TodoApiTests
         using HttpClient client =
             factory.CreateClient();
 
+        CancellationToken ct =
+            TestContext.Current.CancellationToken;
+
         HttpResponseMessage response =
             await client.PostAsJsonAsync(
                 "/api/todos",
-                new CreateTodoRequest(" "));
+                new CreateTodoRequest(" "),
+                ct);
 
         Assert.Equal(
             HttpStatusCode.BadRequest,
@@ -117,12 +135,16 @@ public sealed class TodoApiTests
         using HttpClient client =
             factory.CreateClient();
 
+        CancellationToken ct =
+            TestContext.Current.CancellationToken;
+
         HttpResponseMessage updateResponse =
             await client.PutAsJsonAsync(
                 "/api/todos/1",
                 new UpdateTodoRequest(
                     "Learn route groups",
-                    true));
+                    true),
+                ct);
 
         Assert.Equal(
             HttpStatusCode.NoContent,
@@ -130,7 +152,8 @@ public sealed class TodoApiTests
 
         TodoItem? updated =
             await client.GetFromJsonAsync<TodoItem>(
-                "/api/todos/1");
+                "/api/todos/1",
+                ct);
 
         Assert.NotNull(updated);
         Assert.Equal(
@@ -149,9 +172,13 @@ public sealed class TodoApiTests
         using HttpClient client =
             factory.CreateClient();
 
+        CancellationToken ct =
+            TestContext.Current.CancellationToken;
+
         HttpResponseMessage deleteResponse =
             await client.DeleteAsync(
-                "/api/todos/1");
+                "/api/todos/1",
+                ct);
 
         Assert.Equal(
             HttpStatusCode.NoContent,
@@ -159,7 +186,8 @@ public sealed class TodoApiTests
 
         HttpResponseMessage getResponse =
             await client.GetAsync(
-                "/api/todos/1");
+                "/api/todos/1",
+                ct);
 
         Assert.Equal(
             HttpStatusCode.NotFound,
@@ -176,9 +204,13 @@ public sealed class TodoApiTests
         using HttpClient client =
             factory.CreateClient();
 
+        CancellationToken ct =
+            TestContext.Current.CancellationToken;
+
         HttpResponseMessage response =
             await client.GetAsync(
-                "/health");
+                "/health",
+                ct);
 
         Assert.True(
             response.Headers.Contains(
