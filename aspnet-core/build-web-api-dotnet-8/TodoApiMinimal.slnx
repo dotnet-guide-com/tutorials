@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TodoApiMinimal/TodoApiMinimal.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TodoApiMinimal.Tests/TodoApiMinimal.Tests.csproj" />
+  </Folder>
+</Solution>
