@@ -106,20 +106,24 @@ builder.Services.AddRateLimiter(options =>
             }
 
             await context.HttpContext.Response
-                .WriteAsJsonAsync(
-                    new ProblemDetails
-                    {
-                        Status =
-                            StatusCodes
-                                .Status429TooManyRequests,
+                            .WriteAsJsonAsync(
+                                new ProblemDetails
+                                {
+                                    Status =
+                                        StatusCodes
+                                            .Status429TooManyRequests,
 
-                        Title =
-                            "Rate limit exceeded",
+                                    Title =
+                                        "Rate limit exceeded",
 
-                        Detail =
-                            "This client has exhausted the demonstration write quota."
-                    },
-                    cancellationToken);
+                                    Detail =
+                                        "This client has exhausted the demonstration write quota."
+                                },
+                                options: null,
+                                contentType:
+                                    "application/problem+json",
+                                cancellationToken:
+                                    cancellationToken);
         };
 });
 

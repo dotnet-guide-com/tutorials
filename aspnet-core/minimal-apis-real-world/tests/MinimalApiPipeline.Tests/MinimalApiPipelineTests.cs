@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace MinimalApiPipeline.Tests;
@@ -357,6 +358,29 @@ public sealed class
         Assert.Equal(
             HttpStatusCode.TooManyRequests,
             third.StatusCode);
+
+        Assert.Equal(
+            "application/problem+json",
+            third.Content.Headers.ContentType?
+                .MediaType);
+
+        ProblemDetails? problem =
+            await third.Content
+                .ReadFromJsonAsync<
+                    ProblemDetails>(
+                    cancellationToken:
+                        ct);
+
+        Assert.NotNull(
+            problem);
+
+        Assert.Equal(
+            429,
+            problem.Status);
+
+        Assert.Equal(
+            "Rate limit exceeded",
+            problem.Title);
     }
 
     [Fact]
