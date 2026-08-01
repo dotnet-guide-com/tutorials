@@ -18,6 +18,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`aspnet-core/passkey-first-identity`](aspnet-core/passkey-first-identity/) | Minimal .NET 10 Identity sample for passkey enrollment, username-first passkey sign-in, antiforgery protection, and stored credential listing | [Passkeys in ASP.NET Core Identity (.NET 10): Build a Passwordless-First Web App with WebAuthn](https://www.dotnet-guide.com/tutorials/aspnet-core/passkey-first-identity/) |
 | [`aspnet-core/build-web-api-dotnet-8`](aspnet-core/build-web-api-dotnet-8/) | Minimal .NET 10 Todo API demonstrating route groups, dependency injection, CRUD status codes, validation, middleware, and integration testing | [ASP.NET Core Fundamentals: Build Web APIs on .NET 8](https://www.dotnet-guide.com/tutorials/aspnet-core/build-web-api-dotnet-8/) |
 | [`aspnet-core/caching-outputcache-redis-invalidation`](aspnet-core/caching-outputcache-redis-invalidation/) | Minimal .NET 10 Catalog API demonstrating Output Cache policies, query and route variation, tag eviction, write-path invalidation, and integration testing | [ASP.NET Core Caching: Output Cache, Redis & Invalidation Strategies That Actually Work](https://www.dotnet-guide.com/tutorials/aspnet-core/caching-outputcache-redis-invalidation/) |
+| [`aspnet-core/minimal-apis-real-world`](aspnet-core/minimal-apis-real-world/) | Focused .NET 10 Orders API demonstrating endpoint filters, FluentValidation, URL-segment versioning, typed results, and partitioned rate limiting | [ASP.NET Core / Minimal APIs in the Real World: Filters, Validation, Versioning & Rate Limiting](https://www.dotnet-guide.com/tutorials/aspnet-core/minimal-apis-real-world/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -170,17 +171,28 @@ tutorials/
 |   |       `-- TodoApiMinimal.Tests/
 |   |           |-- TodoApiMinimal.Tests.csproj
 |   |           `-- TodoApiTests.cs
-|   `-- caching-outputcache-redis-invalidation/
-|       |-- OutputCacheCatalogMinimal.slnx
+|   |-- caching-outputcache-redis-invalidation/
+|   |   |-- OutputCacheCatalogMinimal.slnx
+|   |   |-- README.md
+|   |   |-- src/
+|   |   |   `-- OutputCacheCatalogMinimal/
+|   |   |       |-- OutputCacheCatalogMinimal.csproj
+|   |   |       `-- Program.cs
+|   |   `-- tests/
+|   |       `-- OutputCacheCatalogMinimal.Tests/
+|   |           |-- OutputCacheCatalogMinimal.Tests.csproj
+|   |           `-- OutputCacheTests.cs
+|   `-- minimal-apis-real-world/
+|       |-- MinimalApiPipeline.slnx
 |       |-- README.md
 |       |-- src/
-|       |   `-- OutputCacheCatalogMinimal/
-|       |       |-- OutputCacheCatalogMinimal.csproj
+|       |   `-- MinimalApiPipeline/
+|       |       |-- MinimalApiPipeline.csproj
 |       |       `-- Program.cs
 |       `-- tests/
-|           `-- OutputCacheCatalogMinimal.Tests/
-|               |-- OutputCacheCatalogMinimal.Tests.csproj
-|               `-- OutputCacheTests.cs
+|           `-- MinimalApiPipeline.Tests/
+|               |-- MinimalApiPipeline.Tests.csproj
+|               `-- MinimalApiPipelineTests.cs
 |-- .github/
 |   `-- workflows/
 |       `-- build-samples.yml

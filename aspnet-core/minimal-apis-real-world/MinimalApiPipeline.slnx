@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MinimalApiPipeline/MinimalApiPipeline.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MinimalApiPipeline.Tests/MinimalApiPipeline.Tests.csproj" />
+  </Folder>
+</Solution>
