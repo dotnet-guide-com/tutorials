@@ -159,17 +159,17 @@ tutorials/
 |   |           |-- PasskeyIdentityMinimal.Tests.csproj
 |   |           |-- PasskeyEndpointTests.cs
 |   |           `-- PasskeyIdentityFactory.cs
-|`-- build-web-api-dotnet-8/
-|      |-- TodoApiMinimal.slnx
-|      |-- README.md
-|      |-- src/
-|      |   `-- TodoApiMinimal/
-|      |       |-- TodoApiMinimal.csproj
-|      |       `-- Program.cs
-|      `-- tests/
-|          `-- TodoApiMinimal.Tests/
-|              |-- TodoApiMinimal.Tests.csproj
-|              `-- TodoApiTests.cs
+|   |-- build-web-api-dotnet-8/
+|   |   |-- TodoApiMinimal.slnx
+|   |   |-- README.md
+|   |   |-- src/
+|   |   |   `-- TodoApiMinimal/
+|   |   |       |-- TodoApiMinimal.csproj
+|   |   |       `-- Program.cs
+|   |   `-- tests/
+|   |       `-- TodoApiMinimal.Tests/
+|   |           |-- TodoApiMinimal.Tests.csproj
+|   |           `-- TodoApiTests.cs
 |   `-- caching-outputcache-redis-invalidation/
 |       |-- OutputCacheCatalogMinimal.slnx
 |       |-- README.md
@@ -181,7 +181,7 @@ tutorials/
 |           `-- OutputCacheCatalogMinimal.Tests/
 |               |-- OutputCacheCatalogMinimal.Tests.csproj
 |               `-- OutputCacheTests.cs
-||-- .github/
+|-- .github/
 |   `-- workflows/
 |       `-- build-samples.yml
 |-- .gitignore
