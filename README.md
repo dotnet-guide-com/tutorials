@@ -17,6 +17,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`aspnet-core/api-security-in-practice`](aspnet-core/api-security-in-practice/) | Minimal JWT bearer authentication, note ownership enforcement, and rate limiting for an ASP.NET Core API | [ASP.NET Core 8 API Security: JWT Authentication, CSRF Protection & Rate Limiting](https://www.dotnet-guide.com/tutorials/aspnet-core/api-security-in-practice/) |
 | [`aspnet-core/passkey-first-identity`](aspnet-core/passkey-first-identity/) | Minimal .NET 10 Identity sample for passkey enrollment, username-first passkey sign-in, antiforgery protection, and stored credential listing | [Passkeys in ASP.NET Core Identity (.NET 10): Build a Passwordless-First Web App with WebAuthn](https://www.dotnet-guide.com/tutorials/aspnet-core/passkey-first-identity/) |
 | [`aspnet-core/build-web-api-dotnet-8`](aspnet-core/build-web-api-dotnet-8/) | Minimal .NET 10 Todo API demonstrating route groups, dependency injection, CRUD status codes, validation, middleware, and integration testing | [ASP.NET Core Fundamentals: Build Web APIs on .NET 8](https://www.dotnet-guide.com/tutorials/aspnet-core/build-web-api-dotnet-8/) |
+| [`aspnet-core/caching-outputcache-redis-invalidation`](aspnet-core/caching-outputcache-redis-invalidation/) | Minimal .NET 10 Catalog API demonstrating Output Cache policies, query and route variation, tag eviction, write-path invalidation, and integration testing | [ASP.NET Core Caching: Output Cache, Redis & Invalidation Strategies That Actually Work](https://www.dotnet-guide.com/tutorials/aspnet-core/caching-outputcache-redis-invalidation/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -158,17 +159,28 @@ tutorials/
 |   |           |-- PasskeyIdentityMinimal.Tests.csproj
 |   |           |-- PasskeyEndpointTests.cs
 |   |           `-- PasskeyIdentityFactory.cs
-|   `-- build-web-api-dotnet-8/
-|       |-- TodoApiMinimal.slnx
+|   |-- build-web-api-dotnet-8/
+|   |   |-- TodoApiMinimal.slnx
+|   |   |-- README.md
+|   |   |-- src/
+|   |   |   `-- TodoApiMinimal/
+|   |   |       |-- TodoApiMinimal.csproj
+|   |   |       `-- Program.cs
+|   |   `-- tests/
+|   |       `-- TodoApiMinimal.Tests/
+|   |           |-- TodoApiMinimal.Tests.csproj
+|   |           `-- TodoApiTests.cs
+|   `-- caching-outputcache-redis-invalidation/
+|       |-- OutputCacheCatalogMinimal.slnx
 |       |-- README.md
 |       |-- src/
-|       |   `-- TodoApiMinimal/
-|       |       |-- TodoApiMinimal.csproj
+|       |   `-- OutputCacheCatalogMinimal/
+|       |       |-- OutputCacheCatalogMinimal.csproj
 |       |       `-- Program.cs
 |       `-- tests/
-|           `-- TodoApiMinimal.Tests/
-|               |-- TodoApiMinimal.Tests.csproj
-|               `-- TodoApiTests.cs
+|           `-- OutputCacheCatalogMinimal.Tests/
+|               |-- OutputCacheCatalogMinimal.Tests.csproj
+|               `-- OutputCacheTests.cs
 |-- .github/
 |   `-- workflows/
 |       `-- build-samples.yml

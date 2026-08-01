@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/OutputCacheCatalogMinimal/OutputCacheCatalogMinimal.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OutputCacheCatalogMinimal.Tests/OutputCacheCatalogMinimal.Tests.csproj" />
+  </Folder>
+</Solution>
