@@ -1,0 +1,198 @@
+@using Microsoft.AspNetCore.Components.Web
+
+<section data-testid="cart-island"
+         aria-labelledby="cart-title">
+    <h2 id="cart-title">
+        Interactive cart island
+    </h2>
+
+    <p>
+        The catalog remains static SSR. These controls
+        become interactive after the server circuit connects.
+    </p>
+
+    <div aria-label="Add products">
+        @foreach (ProductSummary product
+                  in Products.OrderBy(
+                      product =>
+                          product.Id))
+        {
+            <button type="button"
+                    data-action="add"
+                    data-product-id="@product.Id"
+                    @onclick="() => Add(product)">
+                Add @product.Name
+            </button>
+        }
+    </div>
+
+    <p data-testid="cart-summary"
+       role="status"
+       aria-live="polite">
+        @TotalItems
+        @(TotalItems == 1
+            ? "item"
+            : "items")
+        · USD @FormatMoney(Total)
+    </p>
+
+    @if (Lines.Count == 0)
+    {
+        <p data-testid="cart-empty">
+            Your cart is empty.
+        </p>
+    }
+    else
+    {
+        <div aria-label="Cart items">
+            @foreach (CartLine line
+                      in Lines)
+            {
+                <article data-cart-product-id="@line.Product.Id"
+                         @key="line.Product.Id">
+                    <h3>@line.Product.Name</h3>
+
+                    <p>
+                        Quantity:
+                        <strong data-testid="cart-quantity">
+                            @line.Quantity
+                        </strong>
+                    </p>
+
+                    <button type="button"
+                            data-action="decrement"
+                            @onclick="() => Decrement(line.Product.Id)">
+                        Decrease
+                    </button>
+
+                    <button type="button"
+                            data-action="increment"
+                            @onclick="() => Increment(line.Product.Id)">
+                        Increase
+                    </button>
+
+                    <button type="button"
+                            data-action="remove"
+                            @onclick="() => Remove(line.Product.Id)">
+                        Remove
+                    </button>
+                </article>
+            }
+        </div>
+    }
+</section>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public ProductSummary[] Products
+    {
+        get;
+        set;
+    } = [];
+
+    private readonly Dictionary<
+        int,
+        CartLine> _lines =
+            [];
+
+    private IReadOnlyList<CartLine>
+        Lines =>
+            _lines.Values
+                .OrderBy(
+                    line =>
+                        line.Product.Id)
+                .ToArray();
+
+    private int TotalItems =>
+        _lines.Values.Sum(
+            line =>
+                line.Quantity);
+
+    private decimal Total =>
+        _lines.Values.Sum(
+            line =>
+                line.Product.Price
+                * line.Quantity);
+
+    private void Add(
+        ProductSummary product)
+    {
+        if (_lines.TryGetValue(
+                product.Id,
+                out CartLine? line))
+        {
+            line.Quantity++;
+
+            return;
+        }
+
+        _lines[product.Id] =
+            new CartLine(
+                product);
+    }
+
+    private void Increment(
+        int productId)
+    {
+        if (_lines.TryGetValue(
+                productId,
+                out CartLine? line))
+        {
+            line.Quantity++;
+        }
+    }
+
+    private void Decrement(
+        int productId)
+    {
+        if (!_lines.TryGetValue(
+                productId,
+                out CartLine? line))
+        {
+            return;
+        }
+
+        line.Quantity--;
+
+        if (line.Quantity == 0)
+        {
+            _lines.Remove(
+                productId);
+        }
+    }
+
+    private void Remove(
+        int productId)
+    {
+        _lines.Remove(
+            productId);
+    }
+
+    private static string FormatMoney(
+        decimal value) =>
+            value.ToString(
+                "0.00",
+                CultureInfo.InvariantCulture);
+
+    private sealed class CartLine
+    {
+        public CartLine(
+            ProductSummary product)
+        {
+            Product =
+                product;
+        }
+
+        public ProductSummary Product
+        {
+            get;
+        }
+
+        public int Quantity
+        {
+            get;
+            set;
+        } = 1;
+    }
+}

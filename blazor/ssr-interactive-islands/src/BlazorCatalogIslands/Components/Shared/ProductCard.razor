@@ -1,0 +1,27 @@
+<article data-testid="product-card"
+         data-product-id="@Product.Id">
+    <h2>@Product.Name</h2>
+
+    <p>@Product.Description</p>
+
+    <p>
+        <data value="@PriceValue">
+            USD @PriceValue
+        </data>
+    </p>
+</article>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public ProductSummary Product
+    {
+        get;
+        set;
+    } = default!;
+
+    private string PriceValue =>
+        Product.Price.ToString(
+            "0.00",
+            CultureInfo.InvariantCulture);
+}

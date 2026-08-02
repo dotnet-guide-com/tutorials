@@ -1,0 +1,61 @@
+@page "/"
+@attribute [StreamRendering]
+@inject ICatalogService CatalogService
+
+<PageTitle>Product Catalog</PageTitle>
+
+<HeadContent>
+    <meta name="description"
+          content="A server-rendered product catalog with streamed reviews and an Interactive Server cart island." />
+</HeadContent>
+
+<main data-testid="catalog-page">
+    <h1>Product Catalog</h1>
+
+    <p>
+        Product content is rendered with static SSR.
+        Reviews arrive through streaming rendering.
+        The cart is a focused Interactive Server island.
+    </p>
+
+    <section aria-labelledby="products-title">
+        <h2 id="products-title">
+            Products
+        </h2>
+
+        <div data-testid="product-list">
+            @foreach (ProductSummary product
+                      in _products)
+            {
+                <ProductCard
+                    Product="@product"
+                    @key="product.Id" />
+            }
+        </div>
+    </section>
+
+    <CartIsland
+        Products="@_products"
+        @rendermode="InteractiveServer" />
+
+    <ReviewsSection
+        Reviews="@_reviews" />
+</main>
+
+@code {
+    private ProductSummary[] _products =
+        [];
+
+    private ReviewSummary[]? _reviews;
+
+    protected override async Task
+        OnInitializedAsync()
+    {
+        _products =
+            CatalogService.GetProducts();
+
+        _reviews =
+            await CatalogService
+                .GetFeaturedReviewsAsync();
+    }
+}
