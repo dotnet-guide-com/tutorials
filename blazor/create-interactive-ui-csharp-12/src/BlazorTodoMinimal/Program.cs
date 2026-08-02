@@ -14,6 +14,10 @@ builder.Services.AddScoped<
 var app =
     builder.Build();
 
+app.UseStatusCodePagesWithReExecute(
+    "/not-found",
+    createScopeForStatusCodePages: true);
+
 app.UseStaticFiles();
 app.UseAntiforgery();
 

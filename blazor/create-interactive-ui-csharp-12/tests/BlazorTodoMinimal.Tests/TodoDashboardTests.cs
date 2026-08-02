@@ -1,6 +1,8 @@
 using BlazorTodoMinimal.Components.Pages;
 using Bunit;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net;
 
 namespace BlazorTodoMinimal.Tests;
 
@@ -234,6 +236,40 @@ public sealed class TodoDashboardTests
 
         Assert.False(
             created.IsCompleted);
+    }
+
+    [Fact]
+    public async Task
+        Unknown_path_returns_custom_not_found_page()
+    {
+        await using WebApplicationFactory<
+            Program> factory =
+                new WebApplicationFactory<
+                    Program>();
+
+        using HttpClient client =
+            factory.CreateClient();
+
+        using HttpResponseMessage response =
+            await client.GetAsync(
+                "/this-page-does-not-exist",
+                Xunit.TestContext.Current
+                    .CancellationToken);
+
+        Assert.Equal(
+            HttpStatusCode.NotFound,
+            response.StatusCode);
+
+        string body =
+            await response.Content
+                .ReadAsStringAsync(
+                    Xunit.TestContext.Current
+                        .CancellationToken);
+
+        Assert.Contains(
+            "Page not found",
+            body,
+            StringComparison.Ordinal);
     }
 
     private static BunitContext

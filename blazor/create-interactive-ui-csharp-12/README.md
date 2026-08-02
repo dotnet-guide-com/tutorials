@@ -114,7 +114,9 @@ http://localhost:5140/
 
 ## Testing boundary
 
-The seven bUnit tests render and interact with Razor components in memory.
+Seven bUnit component tests render and interact with Razor components in memory.
+One ASP.NET Core integration test verifies that a direct unknown-route request
+returns the custom Not Found page.
 
 They do not launch a browser or test a live SignalR connection. Browser behavior
 is covered by the manual verification steps.
@@ -172,7 +174,7 @@ These topics remain in the full tutorial or another focused companion.
 - External services required: none
 - Database required: none
 - API keys required: none
-- Expected component tests: 7
+- Expected component/integration tests: 8
 - Last reviewed: 2026-08-02
 
 This sample is educational and should be reviewed before production use.
