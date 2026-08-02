@@ -146,22 +146,22 @@ tutorials/
 |               |-- BlazorTodoMinimal.Tests.csproj
 |               `-- TodoDashboardTests.cs
 |-- aspnet-core/
-   |-- api-security-in-practice/
-   |   |-- ApiSecurityMinimal.slnx
-   |   |-- README.md
-   |   |-- src/
-   |   |   `-- ApiSecurityMinimal/
-   |   |       |-- ApiSecurityMinimal.csproj
-   |   |       |-- Program.cs
-   |   |       |-- Models.cs
-   |   |       |-- DemoStore.cs
-   |   |       |-- JwtTokenService.cs
-   |   |       `-- appsettings.json
-   |   `-- tests/
-   |       `-- ApiSecurityMinimal.Tests/
-   |           |-- ApiSecurityMinimal.Tests.csproj
-   |           `-- ApiSecurityTests.cs
-   |-- passkey-first-identity/
+|   |-- api-security-in-practice/
+|   |   |-- ApiSecurityMinimal.slnx
+|   |   |-- README.md
+|   |   |-- src/
+|   |   |   `-- ApiSecurityMinimal/
+|   |   |       |-- ApiSecurityMinimal.csproj
+|   |   |       |-- Program.cs
+|   |   |       |-- Models.cs
+|   |   |       |-- DemoStore.cs
+|   |   |       |-- JwtTokenService.cs
+|   |   |       `-- appsettings.json
+|   |   `-- tests/
+|   |       `-- ApiSecurityMinimal.Tests/
+|   |           |-- ApiSecurityMinimal.Tests.csproj
+|   |           `-- ApiSecurityTests.cs
+|   |-- passkey-first-identity/
 |   |   |-- PasskeyIdentityMinimal.slnx
 |   |   |-- README.md
 |   |   |-- src/
