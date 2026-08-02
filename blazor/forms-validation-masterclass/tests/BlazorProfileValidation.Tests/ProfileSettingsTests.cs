@@ -117,6 +117,42 @@ public sealed class ProfileSettingsTests
                     0,
                     service.SaveAttempts);
             });
+
+        cut.Find(
+                "#profile-username")
+            .Input(
+                "different_user");
+
+        cut.WaitForAssertion(
+            () =>
+            {
+                Assert.DoesNotContain(
+                    "Display name must differ from the username.",
+                    cut.Markup,
+                    StringComparison.Ordinal);
+
+                Assert.Equal(
+                    0,
+                    service.SaveAttempts);
+            });
+
+        cut.Find(
+                "#profile-username")
+            .Input(
+                "dotnet_reader");
+
+        cut.WaitForAssertion(
+            () =>
+            {
+                Assert.Contains(
+                    "Display name must differ from the username.",
+                    cut.Markup,
+                    StringComparison.Ordinal);
+
+                Assert.Equal(
+                    0,
+                    service.SaveAttempts);
+            });
     }
 
     [Fact]

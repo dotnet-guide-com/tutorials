@@ -10,6 +10,17 @@
         set;
     }
 
+    [Parameter]
+    public IReadOnlyDictionary<
+        string,
+        string[]> DependentProperties
+    {
+        get;
+        set;
+    } = new Dictionary<
+        string,
+        string[]>();
+
     private EditContext? _subscribedContext;
     private ValidationMessageStore? _messages;
 
@@ -90,28 +101,55 @@
             return;
         }
 
-        _messages.Clear(
-            args.FieldIdentifier);
+        string changedField =
+            args.FieldIdentifier
+                .FieldName;
+
+        HashSet<string> fieldsToValidate =
+            new(
+                StringComparer.Ordinal)
+            {
+                changedField
+            };
+
+        if (DependentProperties
+                .TryGetValue(
+                    changedField,
+                    out string[]? dependents))
+        {
+            foreach (string dependent
+                     in dependents)
+            {
+                fieldsToValidate.Add(
+                    dependent);
+            }
+        }
+
+        foreach (string field
+                 in fieldsToValidate)
+        {
+            _messages.Clear(
+                _subscribedContext.Field(
+                    field));
+        }
 
         ValidationResult result =
             Validator.Validate(
                 model,
                 options =>
                     options.IncludeProperties(
-                        args.FieldIdentifier
-                            .FieldName));
+                        fieldsToValidate
+                            .ToArray()));
 
         foreach (ValidationFailure failure
-                 in result.Errors.Where(
-                     failure =>
-                         string.Equals(
-                             failure.PropertyName,
-                             args.FieldIdentifier
-                                 .FieldName,
-                             StringComparison.Ordinal)))
+                 in result.Errors)
         {
+            FieldIdentifier field =
+                _subscribedContext.Field(
+                    failure.PropertyName);
+
             _messages.Add(
-                args.FieldIdentifier,
+                field,
                 failure.ErrorMessage);
         }
 

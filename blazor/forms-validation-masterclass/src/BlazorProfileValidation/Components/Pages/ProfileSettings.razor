@@ -18,7 +18,8 @@
         <DataAnnotationsValidator />
 
         <FluentValidationBridge
-            TModel="ProfileModel" />
+            TModel="ProfileModel"
+            DependentProperties="@ValidationDependencies" />
 
         <div data-testid="validation-summary"
              role="alert"
@@ -111,6 +112,17 @@
     private bool _isDirty;
     private bool _isSaving;
     private string? _statusMessage;
+
+    private static readonly IReadOnlyDictionary<
+        string, string[]> ValidationDependencies =
+        new Dictionary<string, string[]>(
+            StringComparer.Ordinal)
+        {
+            [nameof(ProfileModel.Username)] =
+            [
+                nameof(ProfileModel.DisplayName)
+            ]
+        };
 
     protected override void OnInitialized()
     {

@@ -144,6 +144,10 @@ The test suite contains:
 - eight bUnit component tests;
 - one ASP.NET Core integration test for direct unknown-route handling.
 
+The local FluentValidation bridge supports explicitly declared cross-field
+dependencies (Username changes revalidate DisplayName). Dependencies are
+declared in the page component, not inferred automatically.
+
 The tests do not launch a graphical browser or establish a real browser-driven
 SignalR session.
 
