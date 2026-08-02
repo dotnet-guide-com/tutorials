@@ -1,0 +1,148 @@
+@page "/"
+@inject TodoState State
+
+<PageTitle>Todo Dashboard</PageTitle>
+
+<main>
+    <h1>Todo Dashboard</h1>
+
+    <p>
+        A focused Interactive Server sample using
+        Razor components, form validation, scoped state,
+        and event callbacks.
+    </p>
+
+    <section aria-labelledby="create-title">
+        <h2 id="create-title">
+            Create a Todo item
+        </h2>
+
+        <EditForm Model="@_input"
+                  OnValidSubmit="@AddTodo">
+            <DataAnnotationsValidator />
+
+            <div>
+                <label for="todo-title">
+                    Title
+                </label>
+
+                <InputText id="todo-title"
+                           name="title"
+                           @bind-Value="_input.Title" />
+
+                <ValidationMessage
+                    For="@(() => _input.Title)" />
+            </div>
+
+            <div>
+                <label for="todo-priority">
+                    Priority
+                </label>
+
+                <InputSelect id="todo-priority"
+                             name="priority"
+                             @bind-Value="_input.Priority">
+                    @foreach (TodoPriority priority
+                              in Enum.GetValues<TodoPriority>())
+                    {
+                        <option value="@priority">
+                            @priority
+                        </option>
+                    }
+                </InputSelect>
+            </div>
+
+            <button type="submit">
+                Add Todo
+            </button>
+        </EditForm>
+    </section>
+
+    <section aria-labelledby="dashboard-title">
+        <h2 id="dashboard-title">
+            Current items
+        </h2>
+
+        <p data-testid="summary">
+            @State.Items.Count total ·
+            @State.Items.Count(
+                item =>
+                    item.IsCompleted) completed
+        </p>
+
+        <div>
+            <label for="todo-filter">
+                Filter
+            </label>
+
+            <select id="todo-filter"
+                    @bind="_filter">
+                @foreach (TodoFilter filter
+                          in Enum.GetValues<TodoFilter>())
+                {
+                    <option value="@filter">
+                        @filter
+                    </option>
+                }
+            </select>
+        </div>
+
+        <TodoList Items="@FilteredItems"
+                  OnToggle="@ToggleTodo"
+                  OnDelete="@DeleteTodo" />
+    </section>
+</main>
+
+@code {
+    private TodoInput _input =
+        new();
+
+    private TodoFilter _filter =
+        TodoFilter.All;
+
+    private IReadOnlyList<TodoItem>
+        FilteredItems =>
+            _filter switch
+            {
+                TodoFilter.Active =>
+                    State.Items
+                        .Where(
+                            item =>
+                                !item.IsCompleted)
+                        .ToArray(),
+
+                TodoFilter.Completed =>
+                    State.Items
+                        .Where(
+                            item =>
+                                item.IsCompleted)
+                        .ToArray(),
+
+                _ =>
+                    State.Items
+            };
+
+    private void AddTodo()
+    {
+        State.Add(
+            _input.Title,
+            _input.Priority);
+
+        _input =
+            new TodoInput();
+    }
+
+    private void ToggleTodo(
+        int id)
+    {
+        State.Toggle(
+            id);
+    }
+
+    private void DeleteTodo(
+        int id)
+    {
+        State.Delete(
+            id);
+    }
+}
