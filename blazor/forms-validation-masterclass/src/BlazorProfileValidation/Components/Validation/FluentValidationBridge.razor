@@ -1,0 +1,148 @@
+@typeparam TModel where TModel : class
+@implements IDisposable
+@inject IValidator<TModel> Validator
+
+@code {
+    [CascadingParameter]
+    private EditContext? CurrentEditContext
+    {
+        get;
+        set;
+    }
+
+    private EditContext? _subscribedContext;
+    private ValidationMessageStore? _messages;
+
+    protected override void OnParametersSet()
+    {
+        if (CurrentEditContext is null)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(FluentValidationBridge<TModel>)} requires a cascading EditContext.");
+        }
+
+        if (ReferenceEquals(
+                CurrentEditContext,
+                _subscribedContext))
+        {
+            return;
+        }
+
+        Unsubscribe();
+
+        _subscribedContext =
+            CurrentEditContext;
+
+        _messages =
+            new ValidationMessageStore(
+                CurrentEditContext);
+
+        CurrentEditContext
+            .OnValidationRequested +=
+                HandleValidationRequested;
+
+        CurrentEditContext
+            .OnFieldChanged +=
+                HandleFieldChanged;
+    }
+
+    private void HandleValidationRequested(
+        object? sender,
+        ValidationRequestedEventArgs args)
+    {
+        if (_subscribedContext?.Model
+            is not TModel model
+            || _messages is null)
+        {
+            return;
+        }
+
+        _messages.Clear();
+
+        ValidationResult result =
+            Validator.Validate(
+                model);
+
+        foreach (ValidationFailure failure
+                 in result.Errors)
+        {
+            FieldIdentifier field =
+                _subscribedContext.Field(
+                    failure.PropertyName);
+
+            _messages.Add(
+                field,
+                failure.ErrorMessage);
+        }
+
+        _subscribedContext
+            .NotifyValidationStateChanged();
+    }
+
+    private void HandleFieldChanged(
+        object? sender,
+        FieldChangedEventArgs args)
+    {
+        if (_subscribedContext?.Model
+            is not TModel model
+            || _messages is null)
+        {
+            return;
+        }
+
+        _messages.Clear(
+            args.FieldIdentifier);
+
+        ValidationResult result =
+            Validator.Validate(
+                model,
+                options =>
+                    options.IncludeProperties(
+                        args.FieldIdentifier
+                            .FieldName));
+
+        foreach (ValidationFailure failure
+                 in result.Errors.Where(
+                     failure =>
+                         string.Equals(
+                             failure.PropertyName,
+                             args.FieldIdentifier
+                                 .FieldName,
+                             StringComparison.Ordinal)))
+        {
+            _messages.Add(
+                args.FieldIdentifier,
+                failure.ErrorMessage);
+        }
+
+        _subscribedContext
+            .NotifyValidationStateChanged();
+    }
+
+    private void Unsubscribe()
+    {
+        if (_subscribedContext is null)
+        {
+            return;
+        }
+
+        _subscribedContext
+            .OnValidationRequested -=
+                HandleValidationRequested;
+
+        _subscribedContext
+            .OnFieldChanged -=
+                HandleFieldChanged;
+
+        _messages?.Clear();
+
+        _messages =
+            null;
+
+        _subscribedContext =
+            null;
+    }
+
+    public void Dispose() =>
+        Unsubscribe();
+}

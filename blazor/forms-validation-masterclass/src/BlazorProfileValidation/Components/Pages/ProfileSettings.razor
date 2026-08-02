@@ -1,0 +1,262 @@
+@page "/"
+@implements IDisposable
+@inject ProfileService ProfileService
+
+<PageTitle>Profile Settings</PageTitle>
+
+<main>
+    <h1>Profile Settings</h1>
+
+    <p>
+        A focused form-validation sample combining
+        DataAnnotations, FluentValidation, backend field
+        errors, accessible inputs, and dirty-state tracking.
+    </p>
+
+    <EditForm EditContext="@_editContext"
+              OnValidSubmit="@SaveAsync">
+        <DataAnnotationsValidator />
+
+        <FluentValidationBridge
+            TModel="ProfileModel" />
+
+        <div data-testid="validation-summary"
+             role="alert"
+             aria-live="polite">
+            <ValidationSummary />
+        </div>
+
+        <FormTextField
+            Label="Username"
+            InputId="profile-username"
+            @bind-Value="_model.Username"
+            HelpText="Use 3–30 lowercase letters, numbers, or underscores."
+            autocomplete="username" />
+
+        <FormTextField
+            Label="Email"
+            InputId="profile-email"
+            Type="email"
+            @bind-Value="_model.Email"
+            autocomplete="email" />
+
+        <FormTextField
+            Label="Display name"
+            InputId="profile-display-name"
+            @bind-Value="_model.DisplayName"
+            HelpText="This must differ from the username." />
+
+        <div>
+            <InputCheckbox
+                id="profile-notifications"
+                @bind-Value="_model.EmailNotifications" />
+
+            <label for="profile-notifications">
+                Email me about account activity
+            </label>
+        </div>
+
+        @if (_isDirty)
+        {
+            <div data-testid="save-bar"
+                 role="status"
+                 aria-label="Unsaved changes">
+                <span>
+                    You have unsaved changes.
+                </span>
+
+                <button type="button"
+                        data-action="discard"
+                        disabled="@_isSaving"
+                        @onclick="@DiscardChanges">
+                    Discard
+                </button>
+
+                <button type="submit"
+                        data-action="save"
+                        disabled="@_isSaving">
+                    @(_isSaving
+                        ? "Saving\u2026"
+                        : "Save changes")
+                </button>
+            </div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(
+                 _statusMessage))
+        {
+            <p data-testid="status-message"
+               role="status"
+               aria-live="polite">
+                @_statusMessage
+            </p>
+        }
+    </EditForm>
+</main>
+
+@code {
+    private ProfileModel _model =
+        new();
+
+    private ProfileModel _savedModel =
+        new();
+
+    private EditContext _editContext =
+        default!;
+
+    private ValidationMessageStore
+        _backendMessages =
+            default!;
+
+    private bool _isDirty;
+    private bool _isSaving;
+    private string? _statusMessage;
+
+    protected override void OnInitialized()
+    {
+        _model =
+            ProfileService.Load();
+
+        _savedModel =
+            _model.Copy();
+
+        CreateEditContext();
+    }
+
+    private void CreateEditContext()
+    {
+        if (_editContext is not null)
+        {
+            _editContext.OnFieldChanged -=
+                HandleFieldChanged;
+        }
+
+        _editContext =
+            new EditContext(
+                _model);
+
+        _backendMessages =
+            new ValidationMessageStore(
+                _editContext);
+
+        _editContext.OnFieldChanged +=
+            HandleFieldChanged;
+    }
+
+    private void HandleFieldChanged(
+        object? sender,
+        FieldChangedEventArgs args)
+    {
+        _backendMessages.Clear(
+            args.FieldIdentifier);
+
+        _editContext
+            .NotifyValidationStateChanged();
+
+        _isDirty =
+            _editContext.IsModified();
+
+        _statusMessage =
+            null;
+
+        _ = InvokeAsync(
+            StateHasChanged);
+    }
+
+    private async Task SaveAsync()
+    {
+        _isSaving =
+            true;
+
+        _statusMessage =
+            null;
+
+        _backendMessages.Clear();
+
+        _editContext
+            .NotifyValidationStateChanged();
+
+        try
+        {
+            ProfileSaveResult result =
+                await ProfileService
+                    .SaveAsync(
+                        _model,
+                        CancellationToken.None);
+
+            if (!result.Succeeded)
+            {
+                MapBackendErrors(
+                    result.Errors);
+
+                _statusMessage =
+                    "The profile service rejected one or more fields.";
+
+                return;
+            }
+
+            _savedModel =
+                _model.Copy();
+
+            _editContext
+                .MarkAsUnmodified();
+
+            _isDirty =
+                false;
+
+            _statusMessage =
+                "Profile saved successfully.";
+        }
+        finally
+        {
+            _isSaving =
+                false;
+        }
+    }
+
+    private void MapBackendErrors(
+        IReadOnlyDictionary<
+            string,
+            string[]> errors)
+    {
+        foreach ((
+                     string fieldName,
+                     string[] messages)
+                 in errors)
+        {
+            FieldIdentifier field =
+                _editContext.Field(
+                    fieldName);
+
+            _backendMessages.Add(
+                field,
+                messages);
+        }
+
+        _editContext
+            .NotifyValidationStateChanged();
+    }
+
+    private void DiscardChanges()
+    {
+        _model =
+            _savedModel.Copy();
+
+        CreateEditContext();
+
+        _isDirty =
+            false;
+
+        _statusMessage =
+            "Changes discarded.";
+    }
+
+    public void Dispose()
+    {
+        if (_editContext is not null)
+        {
+            _editContext.OnFieldChanged -=
+                HandleFieldChanged;
+        }
+    }
+}
