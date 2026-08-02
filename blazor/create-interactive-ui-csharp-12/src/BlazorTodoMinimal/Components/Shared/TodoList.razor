@@ -1,0 +1,71 @@
+@if (Items.Count == 0)
+{
+    <p data-testid="empty-state">
+        No Todo items match the selected filter.
+    </p>
+}
+else
+{
+    <section aria-label="Todo items">
+        @foreach (TodoItem item in Items)
+        {
+            <article data-testid="todo-item"
+                     data-todo-id="@item.Id"
+                     @key="item.Id">
+                <h2>@item.Title</h2>
+
+                <p>
+                    Priority:
+                    <strong>@item.Priority</strong>
+                </p>
+
+                <p>
+                    Status:
+                    <strong>
+                        @(item.IsCompleted
+                            ? "Completed"
+                            : "Active")
+                    </strong>
+                </p>
+
+                <button type="button"
+                        data-action="toggle"
+                        @onclick="() => OnToggle.InvokeAsync(item.Id)">
+                    @(item.IsCompleted
+                        ? "Mark active"
+                        : "Mark complete")
+                </button>
+
+                <button type="button"
+                        data-action="delete"
+                        @onclick="() => OnDelete.InvokeAsync(item.Id)">
+                    Delete
+                </button>
+            </article>
+        }
+    </section>
+}
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public IReadOnlyList<TodoItem> Items
+    {
+        get;
+        set;
+    } = [];
+
+    [Parameter]
+    public EventCallback<int> OnToggle
+    {
+        get;
+        set;
+    }
+
+    [Parameter]
+    public EventCallback<int> OnDelete
+    {
+        get;
+        set;
+    }
+}
