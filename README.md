@@ -20,6 +20,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`aspnet-core/caching-outputcache-redis-invalidation`](aspnet-core/caching-outputcache-redis-invalidation/) | Minimal .NET 10 Catalog API demonstrating Output Cache policies, query and route variation, tag eviction, write-path invalidation, and integration testing | [ASP.NET Core Caching: Output Cache, Redis & Invalidation Strategies That Actually Work](https://www.dotnet-guide.com/tutorials/aspnet-core/caching-outputcache-redis-invalidation/) |
 | [`aspnet-core/minimal-apis-real-world`](aspnet-core/minimal-apis-real-world/) | Focused .NET 10 Orders API demonstrating endpoint filters, FluentValidation, URL-segment versioning, typed results, and partitioned rate limiting | [ASP.NET Core / Minimal APIs in the Real World: Filters, Validation, Versioning & Rate Limiting](https://www.dotnet-guide.com/tutorials/aspnet-core/minimal-apis-real-world/) |
 | [`blazor/create-interactive-ui-csharp-12`](blazor/create-interactive-ui-csharp-12/) | Interactive .NET 10 Todo Dashboard demonstrating Razor components, form binding, DataAnnotations validation, scoped state, EventCallback communication, filtering, and bUnit component tests | [Blazor Web Development: Create Interactive UIs with C# 12](https://www.dotnet-guide.com/tutorials/blazor/create-interactive-ui-csharp-12/) |
+| [`blazor/forms-validation-masterclass`](blazor/forms-validation-masterclass/) | Focused .NET 10 Profile Settings form demonstrating manual EditContext management, DataAnnotations, FluentValidation, backend field-error mapping, accessible inputs, dirty state, and bUnit testing | [Blazor .NET 8 Forms & Validation: EditForm, FluentValidation & Server Error Handling](https://www.dotnet-guide.com/tutorials/blazor/forms-validation-masterclass/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -124,27 +125,55 @@ tutorials/
 |               |-- TransactionalOutboxMinimal.Tests.csproj
 |               `-- OutboxFlowTests.cs
 |-- blazor/
-|   `-- create-interactive-ui-csharp-12/
-|       |-- BlazorTodoMinimal.slnx
+|   |-- create-interactive-ui-csharp-12/
+|   |   |-- BlazorTodoMinimal.slnx
+|   |   |-- README.md
+|   |   |-- src/
+|   |   |   `-- BlazorTodoMinimal/
+|   |   |       |-- BlazorTodoMinimal.csproj
+|   |   |       |-- Program.cs
+|   |   |       |-- TodoState.cs
+|   |   |       `-- Components/
+|   |   |           |-- _Imports.razor
+|   |   |           |-- App.razor
+|   |   |           |-- Routes.razor
+|   |   |           |-- Pages/
+|   |   |           |   |-- NotFound.razor
+|   |   |           |   `-- Todos.razor
+|   |   |           `-- Shared/
+|   |   |               `-- TodoList.razor
+|   |   `-- tests/
+|   |       `-- BlazorTodoMinimal.Tests/
+|   |           |-- BlazorTodoMinimal.Tests.csproj
+|   |           `-- TodoDashboardTests.cs
+|   `-- forms-validation-masterclass/
+|       |-- BlazorProfileValidation.slnx
 |       |-- README.md
 |       |-- src/
-|       |   `-- BlazorTodoMinimal/
-|       |       |-- BlazorTodoMinimal.csproj
+|       |   `-- BlazorProfileValidation/
+|       |       |-- BlazorProfileValidation.csproj
 |       |       |-- Program.cs
-|       |       |-- TodoState.cs
+|       |       |-- Models/
+|       |       |   `-- ProfileModel.cs
+|       |       |-- Services/
+|       |       |   `-- ProfileService.cs
+|       |       |-- Validation/
+|       |       |   `-- ProfileValidator.cs
 |       |       `-- Components/
 |       |           |-- _Imports.razor
 |       |           |-- App.razor
 |       |           |-- Routes.razor
 |       |           |-- Pages/
 |       |           |   |-- NotFound.razor
-|       |           |   `-- Todos.razor
-|       |           `-- Shared/
-|       |               `-- TodoList.razor
+|       |           |   `-- ProfileSettings.razor
+|       |           |-- Shared/
+|       |           |   `-- FormTextField.razor
+|       |           `-- Validation/
+|       |               `-- FluentValidationBridge.razor
 |       `-- tests/
-|           `-- BlazorTodoMinimal.Tests/
-|               |-- BlazorTodoMinimal.Tests.csproj
-|               `-- TodoDashboardTests.cs
+|           `-- BlazorProfileValidation.Tests/
+|               |-- BlazorProfileValidation.Tests.csproj
+|               `-- ProfileSettingsTests.cs
 |-- aspnet-core/
 |   |-- api-security-in-practice/
 |   |   |-- ApiSecurityMinimal.slnx
