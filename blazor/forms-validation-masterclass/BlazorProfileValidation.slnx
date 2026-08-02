@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/BlazorProfileValidation/BlazorProfileValidation.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/BlazorProfileValidation.Tests/BlazorProfileValidation.Tests.csproj" />
+  </Folder>
+</Solution>

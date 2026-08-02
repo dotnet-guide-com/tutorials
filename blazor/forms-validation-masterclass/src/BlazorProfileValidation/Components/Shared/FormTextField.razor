@@ -1,0 +1,97 @@
+@inherits InputText
+
+<div class="form-field">
+    <label for="@InputId">
+        @Label
+    </label>
+
+    <input id="@InputId"
+           type="@Type"
+           @attributes="AdditionalAttributes"
+           class="@CssClass"
+           @bind="CurrentValueAsString"
+           @bind:event="oninput"
+           aria-invalid="@AriaInvalid"
+           aria-describedby="@DescriptionId" />
+
+    @if (HasErrors)
+    {
+        <div id="@ErrorId"
+             data-testid="field-error"
+             role="alert"
+             aria-live="polite">
+            <ValidationMessage
+                For="@FieldExpression" />
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(
+                 HelpText))
+    {
+        <div id="@HelpId">
+            @HelpText
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public string Label
+    {
+        get;
+        set;
+    } = string.Empty;
+
+    [Parameter]
+    [EditorRequired]
+    public string InputId
+    {
+        get;
+        set;
+    } = string.Empty;
+
+    [Parameter]
+    public string Type
+    {
+        get;
+        set;
+    } = "text";
+
+    [Parameter]
+    public string? HelpText
+    {
+        get;
+        set;
+    }
+
+    private string ErrorId =>
+        $"{InputId}-error";
+
+    private string HelpId =>
+        $"{InputId}-help";
+
+    private bool HasErrors =>
+        EditContext
+            .GetValidationMessages(
+                FieldIdentifier)
+            .Any();
+
+    private string? AriaInvalid =>
+        HasErrors
+            ? "true"
+            : null;
+
+    private string? DescriptionId =>
+        HasErrors
+            ? ErrorId
+            : string.IsNullOrWhiteSpace(
+                HelpText)
+                ? null
+                : HelpId;
+
+    private Expression<Func<string?>>
+        FieldExpression =>
+            ValueExpression
+            ?? throw new InvalidOperationException(
+                "FormTextField requires @bind-Value.");
+}
