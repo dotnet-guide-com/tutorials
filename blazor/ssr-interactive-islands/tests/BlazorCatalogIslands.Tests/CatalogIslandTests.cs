@@ -1,6 +1,7 @@
 using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using AngleSharp.Dom;
 using BlazorCatalogIslands.Components.Pages;
 using BlazorCatalogIslands.Components.Shared;
 using BlazorCatalogIslands.Models;
@@ -256,7 +257,7 @@ public sealed class CatalogIslandTests
 
     [Fact]
     public void
-        Decrement_and_remove_update_cart_state()
+        Cart_increment_decrement_and_remove_update_state()
     {
         using var context =
             new BunitContext();
@@ -265,23 +266,94 @@ public sealed class CatalogIslandTests
             RenderCart(
                 context);
 
-        var add =
-            cut.Find(
-                "[data-action='add'][data-product-id='1']");
+        cut.Find(
+                "[data-action='add'][data-product-id='1']")
+            .Click();
 
-        add.Click();
-        add.Click();
+        cut.WaitForAssertion(
+            () =>
+            {
+                Assert.Equal(
+                    "1",
+                    cut.Find(
+                            "[data-cart-product-id='1'] [data-testid='cart-quantity']")
+                        .TextContent
+                        .Trim());
+
+                Assert.Contains(
+                    "USD 89.00",
+                    Normalize(
+                        cut.Find(
+                            "[data-testid='cart-summary']")),
+                    StringComparison.Ordinal);
+            });
+
+        cut.Find(
+                "[data-cart-product-id='1'] [data-action='increment']")
+            .Click();
+
+        cut.WaitForAssertion(
+            () =>
+            {
+                Assert.Equal(
+                    "2",
+                    cut.Find(
+                            "[data-cart-product-id='1'] [data-testid='cart-quantity']")
+                        .TextContent
+                        .Trim());
+
+                Assert.Contains(
+                    "USD 178.00",
+                    Normalize(
+                        cut.Find(
+                            "[data-testid='cart-summary']")),
+                    StringComparison.Ordinal);
+            });
 
         cut.Find(
                 "[data-cart-product-id='1'] [data-action='decrement']")
             .Click();
 
-        Assert.Equal(
-            "1",
-            cut.Find(
-                    "[data-cart-product-id='1'] [data-testid='cart-quantity']")
-                .TextContent
-                .Trim());
+        cut.WaitForAssertion(
+            () =>
+            {
+                Assert.Equal(
+                    "1",
+                    cut.Find(
+                            "[data-cart-product-id='1'] [data-testid='cart-quantity']")
+                        .TextContent
+                        .Trim());
+
+                Assert.Contains(
+                    "USD 89.00",
+                    Normalize(
+                        cut.Find(
+                            "[data-testid='cart-summary']")),
+                    StringComparison.Ordinal);
+            });
+
+        cut.Find(
+                "[data-cart-product-id='1'] [data-action='decrement']")
+            .Click();
+
+        cut.WaitForAssertion(
+            () =>
+            {
+                Assert.Empty(
+                    cut.FindAll(
+                        "[data-cart-product-id='1']"));
+
+                Assert.Contains(
+                    "0 items",
+                    Normalize(
+                        cut.Find(
+                            "[data-testid='cart-summary']")),
+                    StringComparison.Ordinal);
+            });
+
+        cut.Find(
+                "[data-action='add'][data-product-id='1']")
+            .Click();
 
         cut.Find(
                 "[data-cart-product-id='1'] [data-action='remove']")
@@ -296,13 +368,9 @@ public sealed class CatalogIslandTests
 
                 Assert.Contains(
                     "0 items",
-                    Regex.Replace(
+                    Normalize(
                         cut.Find(
-                            "[data-testid='cart-summary']")
-                            .TextContent
-                            .Trim(),
-                        @"\s+",
-                        " "),
+                            "[data-testid='cart-summary']")),
                     StringComparison.Ordinal);
             });
     }
@@ -351,6 +419,21 @@ public sealed class CatalogIslandTests
 
         Assert.Contains(
             "Mechanical Keyboard",
+            body,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "USB-C Dock",
+            body,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "Monitor Arm",
+            body,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "A server-rendered product catalog with streamed reviews and an Interactive Server cart island.",
             body,
             StringComparison.Ordinal);
 
@@ -421,4 +504,12 @@ public sealed class CatalogIslandTests
                             component =>
                                 component.Products,
                             Products));
+
+    private static string Normalize(
+        IElement element) =>
+            Regex.Replace(
+                element.TextContent
+                    .Trim(),
+                @"\s+",
+                " ");
 }

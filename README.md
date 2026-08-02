@@ -147,34 +147,34 @@ tutorials/
 |   |       `-- BlazorTodoMinimal.Tests/
 |   |           |-- BlazorTodoMinimal.Tests.csproj
 |   |           `-- TodoDashboardTests.cs
-|   `-- forms-validation-masterclass/
-|       |-- BlazorProfileValidation.slnx
-|       |-- README.md
-|       |-- src/
-|       |   `-- BlazorProfileValidation/
-|       |       |-- BlazorProfileValidation.csproj
-|       |       |-- Program.cs
-|       |       |-- Models/
-|       |       |   `-- ProfileModel.cs
-|       |       |-- Services/
-|       |       |   `-- ProfileService.cs
-|       |       |-- Validation/
-|       |       |   `-- ProfileValidator.cs
-|       |       `-- Components/
-|       |           |-- _Imports.razor
-|       |           |-- App.razor
-|       |           |-- Routes.razor
-|       |           |-- Pages/
-|       |           |   |-- NotFound.razor
-|       |           |   `-- ProfileSettings.razor
-|       |           |-- Shared/
-|       |           |   `-- FormTextField.razor
-|       |           `-- Validation/
-|       |               `-- FluentValidationBridge.razor
-|       `-- tests/
-|           `-- BlazorProfileValidation.Tests/
-|               |-- BlazorProfileValidation.Tests.csproj
-|               `-- ProfileSettingsTests.cs
+|   |-- forms-validation-masterclass/
+|   |   |-- BlazorProfileValidation.slnx
+|   |   |-- README.md
+|   |   |-- src/
+|   |   |   `-- BlazorProfileValidation/
+|   |   |       |-- BlazorProfileValidation.csproj
+|   |   |       |-- Program.cs
+|   |   |       |-- Models/
+|   |   |       |   `-- ProfileModel.cs
+|   |   |       |-- Services/
+|   |   |       |   `-- ProfileService.cs
+|   |   |       |-- Validation/
+|   |   |       |   `-- ProfileValidator.cs
+|   |   |       `-- Components/
+|   |   |           |-- _Imports.razor
+|   |   |           |-- App.razor
+|   |   |           |-- Routes.razor
+|   |   |           |-- Pages/
+|   |   |           |   |-- NotFound.razor
+|   |   |           |   `-- ProfileSettings.razor
+|   |   |           |-- Shared/
+|   |   |           |   `-- FormTextField.razor
+|   |   |           `-- Validation/
+|   |   |               `-- FluentValidationBridge.razor
+|   |   `-- tests/
+|   |       `-- BlazorProfileValidation.Tests/
+|   |           |-- BlazorProfileValidation.Tests.csproj
+|   |           `-- ProfileSettingsTests.cs
 |   `-- ssr-interactive-islands/
 |       |-- BlazorCatalogIslands.slnx
 |       |-- README.md

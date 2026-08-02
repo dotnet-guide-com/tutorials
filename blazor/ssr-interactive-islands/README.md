@@ -129,6 +129,74 @@ Open:
 http://localhost:5148/
 ```
 
+## Observe the streamed response
+
+Start the application:
+
+```powershell
+dotnet run `
+  --project .\src\BlazorCatalogIslands\BlazorCatalogIslands.csproj `
+  --urls http://localhost:5148
+```
+
+Run this Python 3 incremental HTTP command in a separate terminal:
+
+```bash
+python3 - <<'PY'
+import http.client
+import time
+
+connection = http.client.HTTPConnection(
+    "127.0.0.1",
+    5148,
+    timeout=10,
+)
+
+connection.request("GET", "/")
+response = connection.getresponse()
+
+started = time.monotonic()
+buffer = ""
+seen = set()
+
+markers = (
+    "Loading featured reviews",
+    "The keyboard feels excellent for long coding sessions.",
+)
+
+while True:
+    chunk = response.read(128)
+    if not chunk:
+        break
+    buffer += chunk.decode("utf-8", errors="ignore")
+    for marker in markers:
+        if marker in buffer and marker not in seen:
+            elapsed = time.monotonic() - started
+            print(f"{elapsed:.3f}s  {marker}")
+            seen.add(marker)
+
+connection.close()
+PY
+```
+
+Expected output (exact timings vary):
+
+```text
+0.000s  Loading featured reviews
+0.696s  The keyboard feels excellent for long coding sessions.
+```
+
+The marker order is the important result: the loading placeholder
+appears first, and the final review text arrives separately on the
+same connection.
+
+If a reverse proxy or Kestrel host buffers the complete response, both
+markers may arrive together. The page still renders correctly, but the
+visible streaming benefit can disappear.
+
+This command observes response flow but is not a load or performance
+test.
+
 ## Testing boundary
 
 The ten tests cover:
@@ -141,9 +209,6 @@ The ten tests cover:
 - direct unknown-route handling.
 
 They don't launch a graphical browser or measure network chunk timing.
-
-Use the Kestrel streaming command in this README for a local response-flow
-check.
 
 ## Project structure
 
