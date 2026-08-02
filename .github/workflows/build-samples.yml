@@ -15,6 +15,7 @@ on:
       - "aspnet-core/caching-outputcache-redis-invalidation/**"
       - "aspnet-core/minimal-apis-real-world/**"
       - "blazor/create-interactive-ui-csharp-12/**"
+      - "blazor/forms-validation-masterclass/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -30,6 +31,7 @@ on:
       - "aspnet-core/caching-outputcache-redis-invalidation/**"
       - "aspnet-core/minimal-apis-real-world/**"
       - "blazor/create-interactive-ui-csharp-12/**"
+      - "blazor/forms-validation-masterclass/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -385,5 +387,37 @@ jobs:
         run: >
           dotnet test
           blazor/create-interactive-ui-csharp-12/BlazorTodoMinimal.slnx
+          --configuration Release
+          --no-build
+
+  test-blazor-profile-validation:
+    name: Test Blazor profile validation sample
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          blazor/forms-validation-masterclass/BlazorProfileValidation.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          blazor/forms-validation-masterclass/BlazorProfileValidation.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test
+        run: >
+          dotnet test
+          blazor/forms-validation-masterclass/BlazorProfileValidation.slnx
           --configuration Release
           --no-build
