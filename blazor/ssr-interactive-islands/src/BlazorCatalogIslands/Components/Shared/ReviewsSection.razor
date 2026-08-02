@@ -1,0 +1,46 @@
+<section aria-labelledby="reviews-title">
+    <h2 id="reviews-title">
+        Featured reviews
+    </h2>
+
+    @if (Reviews is null)
+    {
+        <div data-testid="reviews-loading"
+             role="status"
+             aria-live="polite">
+            Loading featured reviews…
+        </div>
+    }
+    else
+    {
+        <div data-testid="reviews-loaded">
+            @foreach (ReviewSummary review
+                      in Reviews)
+            {
+                <article data-testid="review"
+                         data-review-id="@review.Id"
+                         @key="review.Id">
+                    <h3>@review.Author</h3>
+
+                    <p>
+                        Rating:
+                        <strong>
+                            @review.Rating / 5
+                        </strong>
+                    </p>
+
+                    <p>@review.Comment</p>
+                </article>
+            }
+        </div>
+    }
+</section>
+
+@code {
+    [Parameter]
+    public ReviewSummary[]? Reviews
+    {
+        get;
+        set;
+    }
+}

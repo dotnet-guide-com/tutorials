@@ -21,6 +21,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`aspnet-core/minimal-apis-real-world`](aspnet-core/minimal-apis-real-world/) | Focused .NET 10 Orders API demonstrating endpoint filters, FluentValidation, URL-segment versioning, typed results, and partitioned rate limiting | [ASP.NET Core / Minimal APIs in the Real World: Filters, Validation, Versioning & Rate Limiting](https://www.dotnet-guide.com/tutorials/aspnet-core/minimal-apis-real-world/) |
 | [`blazor/create-interactive-ui-csharp-12`](blazor/create-interactive-ui-csharp-12/) | Interactive .NET 10 Todo Dashboard demonstrating Razor components, form binding, DataAnnotations validation, scoped state, EventCallback communication, filtering, and bUnit component tests | [Blazor Web Development: Create Interactive UIs with C# 12](https://www.dotnet-guide.com/tutorials/blazor/create-interactive-ui-csharp-12/) |
 | [`blazor/forms-validation-masterclass`](blazor/forms-validation-masterclass/) | Focused .NET 10 Profile Settings form demonstrating manual EditContext management, DataAnnotations, FluentValidation, backend field-error mapping, accessible inputs, dirty state, and bUnit testing | [Blazor .NET 8 Forms & Validation: EditForm, FluentValidation & Server Error Handling](https://www.dotnet-guide.com/tutorials/blazor/forms-validation-masterclass/) |
+| [`blazor/ssr-interactive-islands`](blazor/ssr-interactive-islands/) | Focused .NET 10 catalog demonstrating static SSR, streaming review updates, a serializable render-mode boundary, an Interactive Server cart island, and component/integration testing | [Blazor SSR & Interactive Islands: Streaming Rendering, Auto Render Mode & Progressive Enhancement](https://www.dotnet-guide.com/tutorials/blazor/ssr-interactive-islands/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -146,34 +147,60 @@ tutorials/
 |   |       `-- BlazorTodoMinimal.Tests/
 |   |           |-- BlazorTodoMinimal.Tests.csproj
 |   |           `-- TodoDashboardTests.cs
-|   `-- forms-validation-masterclass/
-|       |-- BlazorProfileValidation.slnx
+|   |-- forms-validation-masterclass/
+|   |   |-- BlazorProfileValidation.slnx
+|   |   |-- README.md
+|   |   |-- src/
+|   |   |   `-- BlazorProfileValidation/
+|   |   |       |-- BlazorProfileValidation.csproj
+|   |   |       |-- Program.cs
+|   |   |       |-- Models/
+|   |   |       |   `-- ProfileModel.cs
+|   |   |       |-- Services/
+|   |   |       |   `-- ProfileService.cs
+|   |   |       |-- Validation/
+|   |   |       |   `-- ProfileValidator.cs
+|   |   |       `-- Components/
+|   |   |           |-- _Imports.razor
+|   |   |           |-- App.razor
+|   |   |           |-- Routes.razor
+|   |   |           |-- Pages/
+|   |   |           |   |-- NotFound.razor
+|   |   |           |   `-- ProfileSettings.razor
+|   |   |           |-- Shared/
+|   |   |           |   `-- FormTextField.razor
+|   |   |           `-- Validation/
+|   |   |               `-- FluentValidationBridge.razor
+|   |   `-- tests/
+|   |       `-- BlazorProfileValidation.Tests/
+|   |           |-- BlazorProfileValidation.Tests.csproj
+|   |           `-- ProfileSettingsTests.cs
+|   `-- ssr-interactive-islands/
+|       |-- BlazorCatalogIslands.slnx
 |       |-- README.md
 |       |-- src/
-|       |   `-- BlazorProfileValidation/
-|       |       |-- BlazorProfileValidation.csproj
+|       |   `-- BlazorCatalogIslands/
+|       |       |-- BlazorCatalogIslands.csproj
 |       |       |-- Program.cs
 |       |       |-- Models/
-|       |       |   `-- ProfileModel.cs
+|       |       |   `-- CatalogModels.cs
 |       |       |-- Services/
-|       |       |   `-- ProfileService.cs
-|       |       |-- Validation/
-|       |       |   `-- ProfileValidator.cs
+|       |       |   `-- CatalogService.cs
 |       |       `-- Components/
 |       |           |-- _Imports.razor
 |       |           |-- App.razor
 |       |           |-- Routes.razor
 |       |           |-- Pages/
-|       |           |   |-- NotFound.razor
-|       |           |   `-- ProfileSettings.razor
+|       |           |   |-- Catalog.razor
+|       |           |   `-- NotFound.razor
 |       |           |-- Shared/
-|       |           |   `-- FormTextField.razor
-|       |           `-- Validation/
-|       |               `-- FluentValidationBridge.razor
+|       |           |   |-- CartIsland.razor
+|       |           |   |-- ProductCard.razor
+|       |           |   `-- ReviewsSection.razor
 |       `-- tests/
-|           `-- BlazorProfileValidation.Tests/
-|               |-- BlazorProfileValidation.Tests.csproj
-|               `-- ProfileSettingsTests.cs
+|           `-- BlazorCatalogIslands.Tests/
+|               |-- BlazorCatalogIslands.Tests.csproj
+|               `-- CatalogIslandTests.cs
 |-- aspnet-core/
 |   |-- api-security-in-practice/
 |   |   |-- ApiSecurityMinimal.slnx
