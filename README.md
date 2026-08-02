@@ -19,6 +19,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`aspnet-core/build-web-api-dotnet-8`](aspnet-core/build-web-api-dotnet-8/) | Minimal .NET 10 Todo API demonstrating route groups, dependency injection, CRUD status codes, validation, middleware, and integration testing | [ASP.NET Core Fundamentals: Build Web APIs on .NET 8](https://www.dotnet-guide.com/tutorials/aspnet-core/build-web-api-dotnet-8/) |
 | [`aspnet-core/caching-outputcache-redis-invalidation`](aspnet-core/caching-outputcache-redis-invalidation/) | Minimal .NET 10 Catalog API demonstrating Output Cache policies, query and route variation, tag eviction, write-path invalidation, and integration testing | [ASP.NET Core Caching: Output Cache, Redis & Invalidation Strategies That Actually Work](https://www.dotnet-guide.com/tutorials/aspnet-core/caching-outputcache-redis-invalidation/) |
 | [`aspnet-core/minimal-apis-real-world`](aspnet-core/minimal-apis-real-world/) | Focused .NET 10 Orders API demonstrating endpoint filters, FluentValidation, URL-segment versioning, typed results, and partitioned rate limiting | [ASP.NET Core / Minimal APIs in the Real World: Filters, Validation, Versioning & Rate Limiting](https://www.dotnet-guide.com/tutorials/aspnet-core/minimal-apis-real-world/) |
+| [`blazor/create-interactive-ui-csharp-12`](blazor/create-interactive-ui-csharp-12/) | Interactive .NET 10 Todo Dashboard demonstrating Razor components, form binding, DataAnnotations validation, scoped state, EventCallback communication, filtering, and bUnit component tests | [Blazor Web Development: Create Interactive UIs with C# 12](https://www.dotnet-guide.com/tutorials/blazor/create-interactive-ui-csharp-12/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -122,23 +123,45 @@ tutorials/
 |           `-- TransactionalOutboxMinimal.Tests/
 |               |-- TransactionalOutboxMinimal.Tests.csproj
 |               `-- OutboxFlowTests.cs
+|-- blazor/
+|   `-- create-interactive-ui-csharp-12/
+|       |-- BlazorTodoMinimal.slnx
+|       |-- README.md
+|       |-- src/
+|       |   `-- BlazorTodoMinimal/
+|       |       |-- BlazorTodoMinimal.csproj
+|       |       |-- Program.cs
+|       |       |-- TodoState.cs
+|       |       `-- Components/
+|       |           |-- _Imports.razor
+|       |           |-- App.razor
+|       |           |-- Routes.razor
+|       |           |-- Pages/
+|       |           |   |-- NotFound.razor
+|       |           |   `-- Todos.razor
+|       |           `-- Shared/
+|       |               `-- TodoList.razor
+|       `-- tests/
+|           `-- BlazorTodoMinimal.Tests/
+|               |-- BlazorTodoMinimal.Tests.csproj
+|               `-- TodoDashboardTests.cs
 |-- aspnet-core/
-|   |-- api-security-in-practice/
-|   |   |-- ApiSecurityMinimal.slnx
-|   |   |-- README.md
-|   |   |-- src/
-|   |   |   `-- ApiSecurityMinimal/
-|   |   |       |-- ApiSecurityMinimal.csproj
-|   |   |       |-- Program.cs
-|   |   |       |-- Models.cs
-|   |   |       |-- DemoStore.cs
-|   |   |       |-- JwtTokenService.cs
-|   |   |       `-- appsettings.json
-|   |   `-- tests/
-|   |       `-- ApiSecurityMinimal.Tests/
-|   |           |-- ApiSecurityMinimal.Tests.csproj
-|   |           `-- ApiSecurityTests.cs
-|   |-- passkey-first-identity/
+   |-- api-security-in-practice/
+   |   |-- ApiSecurityMinimal.slnx
+   |   |-- README.md
+   |   |-- src/
+   |   |   `-- ApiSecurityMinimal/
+   |   |       |-- ApiSecurityMinimal.csproj
+   |   |       |-- Program.cs
+   |   |       |-- Models.cs
+   |   |       |-- DemoStore.cs
+   |   |       |-- JwtTokenService.cs
+   |   |       `-- appsettings.json
+   |   `-- tests/
+   |       `-- ApiSecurityMinimal.Tests/
+   |           |-- ApiSecurityMinimal.Tests.csproj
+   |           `-- ApiSecurityTests.cs
+   |-- passkey-first-identity/
 |   |   |-- PasskeyIdentityMinimal.slnx
 |   |   |-- README.md
 |   |   |-- src/
