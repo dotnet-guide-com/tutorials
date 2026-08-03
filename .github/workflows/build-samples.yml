@@ -17,6 +17,7 @@ on:
       - "blazor/create-interactive-ui-csharp-12/**"
       - "blazor/forms-validation-masterclass/**"
       - "blazor/ssr-interactive-islands/**"
+      - "cloud-native/dockerize-aspnet-core-clean-images/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -34,6 +35,7 @@ on:
       - "blazor/create-interactive-ui-csharp-12/**"
       - "blazor/forms-validation-masterclass/**"
       - "blazor/ssr-interactive-islands/**"
+      - "cloud-native/dockerize-aspnet-core-clean-images/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -455,3 +457,165 @@ jobs:
           blazor/ssr-interactive-islands/BlazorCatalogIslands.slnx
           --configuration Release
           --no-build
+
+  test-dockerized-aspnet-core:
+    name: Test Dockerized ASP.NET Core sample
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          cloud-native/dockerize-aspnet-core-clean-images/ContainerizedApiMinimal.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          cloud-native/dockerize-aspnet-core-clean-images/ContainerizedApiMinimal.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test
+        run: >
+          dotnet test
+          cloud-native/dockerize-aspnet-core-clean-images/ContainerizedApiMinimal.slnx
+          --configuration Release
+          --no-build
+
+      - name: Validate Compose configuration
+        run: >
+          docker compose
+          --file cloud-native/dockerize-aspnet-core-clean-images/compose.yaml
+          config
+          --quiet
+
+      - name: Build container image
+        run: >
+          docker build
+          --pull
+          --tag dotnet-guide/containerized-api-minimal:ci
+          cloud-native/dockerize-aspnet-core-clean-images
+
+      - name: Run hardened container
+        run: |
+          docker run \
+            --detach \
+            --name containerized-api-ci \
+            --publish 127.0.0.1:5152:8080 \
+            --env ASPNETCORE_ENVIRONMENT=Production \
+            --env Sample__Message="Configured by GitHub Actions" \
+            --read-only \
+            --tmpfs /tmp \
+            --cap-drop ALL \
+            --security-opt no-new-privileges:true \
+            dotnet-guide/containerized-api-minimal:ci
+
+      - name: Wait for Docker health
+        run: |
+          status=""
+
+          for attempt in $(seq 1 30); do
+            status="$(
+              docker inspect \
+                --format='{{.State.Health.Status}}' \
+                containerized-api-ci
+            )"
+
+            echo "Attempt ${attempt}: ${status}"
+
+            if [ "$status" = "healthy" ]; then
+              break
+            fi
+
+            if [ "$status" = "unhealthy" ]; then
+              docker logs containerized-api-ci
+              exit 1
+            fi
+
+            sleep 2
+          done
+
+          test "$status" = "healthy"
+
+      - name: Verify container HTTP and runtime properties
+        run: |
+          python3 - <<'PY'
+          import json
+          import urllib.request
+
+          base = "http://127.0.0.1:5152"
+
+          for path in (
+              "/health/live",
+              "/health/ready",
+              "/health",
+          ):
+              with urllib.request.urlopen(base + path) as response:
+                  assert response.status == 200, (path, response.status)
+
+          with urllib.request.urlopen(base + "/api/todos") as response:
+              todos = json.load(response)
+
+          assert len(todos) == 3
+          assert any(
+              item["title"] == "Run the container as non-root"
+              for item in todos
+          )
+
+          with urllib.request.urlopen(base + "/info") as response:
+              info = json.load(response)
+
+          assert info["environment"] == "Production"
+          assert info["message"] == "Configured by GitHub Actions"
+          assert info["runningInContainer"] is True
+          assert info["user"].lower() != "root"
+          PY
+
+      - name: Verify non-root image and runtime-only contents
+        run: |
+          image_user="$(
+            docker image inspect \
+              dotnet-guide/containerized-api-minimal:ci \
+              --format='{{.Config.User}}'
+          )"
+
+          echo "Image user: ${image_user}"
+
+          test -n "$image_user"
+          test "$image_user" != "0"
+          test "$image_user" != "root"
+
+          sdk_output="$(
+            docker exec \
+              containerized-api-ci \
+              dotnet --list-sdks
+          )"
+
+          test -z "$sdk_output"
+
+      - name: Show container diagnostics
+        if: always()
+        run: |
+          docker ps --all
+          docker inspect containerized-api-ci || true
+          docker logs containerized-api-ci || true
+
+      - name: Remove test container
+        if: always()
+        run: |
+          docker rm \
+            --force \
+            containerized-api-ci \
+            2>/dev/null \
+            || true
