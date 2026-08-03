@@ -151,6 +151,7 @@ Restart the app, then run:
 ```powershell
 Invoke-WebRequest `
   -Method Post `
+  -SkipHttpErrorCheck `
   -Uri "http://localhost:5156/api/orders/43/authorize?failuresBeforeSuccess=10&failureStatusCode=400"
 ```
 
@@ -161,6 +162,35 @@ HTTP 400
 Attempts: 1
 CircuitOpen: false
 ```
+
+## Attempt-timeout example
+
+The handler records one attempt, waits for a delay that exceeds the configured
+two-second attempt timeout, and returns HTTP 504 Gateway Timeout.
+
+Timeout exceptions are deliberately not retried in this sample. Only HTTP 503
+responses trigger the retry strategy.
+
+The delay exists solely for deterministic education and testing.
+
+Restart the app, then run:
+
+```powershell
+Invoke-WebRequest `
+  -Method Post `
+  -SkipHttpErrorCheck `
+  -Uri "http://localhost:5156/api/orders/45/authorize?failuresBeforeSuccess=0&failureStatusCode=503&delayMilliseconds=2500"
+```
+
+Expected:
+
+```text
+HTTP 504
+Attempts: 1
+CircuitOpen: false
+```
+
+Do not treat this timeout handling as a production payment policy.
 
 ## Circuit-breaker example
 

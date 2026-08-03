@@ -212,6 +212,7 @@ static async Task<IResult>
         int id,
         int failuresBeforeSuccess,
         int failureStatusCode,
+        int delayMilliseconds,
         PaymentGatewayClient client,
         CancellationToken cancellationToken)
 {
@@ -249,12 +250,30 @@ static async Task<IResult>
             });
     }
 
+    if (delayMilliseconds
+        is < 0
+        or > 5000)
+    {
+        return Results.ValidationProblem(
+            new Dictionary<
+                string,
+                string[]>
+            {
+                [nameof(
+                    delayMilliseconds)] =
+                [
+                    "Use a value from 0 through 5000."
+                ]
+            });
+    }
+
     PaymentAuthorizationResult result =
         await client.AuthorizeAsync(
             id,
             failuresBeforeSuccess,
             (HttpStatusCode)
                 failureStatusCode,
+            delayMilliseconds,
             cancellationToken);
 
     int responseStatus =

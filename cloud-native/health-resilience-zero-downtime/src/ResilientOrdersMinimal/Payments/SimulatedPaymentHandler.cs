@@ -8,7 +8,7 @@ public sealed class SimulatedPaymentHandler(
     PaymentSimulationState state) :
     HttpMessageHandler
 {
-    protected override Task<
+    protected override async Task<
         HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
             CancellationToken cancellationToken)
@@ -35,9 +35,23 @@ public sealed class SimulatedPaymentHandler(
                     "X-Demo-Failure-Status"),
                 CultureInfo.InvariantCulture);
 
+        int delayMilliseconds =
+            int.Parse(
+                ReadRequiredHeader(
+                    request,
+                    "X-Demo-Delay-Milliseconds"),
+                CultureInfo.InvariantCulture);
+
         int attempt =
             state.RecordAttempt(
                 operationId);
+
+        if (delayMilliseconds > 0)
+        {
+            await Task.Delay(
+                delayMilliseconds,
+                cancellationToken);
+        }
 
         bool shouldFail =
             attempt
@@ -72,8 +86,7 @@ public sealed class SimulatedPaymentHandler(
             attempt.ToString(
                 CultureInfo.InvariantCulture));
 
-        return Task.FromResult(
-            response);
+        return response;
     }
 
     private static string

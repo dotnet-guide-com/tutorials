@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using ResilientOrdersMinimal.Hosting;
 using ResilientOrdersMinimal.Payments;
 
@@ -11,6 +12,36 @@ namespace ResilientOrdersMinimal.Tests;
 public sealed class
     HealthAndResilienceTests
 {
+    private static async Task<
+        JsonDocument>
+        ParseHealthBodyAsync(
+            HttpResponseMessage response,
+            CancellationToken ct)
+    {
+        string body =
+            await response.Content
+                .ReadAsStringAsync(
+                    ct);
+
+        return JsonDocument.Parse(
+            body);
+    }
+
+    private static bool
+        CheckExists(
+            JsonElement checks,
+            string name)
+    {
+        return checks
+            .EnumerateArray()
+            .Any(
+                check =>
+                    check.GetProperty(
+                            "name")
+                        .GetString()
+                    == name);
+    }
+
     [Fact]
     public async Task
         Root_describes_the_sample()
@@ -66,65 +97,128 @@ public sealed class
             TestContext.Current
                 .CancellationToken;
 
-        HttpResponseMessage live =
+        HttpResponseMessage liveResponse =
             await client.GetAsync(
                 "/health/live",
                 ct);
 
-        HttpResponseMessage ready =
+        HttpResponseMessage readyResponse =
             await client.GetAsync(
                 "/health/ready",
                 ct);
 
-        HttpResponseMessage combined =
+        HttpResponseMessage combinedResponse =
             await client.GetAsync(
                 "/health",
                 ct);
 
         Assert.Equal(
             HttpStatusCode.OK,
-            live.StatusCode);
+            liveResponse.StatusCode);
 
         Assert.Equal(
             HttpStatusCode.OK,
-            ready.StatusCode);
+            readyResponse.StatusCode);
 
         Assert.Equal(
             HttpStatusCode.OK,
-            combined.StatusCode);
+            combinedResponse.StatusCode);
 
         Assert.Equal(
             "application/json",
-            ready.Content.Headers
+            readyResponse.Content.Headers
                 .ContentType?
                 .MediaType);
 
-        using JsonDocument body =
-            JsonDocument.Parse(
-                await ready.Content
-                    .ReadAsStringAsync(
-                        ct));
+        // -- /health/live: exactly one check, name is self
+        using JsonDocument liveBody =
+            await ParseHealthBodyAsync(
+                liveResponse,
+                ct);
 
         Assert.Equal(
             "Healthy",
-            body.RootElement
-                .GetProperty(
-                    "status")
+            liveBody.RootElement
+                .GetProperty("status")
                 .GetString());
 
-        JsonElement checks =
-            body.RootElement
-                .GetProperty(
-                    "checks");
+        JsonElement liveChecks =
+            liveBody.RootElement
+                .GetProperty("checks");
 
-        Assert.Contains(
-            checks.EnumerateArray(),
-            check =>
-                check.GetProperty(
-                        "name")
-                    .GetString()
-                ==
-                "traffic-readiness");
+        Assert.Equal(
+            1,
+            liveChecks.GetArrayLength());
+
+        Assert.True(
+            CheckExists(
+                liveChecks,
+                "self"));
+
+        Assert.False(
+            CheckExists(
+                liveChecks,
+                "traffic-readiness"));
+
+        // -- /health/ready: exactly one check, name is traffic-readiness
+        using JsonDocument readyBody =
+            await ParseHealthBodyAsync(
+                readyResponse,
+                ct);
+
+        Assert.Equal(
+            "Healthy",
+            readyBody.RootElement
+                .GetProperty("status")
+                .GetString());
+
+        JsonElement readyChecks =
+            readyBody.RootElement
+                .GetProperty("checks");
+
+        Assert.Equal(
+            1,
+            readyChecks.GetArrayLength());
+
+        Assert.True(
+            CheckExists(
+                readyChecks,
+                "traffic-readiness"));
+
+        Assert.False(
+            CheckExists(
+                readyChecks,
+                "self"));
+
+        // -- /health: exactly two checks, both present
+        using JsonDocument combinedBody =
+            await ParseHealthBodyAsync(
+                combinedResponse,
+                ct);
+
+        Assert.Equal(
+            "Healthy",
+            combinedBody.RootElement
+                .GetProperty("status")
+                .GetString());
+
+        JsonElement combinedChecks =
+            combinedBody.RootElement
+                .GetProperty("checks");
+
+        Assert.Equal(
+            2,
+            combinedChecks.GetArrayLength());
+
+        Assert.True(
+            CheckExists(
+                combinedChecks,
+                "self"));
+
+        Assert.True(
+            CheckExists(
+                combinedChecks,
+                "traffic-readiness"));
     }
 
     [Fact]
@@ -142,42 +236,161 @@ public sealed class
             TestContext.Current
                 .CancellationToken;
 
-        ShutdownReadinessService service =
-            factory.Services
-                .GetRequiredService<
-                    ShutdownReadinessService>();
+        // Confirm the concrete service resolved from DI is the same
+        // instance registered as the hosted service.
+        ShutdownReadinessService
+            concreteService =
+                factory.Services
+                    .GetRequiredService<
+                        ShutdownReadinessService>();
 
-        await service.StopAsync(
+        IEnumerable<IHostedService>
+            hostedServices =
+                factory.Services
+                    .GetRequiredService<
+                        IEnumerable<
+                            IHostedService>>();
+
+        IHostedService
+            shutdownHostedService =
+                hostedServices
+                    .OfType<
+                        ShutdownReadinessService>()
+                    .Single();
+
+        Assert.Same(
+            concreteService,
+            shutdownHostedService);
+
+        await concreteService.StopAsync(
             ct);
 
-        HttpResponseMessage live =
+        // -- /health/live: 200, self remains Healthy
+        HttpResponseMessage liveResponse =
             await client.GetAsync(
                 "/health/live",
                 ct);
 
-        HttpResponseMessage ready =
+        Assert.Equal(
+            HttpStatusCode.OK,
+            liveResponse.StatusCode);
+
+        using JsonDocument liveBody =
+            await ParseHealthBodyAsync(
+                liveResponse,
+                ct);
+
+        Assert.Equal(
+            "Healthy",
+            liveBody.RootElement
+                .GetProperty("status")
+                .GetString());
+
+        JsonElement liveChecks =
+            liveBody.RootElement
+                .GetProperty("checks");
+
+        Assert.True(
+            CheckExists(
+                liveChecks,
+                "self"));
+
+        // -- /health/ready: 503, overall Unhealthy, traffic-readiness Unhealthy
+        HttpResponseMessage readyResponse =
             await client.GetAsync(
                 "/health/ready",
                 ct);
 
-        HttpResponseMessage combined =
+        Assert.Equal(
+            HttpStatusCode
+                .ServiceUnavailable,
+            readyResponse.StatusCode);
+
+        using JsonDocument readyBody =
+            await ParseHealthBodyAsync(
+                readyResponse,
+                ct);
+
+        Assert.Equal(
+            "Unhealthy",
+            readyBody.RootElement
+                .GetProperty("status")
+                .GetString());
+
+        JsonElement readyChecks =
+            readyBody.RootElement
+                .GetProperty("checks");
+
+        Assert.True(
+            CheckExists(
+                readyChecks,
+                "traffic-readiness"));
+
+        Assert.Equal(
+            "Unhealthy",
+            readyChecks
+                .EnumerateArray()
+                .First(
+                    c =>
+                        c.GetProperty("name")
+                            .GetString()
+                        == "traffic-readiness")
+                .GetProperty("status")
+                .GetString());
+
+        // -- /health: 503, overall Unhealthy, self Healthy, traffic-readiness Unhealthy
+        HttpResponseMessage combinedResponse =
             await client.GetAsync(
                 "/health",
                 ct);
 
         Assert.Equal(
-            HttpStatusCode.OK,
-            live.StatusCode);
-
-        Assert.Equal(
             HttpStatusCode
                 .ServiceUnavailable,
-            ready.StatusCode);
+            combinedResponse.StatusCode);
+
+        using JsonDocument combinedBody =
+            await ParseHealthBodyAsync(
+                combinedResponse,
+                ct);
 
         Assert.Equal(
-            HttpStatusCode
-                .ServiceUnavailable,
-            combined.StatusCode);
+            "Unhealthy",
+            combinedBody.RootElement
+                .GetProperty("status")
+                .GetString());
+
+        JsonElement combinedChecks =
+            combinedBody.RootElement
+                .GetProperty("checks");
+
+        Assert.Equal(
+            2,
+            combinedChecks.GetArrayLength());
+
+        Assert.Equal(
+            "Healthy",
+            combinedChecks
+                .EnumerateArray()
+                .First(
+                    c =>
+                        c.GetProperty("name")
+                            .GetString()
+                        == "self")
+                .GetProperty("status")
+                .GetString());
+
+        Assert.Equal(
+            "Unhealthy",
+            combinedChecks
+                .EnumerateArray()
+                .First(
+                    c =>
+                        c.GetProperty("name")
+                            .GetString()
+                        == "traffic-readiness")
+                .GetProperty("status")
+                .GetString());
     }
 
     [Fact]
@@ -197,7 +410,7 @@ public sealed class
 
         HttpResponseMessage response =
             await client.PostAsync(
-                "/api/orders/42/authorize?failuresBeforeSuccess=2&failureStatusCode=503",
+                "/api/orders/42/authorize?failuresBeforeSuccess=2&failureStatusCode=503&delayMilliseconds=0",
                 content:
                     null,
                 ct);
@@ -229,7 +442,7 @@ public sealed class
 
     [Fact]
     public async Task
-        Bad_request_is_not_retried()
+        Bad_request_and_timeout_are_not_retried()
     {
         using var factory =
             new WebApplicationFactory<
@@ -242,15 +455,16 @@ public sealed class
             TestContext.Current
                 .CancellationToken;
 
-        HttpResponseMessage response =
+        // -- HTTP 400: non-retriable, one attempt
+        HttpResponseMessage badRequestResponse =
             await client.PostAsync(
-                "/api/orders/43/authorize?failuresBeforeSuccess=10&failureStatusCode=400",
+                "/api/orders/43/authorize?failuresBeforeSuccess=10&failureStatusCode=400&delayMilliseconds=0",
                 content:
                     null,
                 ct);
 
-        PaymentAuthorizationResult? result =
-            await response.Content
+        PaymentAuthorizationResult? badRequestResult =
+            await badRequestResponse.Content
                 .ReadFromJsonAsync<
                     PaymentAuthorizationResult>(
                         cancellationToken:
@@ -258,20 +472,52 @@ public sealed class
 
         Assert.Equal(
             HttpStatusCode.BadRequest,
-            response.StatusCode);
+            badRequestResponse.StatusCode);
 
         Assert.NotNull(
-            result);
+            badRequestResult);
 
         Assert.False(
-            result.Succeeded);
+            badRequestResult.Succeeded);
 
         Assert.False(
-            result.CircuitOpen);
+            badRequestResult.CircuitOpen);
 
         Assert.Equal(
             1,
-            result.Attempts);
+            badRequestResult.Attempts);
+
+        // -- Attempt timeout: delay exceeds 2-second timeout, one attempt, 504
+        HttpResponseMessage timeoutResponse =
+            await client.PostAsync(
+                "/api/orders/45/authorize?failuresBeforeSuccess=0&failureStatusCode=503&delayMilliseconds=2500",
+                content:
+                    null,
+                ct);
+
+        PaymentAuthorizationResult? timeoutResult =
+            await timeoutResponse.Content
+                .ReadFromJsonAsync<
+                    PaymentAuthorizationResult>(
+                        cancellationToken:
+                            ct);
+
+        Assert.Equal(
+            HttpStatusCode.GatewayTimeout,
+            timeoutResponse.StatusCode);
+
+        Assert.NotNull(
+            timeoutResult);
+
+        Assert.False(
+            timeoutResult.Succeeded);
+
+        Assert.False(
+            timeoutResult.CircuitOpen);
+
+        Assert.Equal(
+            1,
+            timeoutResult.Attempts);
     }
 
     [Fact]
@@ -290,7 +536,7 @@ public sealed class
                 .CancellationToken;
 
         string path =
-            "/api/orders/44/authorize?failuresBeforeSuccess=20&failureStatusCode=503";
+            "/api/orders/44/authorize?failuresBeforeSuccess=20&failureStatusCode=503&delayMilliseconds=0";
 
         HttpResponseMessage firstResponse =
             await client.PostAsync(

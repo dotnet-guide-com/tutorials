@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Net;
 using Polly.CircuitBreaker;
+using Polly.Timeout;
 
 namespace ResilientOrdersMinimal.Payments;
 
@@ -14,6 +15,7 @@ public sealed class PaymentGatewayClient(
             int orderId,
             int failuresBeforeSuccess,
             HttpStatusCode failureStatus,
+            int delayMilliseconds,
             CancellationToken cancellationToken)
     {
         string operationId =
@@ -40,6 +42,12 @@ public sealed class PaymentGatewayClient(
         request.Headers.Add(
             "X-Demo-Failure-Status",
             ((int)failureStatus)
+                .ToString(
+                    CultureInfo.InvariantCulture));
+
+        request.Headers.Add(
+            "X-Demo-Delay-Milliseconds",
+            delayMilliseconds
                 .ToString(
                     CultureInfo.InvariantCulture));
 
@@ -86,6 +94,26 @@ public sealed class PaymentGatewayClient(
                 StatusCode:
                     StatusCodes
                         .Status503ServiceUnavailable);
+        }
+        catch (TimeoutRejectedException)
+        {
+            return new PaymentAuthorizationResult(
+                OrderId:
+                    orderId,
+
+                Succeeded:
+                    false,
+
+                Attempts:
+                    state.GetAttempts(
+                        operationId),
+
+                CircuitOpen:
+                    false,
+
+                StatusCode:
+                    StatusCodes
+                        .Status504GatewayTimeout);
         }
         finally
         {
