@@ -1,0 +1,27 @@
+name: dotnet-guide-containerized-api
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    image: dotnet-guide/containerized-api-minimal:local
+
+    ports:
+      - "127.0.0.1:5152:8080"
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      Sample__Message: Configured by Docker Compose
+
+    read_only: true
+
+    tmpfs:
+      - /tmp
+
+    cap_drop:
+      - ALL
+
+    security_opt:
+      - no-new-privileges:true
