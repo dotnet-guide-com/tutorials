@@ -22,6 +22,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`blazor/create-interactive-ui-csharp-12`](blazor/create-interactive-ui-csharp-12/) | Interactive .NET 10 Todo Dashboard demonstrating Razor components, form binding, DataAnnotations validation, scoped state, EventCallback communication, filtering, and bUnit component tests | [Blazor Web Development: Create Interactive UIs with C# 12](https://www.dotnet-guide.com/tutorials/blazor/create-interactive-ui-csharp-12/) |
 | [`blazor/forms-validation-masterclass`](blazor/forms-validation-masterclass/) | Focused .NET 10 Profile Settings form demonstrating manual EditContext management, DataAnnotations, FluentValidation, backend field-error mapping, accessible inputs, dirty state, and bUnit testing | [Blazor .NET 8 Forms & Validation: EditForm, FluentValidation & Server Error Handling](https://www.dotnet-guide.com/tutorials/blazor/forms-validation-masterclass/) |
 | [`blazor/ssr-interactive-islands`](blazor/ssr-interactive-islands/) | Focused .NET 10 catalog demonstrating static SSR, streaming review updates, a serializable render-mode boundary, an Interactive Server cart island, and component/integration testing | [Blazor SSR & Interactive Islands: Streaming Rendering, Auto Render Mode & Progressive Enhancement](https://www.dotnet-guide.com/tutorials/blazor/ssr-interactive-islands/) |
+| [`cloud-native/dockerize-aspnet-core-clean-images`](cloud-native/dockerize-aspnet-core-clean-images/) | Focused .NET 10 container sample demonstrating a multi-stage Dockerfile, locked restore, runtime-only image, non-root execution, port 8080, runtime configuration, health checks, hardened Compose settings, and CI smoke testing | [Dockerizing ASP.NET Core: Multi-Stage Builds, Clean Images & a Production-Ready Ship Workflow](https://www.dotnet-guide.com/tutorials/cloud-native/dockerize-aspnet-core-clean-images/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -197,10 +198,31 @@ tutorials/
 |       |           |   |-- CartIsland.razor
 |       |           |   |-- ProductCard.razor
 |       |           |   `-- ReviewsSection.razor
+`-- tests/
+           `-- BlazorCatalogIslands.Tests/
+               |-- BlazorCatalogIslands.Tests.csproj
+               `-- CatalogIslandTests.cs
+|-- cloud-native/
+|   `-- dockerize-aspnet-core-clean-images/
+|       |-- ContainerizedApiMinimal.slnx
+|       |-- Dockerfile
+|       |-- .dockerignore
+|       |-- compose.yaml
+|       |-- README.md
+|       |-- src/
+|       |   |-- ContainerizedApiMinimal/
+|       |   |   |-- ContainerizedApiMinimal.csproj
+|       |   |   |-- Program.cs
+|       |   |   |-- appsettings.json
+|       |   |   `-- packages.lock.json
+|       |   `-- ContainerHealthProbe/
+|       |       |-- ContainerHealthProbe.csproj
+|       |       |-- Program.cs
+|       |       `-- packages.lock.json
 |       `-- tests/
-|           `-- BlazorCatalogIslands.Tests/
-|               |-- BlazorCatalogIslands.Tests.csproj
-|               `-- CatalogIslandTests.cs
+|           `-- ContainerizedApiMinimal.Tests/
+|               |-- ContainerizedApiMinimal.Tests.csproj
+|               `-- ContainerizedApiTests.cs
 |-- aspnet-core/
 |   |-- api-security-in-practice/
 |   |   |-- ApiSecurityMinimal.slnx
