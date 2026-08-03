@@ -23,6 +23,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`blazor/forms-validation-masterclass`](blazor/forms-validation-masterclass/) | Focused .NET 10 Profile Settings form demonstrating manual EditContext management, DataAnnotations, FluentValidation, backend field-error mapping, accessible inputs, dirty state, and bUnit testing | [Blazor .NET 8 Forms & Validation: EditForm, FluentValidation & Server Error Handling](https://www.dotnet-guide.com/tutorials/blazor/forms-validation-masterclass/) |
 | [`blazor/ssr-interactive-islands`](blazor/ssr-interactive-islands/) | Focused .NET 10 catalog demonstrating static SSR, streaming review updates, a serializable render-mode boundary, an Interactive Server cart island, and component/integration testing | [Blazor SSR & Interactive Islands: Streaming Rendering, Auto Render Mode & Progressive Enhancement](https://www.dotnet-guide.com/tutorials/blazor/ssr-interactive-islands/) |
 | [`cloud-native/dockerize-aspnet-core-clean-images`](cloud-native/dockerize-aspnet-core-clean-images/) | Focused .NET 10 container sample demonstrating a multi-stage Dockerfile, locked restore, runtime-only image, non-root execution, port 8080, runtime configuration, health checks, hardened Compose settings, and CI smoke testing | [Dockerizing ASP.NET Core: Multi-Stage Builds, Clean Images & a Production-Ready Ship Workflow](https://www.dotnet-guide.com/tutorials/cloud-native/dockerize-aspnet-core-clean-images/) |
+| [`cloud-native/health-resilience-zero-downtime`](cloud-native/health-resilience-zero-downtime/) | Focused .NET 10 Orders API demonstrating tagged liveness/readiness checks, structured health output, shutdown readiness draining, typed HttpClient retries, circuit breaking, attempt timeouts, and deterministic integration testing | [.NET 8 Cloud-Native: Health Probes, Polly Resilience & Zero-Downtime Kubernetes Deployments](https://www.dotnet-guide.com/tutorials/cloud-native/health-resilience-zero-downtime/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -203,26 +204,47 @@ tutorials/
 |               |-- BlazorCatalogIslands.Tests.csproj
 |               `-- CatalogIslandTests.cs
 |-- cloud-native/
-|   `-- dockerize-aspnet-core-clean-images/
-|       |-- ContainerizedApiMinimal.slnx
-|       |-- Dockerfile
-|       |-- .dockerignore
-|       |-- compose.yaml
+|   |-- dockerize-aspnet-core-clean-images/
+|   |   |-- ContainerizedApiMinimal.slnx
+|   |   |-- Dockerfile
+|   |   |-- .dockerignore
+|   |   |-- compose.yaml
+|   |   |-- README.md
+|   |   |-- src/
+|   |   |   |-- ContainerizedApiMinimal/
+|   |   |   |   |-- ContainerizedApiMinimal.csproj
+|   |   |   |   |-- Program.cs
+|   |   |   |   |-- appsettings.json
+|   |   |   |   `-- packages.lock.json
+|   |   |   `-- ContainerHealthProbe/
+|   |   |       |-- ContainerHealthProbe.csproj
+|   |   |       |-- Program.cs
+|   |   |       `-- packages.lock.json
+|   |   `-- tests/
+|   |       `-- ContainerizedApiMinimal.Tests/
+|   |           |-- ContainerizedApiMinimal.Tests.csproj
+|   |           `-- ContainerizedApiTests.cs
+|   `-- health-resilience-zero-downtime/
 |       |-- README.md
+|       |-- ResilientOrdersMinimal.slnx
 |       |-- src/
-|       |   |-- ContainerizedApiMinimal/
-|       |   |   |-- ContainerizedApiMinimal.csproj
-|       |   |   |-- Program.cs
-|       |   |   |-- appsettings.json
-|       |   |   `-- packages.lock.json
-|       |   `-- ContainerHealthProbe/
-|       |       |-- ContainerHealthProbe.csproj
+|       |   `-- ResilientOrdersMinimal/
+|       |       |-- ResilientOrdersMinimal.csproj
 |       |       |-- Program.cs
-|       |       `-- packages.lock.json
+|       |       |-- Health/
+|       |       |   |-- HealthResponseWriter.cs
+|       |       |   |-- TrafficReadinessHealthCheck.cs
+|       |       |   `-- TrafficReadinessState.cs
+|       |       |-- Hosting/
+|       |       |   `-- ShutdownReadinessService.cs
+|       |       `-- Payments/
+|       |           |-- PaymentGatewayClient.cs
+|       |           |-- PaymentSimulationState.cs
+|       |           `-- SimulatedPaymentHandler.cs
 |       `-- tests/
-|           `-- ContainerizedApiMinimal.Tests/
-|               |-- ContainerizedApiMinimal.Tests.csproj
-|               `-- ContainerizedApiTests.cs
+|           `-- ResilientOrdersMinimal.Tests/
+|               |-- ResilientOrdersMinimal.Tests.csproj
+|               `-- HealthAndResilienceTests.cs
 |-- aspnet-core/
 |   |-- api-security-in-practice/
 |   |   |-- ApiSecurityMinimal.slnx
