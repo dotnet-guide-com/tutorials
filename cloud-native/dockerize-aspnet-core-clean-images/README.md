@@ -1,4 +1,4 @@
-# Dockerized ASP.NET Core API &mdash; Minimal Sample
+# Dockerized ASP.NET Core API — Minimal Sample
 
 A focused .NET 10 companion demonstrating a multi-stage Dockerfile, locked
 restore, a runtime-only final image, non-root execution, port 8080, runtime
@@ -58,11 +58,11 @@ controlled dependency process.
 
 ```text
 SDK restore stage
-  &rarr; SDK publish stage
-  &rarr; ASP.NET Core runtime stage
-  &rarr; numeric non-root user
-  &rarr; Kestrel on 8080
-  &rarr; .NET Docker health probe
+  -> SDK publish stage
+  -> ASP.NET Core runtime stage
+  -> numeric non-root user
+  -> Kestrel on 8080
+  -> .NET Docker health probe
 ```
 
 ## Why the health check is another .NET project
@@ -161,6 +161,16 @@ docker exec `
 
 No SDK version should be returned.
 
+## Stop the manual container
+
+```powershell
+docker rm --force containerized-api-minimal
+```
+
+Remove the manual container before starting the Docker Compose service. Both
+workflows bind to `127.0.0.1:5152` and leaving a running container causes a
+port conflict.
+
 ## Docker Compose
 
 ```powershell
@@ -217,19 +227,19 @@ Dockerfile
 compose.yaml
 README.md
 src/
-&boxur; ContainerizedApiMinimal/
-&emsp;&boxur; ContainerizedApiMinimal.csproj
-&emsp;&boxur; Program.cs
-&emsp;&boxur; appsettings.json
-&emsp;&boxur; packages.lock.json
-&boxur; ContainerHealthProbe/
-&emsp;&boxur; ContainerHealthProbe.csproj
-&emsp;&boxur; Program.cs
-&emsp;&boxur; packages.lock.json
+|-- ContainerizedApiMinimal/
+|   |-- ContainerizedApiMinimal.csproj
+|   |-- Program.cs
+|   |-- appsettings.json
+|   `-- packages.lock.json
+|-- ContainerHealthProbe/
+|   |-- ContainerHealthProbe.csproj
+|   |-- Program.cs
+|   `-- packages.lock.json
 tests/
-&boxur; ContainerizedApiMinimal.Tests/
-&emsp;&boxur; ContainerizedApiMinimal.Tests.csproj
-&emsp;&boxur; ContainerizedApiTests.cs
+`-- ContainerizedApiMinimal.Tests/
+    |-- ContainerizedApiMinimal.Tests.csproj
+    `-- ContainerizedApiTests.cs
 ```
 
 ## Deliberately omitted

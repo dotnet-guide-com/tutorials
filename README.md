@@ -198,10 +198,10 @@ tutorials/
 |       |           |   |-- CartIsland.razor
 |       |           |   |-- ProductCard.razor
 |       |           |   `-- ReviewsSection.razor
-`-- tests/
-           `-- BlazorCatalogIslands.Tests/
-               |-- BlazorCatalogIslands.Tests.csproj
-               `-- CatalogIslandTests.cs
+|       `-- tests/
+|           `-- BlazorCatalogIslands.Tests/
+|               |-- BlazorCatalogIslands.Tests.csproj
+|               `-- CatalogIslandTests.cs
 |-- cloud-native/
 |   `-- dockerize-aspnet-core-clean-images/
 |       |-- ContainerizedApiMinimal.slnx

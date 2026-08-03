@@ -116,6 +116,7 @@ public sealed class ContainerizedApiTests
             TestContext.Current
                 .CancellationToken;
 
+        // -- Normal configuration: all endpoints healthy
         HttpResponseMessage live =
             await client.GetAsync(
                 "/health/live",
@@ -126,6 +127,11 @@ public sealed class ContainerizedApiTests
                 "/health/ready",
                 ct);
 
+        HttpResponseMessage combined =
+            await client.GetAsync(
+                "/health",
+                ct);
+
         Assert.Equal(
             HttpStatusCode.OK,
             live.StatusCode);
@@ -133,6 +139,65 @@ public sealed class ContainerizedApiTests
         Assert.Equal(
             HttpStatusCode.OK,
             ready.StatusCode);
+
+        Assert.Equal(
+            HttpStatusCode.OK,
+            combined.StatusCode);
+
+        // -- Blank configuration: liveness stays 200, readiness degrades to 503
+        using WebApplicationFactory<
+            Program> blankFactory =
+                factory.WithWebHostBuilder(
+                    builder =>
+                        builder.ConfigureAppConfiguration(
+                            (
+                                context,
+                                configuration) =>
+                            {
+                                configuration
+                                    .AddInMemoryCollection(
+                                        new Dictionary<
+                                            string,
+                                            string?>
+                                        {
+                                            ["Sample:Message"] =
+                                                string.Empty
+                                        });
+                            }));
+
+        using HttpClient blankClient =
+            blankFactory.CreateClient();
+
+        CancellationToken blankCt =
+            TestContext.Current
+                .CancellationToken;
+
+        HttpResponseMessage blankLive =
+            await blankClient.GetAsync(
+                "/health/live",
+                blankCt);
+
+        HttpResponseMessage blankReady =
+            await blankClient.GetAsync(
+                "/health/ready",
+                blankCt);
+
+        HttpResponseMessage blankCombined =
+            await blankClient.GetAsync(
+                "/health",
+                blankCt);
+
+        Assert.Equal(
+            HttpStatusCode.OK,
+            blankLive.StatusCode);
+
+        Assert.Equal(
+            HttpStatusCode.ServiceUnavailable,
+            blankReady.StatusCode);
+
+        Assert.Equal(
+            HttpStatusCode.ServiceUnavailable,
+            blankCombined.StatusCode);
     }
 
     [Fact]
