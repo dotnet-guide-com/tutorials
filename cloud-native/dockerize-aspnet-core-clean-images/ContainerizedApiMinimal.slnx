@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ContainerHealthProbe/ContainerHealthProbe.csproj" />
+    <Project Path="src/ContainerizedApiMinimal/ContainerizedApiMinimal.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ContainerizedApiMinimal.Tests/ContainerizedApiMinimal.Tests.csproj" />
+  </Folder>
+</Solution>

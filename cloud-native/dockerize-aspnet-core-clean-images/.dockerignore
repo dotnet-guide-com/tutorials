@@ -1,0 +1,35 @@
+# Git and repository metadata
+.git/
+.github/
+.gitattributes
+.gitignore
+
+# .NET build output
+**/bin/
+**/obj/
+**/TestResults/
+
+# IDE and user files
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Tests are validated before image build and aren't copied into the runtime image
+tests/
+
+# Local configuration and secrets
+.env
+.env.*
+**/secrets.json
+**/appsettings.Local.json
+**/*.pfx
+**/*.key
+
+# Repository documentation and local orchestration
+README.md
+compose.yaml
+
+# Miscellaneous local artifacts
+*.log
+*.tmp
