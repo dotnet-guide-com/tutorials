@@ -24,6 +24,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`blazor/ssr-interactive-islands`](blazor/ssr-interactive-islands/) | Focused .NET 10 catalog demonstrating static SSR, streaming review updates, a serializable render-mode boundary, an Interactive Server cart island, and component/integration testing | [Blazor SSR & Interactive Islands: Streaming Rendering, Auto Render Mode & Progressive Enhancement](https://www.dotnet-guide.com/tutorials/blazor/ssr-interactive-islands/) |
 | [`cloud-native/dockerize-aspnet-core-clean-images`](cloud-native/dockerize-aspnet-core-clean-images/) | Focused .NET 10 container sample demonstrating a multi-stage Dockerfile, locked restore, runtime-only image, non-root execution, port 8080, runtime configuration, health checks, hardened Compose settings, and CI smoke testing | [Dockerizing ASP.NET Core: Multi-Stage Builds, Clean Images & a Production-Ready Ship Workflow](https://www.dotnet-guide.com/tutorials/cloud-native/dockerize-aspnet-core-clean-images/) |
 | [`cloud-native/health-resilience-zero-downtime`](cloud-native/health-resilience-zero-downtime/) | Focused .NET 10 Orders API demonstrating tagged liveness/readiness checks, structured health output, shutdown readiness draining, typed HttpClient retries, circuit breaking, attempt timeouts, and deterministic integration testing | [.NET 8 Cloud-Native: Health Probes, Polly Resilience & Zero-Downtime Kubernetes Deployments](https://www.dotnet-guide.com/tutorials/cloud-native/health-resilience-zero-downtime/) |
+| [`cloud-native/polly-resilience`](cloud-native/polly-resilience/) | Focused .NET 10 Polly v8 catalog sample demonstrating explicit stale-cache fallback, timeout-driven degradation, outbound concurrency isolation, strategy event counters, and deterministic integration testing | [Polly Resilience (Polly v8): Timeouts, Retries, Circuits, Bulkheads, Hedging](https://www.dotnet-guide.com/tutorials/cloud-native/polly-resilience/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -224,27 +225,48 @@ tutorials/
 |   |       `-- ContainerizedApiMinimal.Tests/
 |   |           |-- ContainerizedApiMinimal.Tests.csproj
 |   |           `-- ContainerizedApiTests.cs
-|   `-- health-resilience-zero-downtime/
+|   |-- health-resilience-zero-downtime/
+|   |   |-- README.md
+|   |   |-- ResilientOrdersMinimal.slnx
+|   |   |-- src/
+|   |   |   `-- ResilientOrdersMinimal/
+|   |   |       |-- ResilientOrdersMinimal.csproj
+|   |   |       |-- Program.cs
+|   |   |       |-- Health/
+|   |   |       |   |-- HealthResponseWriter.cs
+|   |   |       |   |-- TrafficReadinessHealthCheck.cs
+|   |   |       |   `-- TrafficReadinessState.cs
+|   |   |       |-- Hosting/
+|   |   |       |   `-- ShutdownReadinessService.cs
+|   |   |       `-- Payments/
+|   |   |           |-- PaymentGatewayClient.cs
+|   |   |           |-- PaymentSimulationState.cs
+|   |   |           `-- SimulatedPaymentHandler.cs
+|   |   `-- tests/
+|   |       `-- ResilientOrdersMinimal.Tests/
+|   |           |-- ResilientOrdersMinimal.Tests.csproj
+|   |           `-- HealthAndResilienceTests.cs
+|   `-- polly-resilience/
+|       |-- PollyCatalogResilience.slnx
 |       |-- README.md
-|       |-- ResilientOrdersMinimal.slnx
 |       |-- src/
-|       |   `-- ResilientOrdersMinimal/
-|       |       |-- ResilientOrdersMinimal.csproj
+|       |   `-- PollyCatalogResilience/
+|       |       |-- PollyCatalogResilience.csproj
 |       |       |-- Program.cs
-|       |       |-- Health/
-|       |       |   |-- HealthResponseWriter.cs
-|       |       |   |-- TrafficReadinessHealthCheck.cs
-|       |       |   `-- TrafficReadinessState.cs
-|       |       |-- Hosting/
-|       |       |   `-- ShutdownReadinessService.cs
-|       |       `-- Payments/
-|       |           |-- PaymentGatewayClient.cs
-|       |           |-- PaymentSimulationState.cs
-|       |           `-- SimulatedPaymentHandler.cs
+|       |       |-- Models/
+|       |       |   `-- CatalogModels.cs
+|       |       |-- Resilience/
+|       |       |   |-- CatalogPipelineFactory.cs
+|       |       |   |-- CatalogResilienceService.cs
+|       |       |   `-- ResilienceTelemetry.cs
+|       |       `-- Services/
+|       |           |-- CatalogCache.cs
+|       |           |-- CatalogDependency.cs
+|       |           `-- CatalogHoldGate.cs
 |       `-- tests/
-|           `-- ResilientOrdersMinimal.Tests/
-|               |-- ResilientOrdersMinimal.Tests.csproj
-|               `-- HealthAndResilienceTests.cs
+|           `-- PollyCatalogResilience.Tests/
+|               |-- PollyCatalogResilience.Tests.csproj
+|               `-- CatalogResilienceTests.cs
 |-- aspnet-core/
 |   |-- api-security-in-practice/
 |   |   |-- ApiSecurityMinimal.slnx
