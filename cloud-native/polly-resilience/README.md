@@ -103,6 +103,9 @@ the strategy cancellation token to `Task.Delay`.
 Caller cancellation is not included in the fallback predicate and must remain a
 cancellation.
 
+The integration suite proves caller cancellation propagates without producing
+stale fallback data or incrementing resilience counters.
+
 ## Deterministic simulation
 
 The dependency modes are:
