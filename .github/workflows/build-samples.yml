@@ -764,18 +764,34 @@ jobs:
 
           printf '%s\n' "${output}"
 
-          grep -Fqx \
-            "C# 12 Todo Refactoring Lab" \
-            <<< "${output}"
+          expected="$(
+            cat <<'ENDOFOUTPUT'
+C# 12 Todo Refactoring Lab
+Counts: total=4, active=2, completed=2
+TODO: Welcome to the C# 12 lab [done]
+TODO: Adopt primary constructors [active]
+TODO: Use collection expressions [done]
+TODO: Try default lambda parameters [active]
+TODO: Review explicit properties [done]
+ENDOFOUTPUT
+)"
 
-          grep -Fqx \
-            "Counts: total=4, active=2, completed=2" \
-            <<< "${output}"
+          if [[ "${output}" != "${expected}" ]]; then
+            echo "Console output did not match the expected output."
 
-          grep -Fqx \
-            "TODO: Welcome to the C# 12 lab [done]" \
-            <<< "${output}"
+            diff \
+              --unified \
+              <(printf '%s\n' "${expected}") \
+              <(printf '%s\n' "${output}") \
+              || true
 
-          grep -Fqx \
-            "TODO: Try default lambda parameters [active]" \
-            <<< "${output}"
+            exit 1
+          fi
+
+          line_count="$(
+            printf '%s\n' "${output}" |
+              wc --lines |
+              tr --delete ' '
+          )"
+
+          test "${line_count}" = "7"
