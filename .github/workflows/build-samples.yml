@@ -765,16 +765,15 @@ jobs:
           printf '%s\n' "${output}"
 
           expected="$(
-            cat <<'ENDOFOUTPUT'
-C# 12 Todo Refactoring Lab
-Counts: total=4, active=2, completed=2
-TODO: Welcome to the C# 12 lab [done]
-TODO: Adopt primary constructors [active]
-TODO: Use collection expressions [done]
-TODO: Try default lambda parameters [active]
-TODO: Review explicit properties [done]
-ENDOFOUTPUT
-)"
+            printf '%s\n' \
+              "C# 12 Todo Refactoring Lab" \
+              "Counts: total=4, active=2, completed=2" \
+              "TODO: Welcome to the C# 12 lab [done]" \
+              "TODO: Adopt primary constructors [active]" \
+              "TODO: Use collection expressions [done]" \
+              "TODO: Try default lambda parameters [active]" \
+              "TODO: Review explicit properties [done]"
+          )"
 
           if [[ "${output}" != "${expected}" ]]; then
             echo "Console output did not match the expected output."
