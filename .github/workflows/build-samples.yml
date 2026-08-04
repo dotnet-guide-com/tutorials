@@ -19,6 +19,7 @@ on:
       - "blazor/ssr-interactive-islands/**"
       - "cloud-native/dockerize-aspnet-core-clean-images/**"
       - "cloud-native/health-resilience-zero-downtime/**"
+      - "cloud-native/polly-resilience/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -38,6 +39,7 @@ on:
       - "blazor/ssr-interactive-islands/**"
       - "cloud-native/dockerize-aspnet-core-clean-images/**"
       - "cloud-native/health-resilience-zero-downtime/**"
+      - "cloud-native/polly-resilience/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -654,5 +656,40 @@ jobs:
         run: >
           dotnet test
           cloud-native/health-resilience-zero-downtime/ResilientOrdersMinimal.slnx
+          --configuration Release
+          --no-build
+
+  test-polly-fallback-bulkhead:
+    name: Test Polly fallback and concurrency sample
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          cloud-native/polly-resilience/PollyCatalogResilience.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          cloud-native/polly-resilience/PollyCatalogResilience.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test
+        run: >
+          dotnet test
+          cloud-native/polly-resilience/PollyCatalogResilience.slnx
           --configuration Release
           --no-build
