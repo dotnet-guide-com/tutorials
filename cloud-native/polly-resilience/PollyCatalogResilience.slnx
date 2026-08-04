@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PollyCatalogResilience/PollyCatalogResilience.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PollyCatalogResilience.Tests/PollyCatalogResilience.Tests.csproj" />
+  </Folder>
+</Solution>
