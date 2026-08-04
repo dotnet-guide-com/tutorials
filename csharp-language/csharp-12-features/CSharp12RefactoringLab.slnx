@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CSharp12RefactoringLab/CSharp12RefactoringLab.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CSharp12RefactoringLab.Tests/CSharp12RefactoringLab.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -20,6 +20,7 @@ on:
       - "cloud-native/dockerize-aspnet-core-clean-images/**"
       - "cloud-native/health-resilience-zero-downtime/**"
       - "cloud-native/polly-resilience/**"
+      - "csharp-language/csharp-12-features/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -40,6 +41,7 @@ on:
       - "cloud-native/dockerize-aspnet-core-clean-images/**"
       - "cloud-native/health-resilience-zero-downtime/**"
       - "cloud-native/polly-resilience/**"
+      - "csharp-language/csharp-12-features/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -693,3 +695,102 @@ jobs:
           cloud-native/polly-resilience/PollyCatalogResilience.slnx
           --configuration Release
           --no-build
+
+  test-csharp-12-features:
+    name: Test C# 12 refactoring sample
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          csharp-language/csharp-12-features/CSharp12RefactoringLab.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          csharp-language/csharp-12-features/CSharp12RefactoringLab.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test
+        run: >
+          dotnet test
+          csharp-language/csharp-12-features/CSharp12RefactoringLab.slnx
+          --configuration Release
+          --no-build
+
+      - name: Verify explicit C# language version
+        shell: bash
+        run: |
+          app_version="$(
+            dotnet msbuild \
+              csharp-language/csharp-12-features/src/CSharp12RefactoringLab/CSharp12RefactoringLab.csproj \
+              -getProperty:LangVersion
+          )"
+
+          test_version="$(
+            dotnet msbuild \
+              csharp-language/csharp-12-features/tests/CSharp12RefactoringLab.Tests/CSharp12RefactoringLab.Tests.csproj \
+              -getProperty:LangVersion
+          )"
+
+          echo "Application LangVersion: ${app_version}"
+          echo "Test LangVersion: ${test_version}"
+
+          test "${app_version}" = "12.0"
+          test "${test_version}" = "12.0"
+
+      - name: Run deterministic console sample
+        shell: bash
+        run: |
+          output="$(
+            dotnet run \
+              --project csharp-language/csharp-12-features/src/CSharp12RefactoringLab/CSharp12RefactoringLab.csproj \
+              --configuration Release \
+              --no-build
+          )"
+
+          printf '%s\n' "${output}"
+
+          expected="$(
+            printf '%s\n' \
+              "C# 12 Todo Refactoring Lab" \
+              "Counts: total=4, active=2, completed=2" \
+              "TODO: Welcome to the C# 12 lab [done]" \
+              "TODO: Adopt primary constructors [active]" \
+              "TODO: Use collection expressions [done]" \
+              "TODO: Try default lambda parameters [active]" \
+              "TODO: Review explicit properties [done]"
+          )"
+
+          if [[ "${output}" != "${expected}" ]]; then
+            echo "Console output did not match the expected output."
+
+            diff \
+              --unified \
+              <(printf '%s\n' "${expected}") \
+              <(printf '%s\n' "${output}") \
+              || true
+
+            exit 1
+          fi
+
+          line_count="$(
+            printf '%s\n' "${output}" |
+              wc --lines |
+              tr --delete ' '
+          )"
+
+          test "${line_count}" = "7"
