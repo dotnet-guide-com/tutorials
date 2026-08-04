@@ -25,6 +25,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`cloud-native/dockerize-aspnet-core-clean-images`](cloud-native/dockerize-aspnet-core-clean-images/) | Focused .NET 10 container sample demonstrating a multi-stage Dockerfile, locked restore, runtime-only image, non-root execution, port 8080, runtime configuration, health checks, hardened Compose settings, and CI smoke testing | [Dockerizing ASP.NET Core: Multi-Stage Builds, Clean Images & a Production-Ready Ship Workflow](https://www.dotnet-guide.com/tutorials/cloud-native/dockerize-aspnet-core-clean-images/) |
 | [`cloud-native/health-resilience-zero-downtime`](cloud-native/health-resilience-zero-downtime/) | Focused .NET 10 Orders API demonstrating tagged liveness/readiness checks, structured health output, shutdown readiness draining, typed HttpClient retries, circuit breaking, attempt timeouts, and deterministic integration testing | [.NET 8 Cloud-Native: Health Probes, Polly Resilience & Zero-Downtime Kubernetes Deployments](https://www.dotnet-guide.com/tutorials/cloud-native/health-resilience-zero-downtime/) |
 | [`cloud-native/polly-resilience`](cloud-native/polly-resilience/) | Focused .NET 10 Polly v8 catalog sample demonstrating explicit stale-cache fallback, timeout-driven degradation, outbound concurrency isolation, strategy event counters, and deterministic integration testing | [Polly Resilience (Polly v8): Timeouts, Retries, Circuits, Bulkheads, Hedging](https://www.dotnet-guide.com/tutorials/cloud-native/polly-resilience/) |
+| [`csharp-language/csharp-12-features`](csharp-language/csharp-12-features/) | Focused .NET 10 console lab locked to C# 12.0, demonstrating primary constructors with explicit properties, collection expressions and spreads, default lambda parameters, tuple-type aliases, deterministic output, and unit tests | [C# 12 Language Features: Primary Constructors, Collections & More](https://www.dotnet-guide.com/tutorials/csharp-language/csharp-12-features/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -267,6 +268,24 @@ tutorials/
 |           `-- PollyCatalogResilience.Tests/
 |               |-- PollyCatalogResilience.Tests.csproj
 |               `-- CatalogResilienceTests.cs
+|-- csharp-language/
+|   `-- csharp-12-features/
+|       |-- CSharp12RefactoringLab.slnx
+|       |-- README.md
+|       |-- src/
+|       |   `-- CSharp12RefactoringLab/
+|       |       |-- CSharp12RefactoringLab.csproj
+|       |       |-- Program.cs
+|       |       |-- Formatting/
+|       |       |   `-- TodoFormatter.cs
+|       |       |-- Models/
+|       |       |   `-- TodoItem.cs
+|       |       `-- Services/
+|       |           `-- TodoService.cs
+|       `-- tests/
+|           `-- CSharp12RefactoringLab.Tests/
+|               |-- CSharp12RefactoringLab.Tests.csproj
+|               `-- CSharp12FeatureTests.cs
 |-- aspnet-core/
 |   |-- api-security-in-practice/
 |   |   |-- ApiSecurityMinimal.slnx
