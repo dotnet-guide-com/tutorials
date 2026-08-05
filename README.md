@@ -26,6 +26,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`cloud-native/health-resilience-zero-downtime`](cloud-native/health-resilience-zero-downtime/) | Focused .NET 10 Orders API demonstrating tagged liveness/readiness checks, structured health output, shutdown readiness draining, typed HttpClient retries, circuit breaking, attempt timeouts, and deterministic integration testing | [.NET 8 Cloud-Native: Health Probes, Polly Resilience & Zero-Downtime Kubernetes Deployments](https://www.dotnet-guide.com/tutorials/cloud-native/health-resilience-zero-downtime/) |
 | [`cloud-native/polly-resilience`](cloud-native/polly-resilience/) | Focused .NET 10 Polly v8 catalog sample demonstrating explicit stale-cache fallback, timeout-driven degradation, outbound concurrency isolation, strategy event counters, and deterministic integration testing | [Polly Resilience (Polly v8): Timeouts, Retries, Circuits, Bulkheads, Hedging](https://www.dotnet-guide.com/tutorials/cloud-native/polly-resilience/) |
 | [`csharp-language/csharp-12-features`](csharp-language/csharp-12-features/) | Focused .NET 10 console lab locked to C# 12.0, demonstrating primary constructors with explicit properties, collection expressions and spreads, default lambda parameters, tuple-type aliases, deterministic output, and unit tests | [C# 12 Language Features: Primary Constructors, Collections & More](https://www.dotnet-guide.com/tutorials/csharp-language/csharp-12-features/) |
+| [`csharp-language/high-performance-memory-management`](csharp-language/high-performance-memory-management/) | Focused .NET 10 UTF-8 ingestion sample demonstrating PipeReader framing, segmented ReadOnlySequence handling, span-based numeric parsing, bounded MemoryPool ownership, strict input validation, deterministic output, and tests | [High-Performance C#: Span<T>, Memory<T>, SIMD & Pipelines](https://www.dotnet-guide.com/tutorials/csharp-language/high-performance-memory-management/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -269,23 +270,45 @@ tutorials/
 |               |-- PollyCatalogResilience.Tests.csproj
 |               `-- CatalogResilienceTests.cs
 |-- csharp-language/
-|   `-- csharp-12-features/
-|       |-- CSharp12RefactoringLab.slnx
-|       |-- README.md
-|       |-- src/
-|       |   `-- CSharp12RefactoringLab/
-|       |       |-- CSharp12RefactoringLab.csproj
-|       |       |-- Program.cs
-|       |       |-- Formatting/
-|       |       |   `-- TodoFormatter.cs
-|       |       |-- Models/
-|       |       |   `-- TodoItem.cs
-|       |       `-- Services/
-|       |           `-- TodoService.cs
-|       `-- tests/
-|           `-- CSharp12RefactoringLab.Tests/
-|               |-- CSharp12RefactoringLab.Tests.csproj
-|               `-- CSharp12FeatureTests.cs
+|   |-- csharp-12-features/
+|   |   |-- CSharp12RefactoringLab.slnx
+|   |   |-- README.md
+|   |   |-- src/
+|   |   |   `-- CSharp12RefactoringLab/
+|   |   |       |-- CSharp12RefactoringLab.csproj
+|   |   |       |-- Program.cs
+|   |   |       |-- Formatting/
+|   |   |       |   `-- TodoFormatter.cs
+|   |   |       |-- Models/
+|   |   |       |   `-- TodoItem.cs
+|   |   |       `-- Services/
+|   |   |           `-- TodoService.cs
+|   |   `-- tests/
+|   |       `-- CSharp12RefactoringLab.Tests/
+|   |           |-- CSharp12RefactoringLab.Tests.csproj
+|   |           `-- CSharp12FeatureTests.cs
+|   |-- high-performance-memory-management/
+|   |   |-- HighPerformanceLogIngestor.slnx
+|   |   |-- README.md
+|   |   |-- src/
+|   |   |   `-- HighPerformanceLogIngestor/
+|   |   |       |-- HighPerformanceLogIngestor.csproj
+|   |   |       |-- Program.cs
+|   |   |       |-- Models/
+|   |   |       |   `-- LogEntry.cs
+|   |   |       |-- Parsing/
+|   |   |       |   |-- LogLineDecoder.cs
+|   |   |       |   `-- Utf8LogLineParser.cs
+|   |   |       `-- Pipelines/
+|   |   |           |-- LogIngestionResult.cs
+|   |   |           `-- LogIngestor.cs
+|   |   `-- tests/
+|   |       `-- HighPerformanceLogIngestor.Tests/
+|   |           |-- HighPerformanceLogIngestor.Tests.csproj
+|   |           |-- HighPerformanceLogTests.cs
+|   |           `-- TestSupport/
+|   |               |-- ChunkedReadStream.cs
+|   |               `-- SegmentedSequence.cs
 |-- aspnet-core/
 |   |-- api-security-in-practice/
 |   |   |-- ApiSecurityMinimal.slnx

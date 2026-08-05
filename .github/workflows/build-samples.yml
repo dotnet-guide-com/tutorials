@@ -21,6 +21,7 @@ on:
       - "cloud-native/health-resilience-zero-downtime/**"
       - "cloud-native/polly-resilience/**"
       - "csharp-language/csharp-12-features/**"
+      - "csharp-language/high-performance-memory-management/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -42,6 +43,7 @@ on:
       - "cloud-native/health-resilience-zero-downtime/**"
       - "cloud-native/polly-resilience/**"
       - "csharp-language/csharp-12-features/**"
+      - "csharp-language/high-performance-memory-management/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -794,3 +796,101 @@ jobs:
           )"
 
           test "${line_count}" = "7"
+
+  test-high-performance-pipelines:
+    name: Test UTF-8 pipelines log ingestor
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          csharp-language/high-performance-memory-management/HighPerformanceLogIngestor.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          csharp-language/high-performance-memory-management/HighPerformanceLogIngestor.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test
+        run: >
+          dotnet test
+          csharp-language/high-performance-memory-management/HighPerformanceLogIngestor.slnx
+          --configuration Release
+          --no-build
+
+      - name: Verify explicit C# language version
+        shell: bash
+        run: |
+          app_version="$(
+            dotnet msbuild \
+              csharp-language/high-performance-memory-management/src/HighPerformanceLogIngestor/HighPerformanceLogIngestor.csproj \
+              -getProperty:LangVersion
+          )"
+
+          test_version="$(
+            dotnet msbuild \
+              csharp-language/high-performance-memory-management/tests/HighPerformanceLogIngestor.Tests/HighPerformanceLogIngestor.Tests.csproj \
+              -getProperty:LangVersion
+          )"
+
+          echo "Application LangVersion: ${app_version}"
+          echo "Test LangVersion: ${test_version}"
+
+          test "${app_version}" = "12.0"
+          test "${test_version}" = "12.0"
+
+      - name: Run deterministic ingestion sample
+        shell: bash
+        run: |
+          output="$(
+            dotnet run \
+              --project csharp-language/high-performance-memory-management/src/HighPerformanceLogIngestor/HighPerformanceLogIngestor.csproj \
+              --configuration Release \
+              --no-build
+          )"
+
+          printf '%s\n' "${output}"
+
+          printf -v expected '%s\n' \
+            'High-Performance UTF-8 Log Ingestor' \
+            'Lines: total=4, valid=3, invalid=1' \
+            'Accepted event IDs: 1001, 1002, 1004' \
+            'Levels: 1=1, 2=1, 4=1' \
+            'First message: Cache warmed' \
+            'Last message: Worker started'
+
+          expected="${expected%$'\n'}"
+
+          if [[ "${output}" != "${expected}" ]]; then
+            echo "Console output did not match the expected output."
+
+            diff \
+              --unified \
+              <(printf '%s\n' "${expected}") \
+              <(printf '%s\n' "${output}") \
+              || true
+
+            exit 1
+          fi
+
+          line_count="$(
+            printf '%s\n' "${output}" |
+              wc --lines |
+              tr --delete ' '
+          )"
+
+          test "${line_count}" = "6"

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/HighPerformanceLogIngestor/HighPerformanceLogIngestor.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/HighPerformanceLogIngestor.Tests/HighPerformanceLogIngestor.Tests.csproj" />
+  </Folder>
+</Solution>
