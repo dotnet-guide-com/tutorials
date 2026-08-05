@@ -27,6 +27,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`cloud-native/polly-resilience`](cloud-native/polly-resilience/) | Focused .NET 10 Polly v8 catalog sample demonstrating explicit stale-cache fallback, timeout-driven degradation, outbound concurrency isolation, strategy event counters, and deterministic integration testing | [Polly Resilience (Polly v8): Timeouts, Retries, Circuits, Bulkheads, Hedging](https://www.dotnet-guide.com/tutorials/cloud-native/polly-resilience/) |
 | [`csharp-language/csharp-12-features`](csharp-language/csharp-12-features/) | Focused .NET 10 console lab locked to C# 12.0, demonstrating primary constructors with explicit properties, collection expressions and spreads, default lambda parameters, tuple-type aliases, deterministic output, and unit tests | [C# 12 Language Features: Primary Constructors, Collections & More](https://www.dotnet-guide.com/tutorials/csharp-language/csharp-12-features/) |
 | [`csharp-language/high-performance-memory-management`](csharp-language/high-performance-memory-management/) | Focused .NET 10 UTF-8 ingestion sample demonstrating PipeReader framing, segmented ReadOnlySequence handling, span-based numeric parsing, bounded MemoryPool ownership, strict input validation, deterministic output, and tests | [High-Performance C#: Span<T>, Memory<T>, SIMD & Pipelines](https://www.dotnet-guide.com/tutorials/csharp-language/high-performance-memory-management/) |
+| [`csharp-language/modern-patterns-result-pipeline`](csharp-language/modern-patterns-result-pipeline/) | Focused .NET 10 console companion locked to C# 12.0, demonstrating a custom Result type, safe and diagnostic errors, Map/Bind/BindAsync composition, invariant text-import validation, short-circuit persistence, cancellation, deterministic output, and tests | [C# 12 Functional Patterns: Result Type, Error Handling & Composable Pipeline Testing](https://www.dotnet-guide.com/tutorials/csharp-language/modern-patterns-result-pipeline/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -309,6 +310,29 @@ tutorials/
 |   |           `-- TestSupport/
 |   |               |-- ChunkedReadStream.cs
 |   |               `-- SegmentedSequence.cs
+|   |-- modern-patterns-result-pipeline/
+|   |   |-- ResultPipelineLab.slnx
+|   |   |-- README.md
+|   |   |-- src/
+|   |   |   `-- ResultPipelineLab/
+|   |   |       |-- ResultPipelineLab.csproj
+|   |   |       |-- Program.cs
+|   |   |       |-- Core/
+|   |   |       |   |-- Result.cs
+|   |   |       |   `-- ResultExtensions.cs
+|   |   |       |-- Models/
+|   |   |       |   `-- ImportModels.cs
+|   |   |       |-- Persistence/
+|   |   |       |   `-- InMemoryProductStore.cs
+|   |   |       `-- Pipeline/
+|   |   |           |-- ImportPipeline.cs
+|   |   |           |-- ParseStage.cs
+|   |   |           |-- TransformStage.cs
+|   |   |           `-- ValidateStage.cs
+|   |   `-- tests/
+|   |       `-- ResultPipelineLab.Tests/
+|   |           |-- ResultPipelineLab.Tests.csproj
+|   |           `-- ResultPipelineTests.cs
 |-- aspnet-core/
 |   |-- api-security-in-practice/
 |   |   |-- ApiSecurityMinimal.slnx
