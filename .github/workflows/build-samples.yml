@@ -22,6 +22,7 @@ on:
       - "cloud-native/polly-resilience/**"
       - "csharp-language/csharp-12-features/**"
       - "csharp-language/high-performance-memory-management/**"
+      - "csharp-language/modern-patterns-result-pipeline/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -44,6 +45,7 @@ on:
       - "cloud-native/polly-resilience/**"
       - "csharp-language/csharp-12-features/**"
       - "csharp-language/high-performance-memory-management/**"
+      - "csharp-language/modern-patterns-result-pipeline/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -894,3 +896,100 @@ jobs:
           )"
 
           test "${line_count}" = "6"
+
+  test-result-pipeline:
+    name: Test C# Result pipeline sample
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          csharp-language/modern-patterns-result-pipeline/ResultPipelineLab.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          csharp-language/modern-patterns-result-pipeline/ResultPipelineLab.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test
+        run: >
+          dotnet test
+          csharp-language/modern-patterns-result-pipeline/ResultPipelineLab.slnx
+          --configuration Release
+          --no-build
+
+      - name: Verify explicit C# language version
+        shell: bash
+        run: |
+          app_version="$(
+            dotnet msbuild \
+              csharp-language/modern-patterns-result-pipeline/src/ResultPipelineLab/ResultPipelineLab.csproj \
+              -getProperty:LangVersion
+          )"
+
+          test_version="$(
+            dotnet msbuild \
+              csharp-language/modern-patterns-result-pipeline/tests/ResultPipelineLab.Tests/ResultPipelineLab.Tests.csproj \
+              -getProperty:LangVersion
+          )"
+
+          echo "Application LangVersion: ${app_version}"
+          echo "Test LangVersion: ${test_version}"
+
+          test "${app_version}" = "12.0"
+          test "${test_version}" = "12.0"
+
+      - name: Run deterministic Result pipeline sample
+        shell: bash
+        run: |
+          output="$(
+            dotnet run \
+              --project csharp-language/modern-patterns-result-pipeline/src/ResultPipelineLab/ResultPipelineLab.csproj \
+              --configuration Release \
+              --no-build
+          )"
+
+          printf '%s\n' "${output}"
+
+          printf -v expected '%s\n' \
+            'C# 12 Result Pipeline Lab' \
+            'Success: imported=2, writes=1' \
+            'Products: Widget Pro | Travel Mug' \
+            'Failure: code=VALIDATE_BATCH_FAILED, writes=0' \
+            'Public message: 1 record(s) failed validation.'
+
+          expected="${expected%$'\n'}"
+
+          if [[ "${output}" != "${expected}" ]]; then
+            echo "Console output did not match the expected output."
+
+            diff \
+              --unified \
+              <(printf '%s\n' "${expected}") \
+              <(printf '%s\n' "${output}") \
+              || true
+
+            exit 1
+          fi
+
+          line_count="$(
+            printf '%s\n' "${output}" |
+              wc --lines |
+              tr --delete ' '
+          )"
+
+          test "${line_count}" = "5"
