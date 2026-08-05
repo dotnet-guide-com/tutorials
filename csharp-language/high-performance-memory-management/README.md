@@ -102,8 +102,13 @@ Caller cancellation propagates as cancellation.
 The ingestor enforces the 4,096-byte logical line limit *before* a newline
 arrives, not just when the decoder receives a complete line.
 
-A running byte counter tracks the incomplete record across `PipeReader` reads.
-When the counter exceeds 4,097 bytes (4,096 plus one optional CR byte):
+On each `PipeReader` read, after all complete LF-delimited lines are extracted,
+the ingestor examines the length of the current retained, unterminated
+`ReadOnlySequence<byte>`. Because the sequence already includes bytes retained
+from earlier reads, its length is not accumulated again.
+
+When the retained sequence exceeds 4,097 bytes (4,096 plus one optional CR
+byte):
 
 1. the record is counted exactly once (total and invalid);
 2. the ingestor enters discard mode;

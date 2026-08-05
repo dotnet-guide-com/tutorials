@@ -8,7 +8,7 @@ namespace HighPerformanceLogIngestor.Pipelines;
 public sealed class LogIngestor(
     LogLineDecoder decoder)
 {
-    // The maximum bytes of an incomplete record retained while waiting
+    // The maximum bytes of an unterminated record retained while waiting
     // for a newline before triggering oversized-record discard.
     // Set to MaximumLineLength + 1 so a valid maximum-length record
     // can be followed by CR before LF.
@@ -60,11 +60,6 @@ public sealed class LogIngestor(
         int pooledCopies =
             0;
 
-        // Running count of incomplete-record bytes seen across
-        // PipeReader reads when no LF is present in the buffer.
-        long incompleteBytesSeen =
-            0;
-
         bool discardingOversized =
             false;
 
@@ -100,9 +95,6 @@ public sealed class LogIngestor(
                     out ReadOnlySequence<byte>
                         line))
                 {
-                    incompleteBytesSeen =
-                        0;
-
                     if (discardingOversized)
                     {
                         // This LF ends the oversized-discard cycle.
@@ -129,34 +121,24 @@ public sealed class LogIngestor(
                     }
 
                     // Consume all bytes and keep looking for LF.
-                    incompleteBytesSeen =
-                        0;
-
                     reader.AdvanceTo(
                         buffer.End);
 
                     continue;
                 }
 
-                if (!buffer.IsEmpty)
+                // Examine the current retained, unterminated sequence.
+                // The sequence already includes bytes retained from
+                // earlier reads, so its length is not accumulated again.
+                if (!buffer.IsEmpty
+                    && buffer.Length
+                        > MaxRetainedBeforeNewline)
                 {
-                    incompleteBytesSeen +=
-                        buffer.Length;
-                }
-
-                if (incompleteBytesSeen
-                    > MaxRetainedBeforeNewline)
-                {
-                    // The incomplete record exceeds the bound.
-                    // Count it only once and enter discard mode.
                     totalLines++;
                     invalidLines++;
 
                     discardingOversized =
                         true;
-
-                    incompleteBytesSeen =
-                        0;
 
                     reader.AdvanceTo(
                         buffer.End);

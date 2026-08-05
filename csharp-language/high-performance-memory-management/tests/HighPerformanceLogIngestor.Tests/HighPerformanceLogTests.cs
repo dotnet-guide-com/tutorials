@@ -281,78 +281,184 @@ public sealed class HighPerformanceLogTests
     public async Task
         Ingestor_handles_oversized_and_invalid_and_empty_lines()
     {
-        // --- oversized record across repeated small stream reads ---
-        // 6000 'A's produce > 4098 bytes without LF, triggering the
-        // ingestor's oversized-discard path across PipeReader reads.
+        // --- oversized record: 7000 'A's + LF + valid follower ---
+        // 7000 bytes ensures the retained buffer exceeds
+        // MaxRetainedBeforeNewline (4097) while no LF is present,
+        // exercising the ingestor-level discard path.
         byte[] oversizedRecord =
             Enumerable.Repeat(
                     (byte)'A',
-                    6_000)
+                    7_000)
                 .ToArray();
 
-        byte[] validRecord =
-            "1|1|1|valid\n"u8
+        byte[] oversizedValid =
+            "1|1|1|validA\n"u8
                 .ToArray();
 
-        byte[] allData =
+        byte[] oversizedData =
             new byte[
                 oversizedRecord.Length
                 + 1
-                + validRecord.Length];
+                + oversizedValid.Length];
 
         oversizedRecord.CopyTo(
-            allData,
+            oversizedData,
             0);
 
-        allData[
+        oversizedData[
             oversizedRecord.Length] =
             (byte)'\n';
 
-        validRecord.CopyTo(
-            allData,
+        oversizedValid.CopyTo(
+            oversizedData,
             oversizedRecord.Length
             + 1);
 
-        using var stream =
+        using var oversizedStream =
             new ChunkedReadStream(
-                allData,
+                oversizedData,
                 maximumChunkSize:
                     2048);
 
-        var accepted =
+        var oversizedAccepted =
             new List<LogEntry>();
 
-        LogIngestionResult result =
+        LogIngestionResult oversizedResult =
             await CreateIngestor()
                 .IngestAsync(
-                    stream,
-                    accepted.Add,
+                    oversizedStream,
+                    oversizedAccepted.Add,
+                    TestContext.Current
+                        .CancellationToken);
+
+        // --- exact 4096-byte LF-terminated record + valid follower ---
+        // "1785924000|2|1001|" = 22 bytes; pad message to 4096 total.
+        byte[] prefix =
+            "1785924000|2|1001|"u8
+                .ToArray();
+
+        const int boundaryLength =
+            LogLineDecoder.MaximumLineLength;
+
+        int messagePad =
+            boundaryLength
+            - prefix.Length;
+
+        byte[] boundaryLF =
+            new byte[
+                prefix.Length
+                + messagePad
+                + 1
+                + oversizedValid.Length];
+
+        prefix.CopyTo(
+            boundaryLF,
+            0);
+
+        Array.Fill<byte>(
+            boundaryLF,
+            (byte)'x',
+            prefix.Length,
+            messagePad);
+
+        boundaryLF[
+            boundaryLength] =
+            (byte)'\n';
+
+        oversizedValid.CopyTo(
+            boundaryLF,
+            boundaryLength
+            + 1);
+
+        using var boundaryLFStream =
+            new ChunkedReadStream(
+                boundaryLF,
+                maximumChunkSize:
+                    2_048);
+
+        var boundaryLFAccepted =
+            new List<LogEntry>();
+
+        LogIngestionResult boundaryLFResult =
+            await CreateIngestor()
+                .IngestAsync(
+                    boundaryLFStream,
+                    boundaryLFAccepted.Add,
+                    TestContext.Current
+                        .CancellationToken);
+
+        // --- exact 4096-byte CRLF-terminated record + valid follower ---
+        byte[] boundaryCRLF =
+            new byte[
+                prefix.Length
+                + messagePad
+                + 2
+                + oversizedValid.Length];
+
+        prefix.CopyTo(
+            boundaryCRLF,
+            0);
+
+        Array.Fill<byte>(
+            boundaryCRLF,
+            (byte)'x',
+            prefix.Length,
+            messagePad);
+
+        boundaryCRLF[
+            boundaryLength] =
+            (byte)'\r';
+
+        boundaryCRLF[
+            boundaryLength
+            + 1] =
+            (byte)'\n';
+
+        oversizedValid.CopyTo(
+            boundaryCRLF,
+            boundaryLength
+            + 2);
+
+        using var boundaryCRLFStream =
+            new ChunkedReadStream(
+                boundaryCRLF,
+                maximumChunkSize:
+                    2_048);
+
+        var boundaryCRLFAccepted =
+            new List<LogEntry>();
+
+        LogIngestionResult boundaryCRLFResult =
+            await CreateIngestor()
+                .IngestAsync(
+                    boundaryCRLFStream,
+                    boundaryCRLFAccepted.Add,
                     TestContext.Current
                         .CancellationToken);
 
         // --- invalid-and-empty-lines data ---
-        const string secondInput =
+        const string invalidInput =
             "1785924000|2|1001|Valid\n"
             + "\n"
             + "invalid\n"
             + "1785924001|1|1002|Also valid\n";
 
-        using var stream2 =
+        using var invalidStream =
             new MemoryStream(
                 Encoding.UTF8
                     .GetBytes(
-                        secondInput),
+                        invalidInput),
                 writable:
                     false);
 
-        var accepted2 =
+        var invalidAccepted =
             new List<LogEntry>();
 
-        LogIngestionResult result2 =
+        LogIngestionResult invalidResult =
             await CreateIngestor()
                 .IngestAsync(
-                    stream2,
-                    accepted2.Add,
+                    invalidStream,
+                    invalidAccepted.Add,
                     TestContext.Current
                         .CancellationToken);
 
@@ -360,47 +466,89 @@ public sealed class HighPerformanceLogTests
         // total=2 (1 discarded + 1 valid), valid=1, invalid=1
         Assert.Equal(
             2,
-            result.TotalLines);
+            oversizedResult.TotalLines);
 
         Assert.Equal(
             1,
-            result.ValidLines);
+            oversizedResult.ValidLines);
 
         Assert.Equal(
             1,
-            result.InvalidLines);
+            oversizedResult.InvalidLines);
 
         Assert.Single(
-            accepted);
+            oversizedAccepted);
 
         Assert.Equal(
-            "valid",
-            accepted[0].Message);
+            "validA",
+            oversizedAccepted[0].Message);
 
-        // --- Second-stream assertions ---
+        // --- 4096-byte LF boundary assertions ---
+        Assert.Equal(
+            2,
+            boundaryLFResult.TotalLines);
+
+        Assert.Equal(
+            2,
+            boundaryLFResult.ValidLines);
+
+        Assert.Equal(
+            0,
+            boundaryLFResult.InvalidLines);
+
+        Assert.Equal(
+            2,
+            boundaryLFAccepted.Count);
+
+        Assert.Equal(
+            "validA",
+            boundaryLFAccepted[1].Message);
+
+        // --- 4096-byte CRLF boundary assertions ---
+        Assert.Equal(
+            2,
+            boundaryCRLFResult.TotalLines);
+
+        Assert.Equal(
+            2,
+            boundaryCRLFResult.ValidLines);
+
+        Assert.Equal(
+            0,
+            boundaryCRLFResult.InvalidLines);
+
+        Assert.Equal(
+            2,
+            boundaryCRLFAccepted.Count);
+
+        Assert.Equal(
+            "validA",
+            boundaryCRLFAccepted[1].Message);
+
+        // --- Invalid-and-empty-lines assertions ---
         Assert.Equal(
             4,
-            result2.TotalLines);
+            invalidResult.TotalLines);
 
         Assert.Equal(
             2,
-            result2.ValidLines);
+            invalidResult.ValidLines);
 
         Assert.Equal(
             2,
-            result2.InvalidLines);
+            invalidResult.InvalidLines);
 
         Assert.Equal(
             2,
-            accepted2.Count);
+            invalidAccepted.Count);
 
         Assert.Equal(
             "Valid",
-            accepted2[0].Message);
+            invalidAccepted[0].Message);
 
         Assert.Equal(
             "Also valid",
-            accepted2[1].Message);
+            invalidAccepted[1].Message);
     }
 
     [Fact]
