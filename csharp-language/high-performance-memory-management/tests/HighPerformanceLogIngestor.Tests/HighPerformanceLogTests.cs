@@ -88,6 +88,25 @@ public sealed class HighPerformanceLogTests
                     line,
                     out _));
         }
+
+        // ChunkedReadStream constructor validation.
+        Assert.Throws<ArgumentNullException>(
+            () =>
+                new ChunkedReadStream(
+                    null!,
+                    1));
+
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () =>
+                new ChunkedReadStream(
+                    [],
+                    0));
+
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () =>
+                new ChunkedReadStream(
+                    [],
+                    -1));
     }
 
     [Fact]
@@ -97,6 +116,7 @@ public sealed class HighPerformanceLogTests
         var decoder =
             CreateDecoder();
 
+        // Valid multi-segment line.
         ReadOnlySequence<byte> line =
             SegmentedSequence.Create(
                 "1785924"u8
@@ -126,6 +146,34 @@ public sealed class HighPerformanceLogTests
         Assert.Equal(
             1001,
             entry.EventId);
+
+        // Invalid multi-segment line: takes pooled-copy path but
+        // fails parsing.
+        ReadOnlySequence<byte> invalidLine =
+            SegmentedSequence.Create(
+                "invalid"u8
+                    .ToArray(),
+
+                "|2|"u8
+                    .ToArray(),
+
+                "1001|msg"u8
+                    .ToArray());
+
+        success =
+            decoder.TryDecode(
+                invalidLine,
+                out entry,
+                out usedPooledCopy);
+
+        Assert.False(
+            success);
+
+        Assert.True(
+            usedPooledCopy);
+
+        Assert.Null(
+            entry);
     }
 
     [Fact]
@@ -231,21 +279,45 @@ public sealed class HighPerformanceLogTests
 
     [Fact]
     public async Task
-        Ingestor_counts_invalid_and_empty_lines()
+        Ingestor_handles_oversized_and_invalid_and_empty_lines()
     {
-        const string input =
-            "1785924000|2|1001|Valid\n"
-            + "\n"
-            + "invalid\n"
-            + "1785924001|1|1002|Also valid\n";
+        // --- oversized record across repeated small stream reads ---
+        // 6000 'A's produce > 4098 bytes without LF, triggering the
+        // ingestor's oversized-discard path across PipeReader reads.
+        byte[] oversizedRecord =
+            Enumerable.Repeat(
+                    (byte)'A',
+                    6_000)
+                .ToArray();
+
+        byte[] validRecord =
+            "1|1|1|valid\n"u8
+                .ToArray();
+
+        byte[] allData =
+            new byte[
+                oversizedRecord.Length
+                + 1
+                + validRecord.Length];
+
+        oversizedRecord.CopyTo(
+            allData,
+            0);
+
+        allData[
+            oversizedRecord.Length] =
+            (byte)'\n';
+
+        validRecord.CopyTo(
+            allData,
+            oversizedRecord.Length
+            + 1);
 
         using var stream =
-            new MemoryStream(
-                Encoding.UTF8
-                    .GetBytes(
-                        input),
-                writable:
-                    false);
+            new ChunkedReadStream(
+                allData,
+                maximumChunkSize:
+                    2048);
 
         var accepted =
             new List<LogEntry>();
@@ -258,21 +330,77 @@ public sealed class HighPerformanceLogTests
                     TestContext.Current
                         .CancellationToken);
 
+        // --- invalid-and-empty-lines data ---
+        const string secondInput =
+            "1785924000|2|1001|Valid\n"
+            + "\n"
+            + "invalid\n"
+            + "1785924001|1|1002|Also valid\n";
+
+        using var stream2 =
+            new MemoryStream(
+                Encoding.UTF8
+                    .GetBytes(
+                        secondInput),
+                writable:
+                    false);
+
+        var accepted2 =
+            new List<LogEntry>();
+
+        LogIngestionResult result2 =
+            await CreateIngestor()
+                .IngestAsync(
+                    stream2,
+                    accepted2.Add,
+                    TestContext.Current
+                        .CancellationToken);
+
+        // --- Oversized-record assertions ---
+        // total=2 (1 discarded + 1 valid), valid=1, invalid=1
         Assert.Equal(
-            4,
+            2,
             result.TotalLines);
 
         Assert.Equal(
-            2,
+            1,
             result.ValidLines);
 
         Assert.Equal(
-            2,
+            1,
             result.InvalidLines);
+
+        Assert.Single(
+            accepted);
+
+        Assert.Equal(
+            "valid",
+            accepted[0].Message);
+
+        // --- Second-stream assertions ---
+        Assert.Equal(
+            4,
+            result2.TotalLines);
 
         Assert.Equal(
             2,
-            accepted.Count);
+            result2.ValidLines);
+
+        Assert.Equal(
+            2,
+            result2.InvalidLines);
+
+        Assert.Equal(
+            2,
+            accepted2.Count);
+
+        Assert.Equal(
+            "Valid",
+            accepted2[0].Message);
+
+        Assert.Equal(
+            "Also valid",
+            accepted2[1].Message);
     }
 
     [Fact]

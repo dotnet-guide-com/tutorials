@@ -97,6 +97,37 @@ the caller's stream open.
 
 Caller cancellation propagates as cancellation.
 
+## Oversized-record handling
+
+The ingestor enforces the 4,096-byte logical line limit *before* a newline
+arrives, not just when the decoder receives a complete line.
+
+A running byte counter tracks the incomplete record across `PipeReader` reads.
+When the counter exceeds 4,097 bytes (4,096 plus one optional CR byte):
+
+1. the record is counted exactly once (total and invalid);
+2. the ingestor enters discard mode;
+3. incoming bytes are consumed but not retained;
+4. after the next LF, normal parsing resumes with the following record.
+
+This prevents an unterminated or oversized record from causing unbounded
+retained `PipeReader` data. The sample's deterministic output does not
+include oversized records because the sample data stays within the limit.
+
+## Pooled-copy accounting
+
+`PooledCopies` counts every logical line that required the multi-segment
+pooled-copy path, including malformed lines where the copy was performed
+before the decoder determined the line was invalid.
+
+## Application dependencies
+
+The application targets `net10.0` and uses only types from the .NET 10
+shared framework. It has no direct NuGet package references.
+
+`System.IO.Pipelines` is provided by the .NET 10 target framework and does
+not need a pinned package reference for this sample.
+
 ## Prerequisite
 
 - .NET 10 SDK
@@ -179,7 +210,8 @@ These remain in the complete tutorial or need dedicated measured samples.
 
 - Companion target framework: .NET 10
 - Explicit language version: C# 12.0
-- System.IO.Pipelines: 10.0.10
+- System.IO.Pipelines: provided by the .NET 10 shared framework
+- NuGet package dependencies: none
 - Maximum logical line length: 4,096 bytes
 - External services required: none
 - Expected tests: 8

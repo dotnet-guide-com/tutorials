@@ -1,11 +1,33 @@
 namespace HighPerformanceLogIngestor.Tests.TestSupport;
 
-internal sealed class ChunkedReadStream(
-    byte[] data,
-    int maximumChunkSize) :
-    Stream
+internal sealed class ChunkedReadStream : Stream
 {
+    private readonly byte[] _data;
+    private readonly int _maximumChunkSize;
     private int _position;
+
+    internal ChunkedReadStream(
+        byte[] data,
+        int maximumChunkSize)
+    {
+        ArgumentNullException
+            .ThrowIfNull(
+                data);
+
+        if (maximumChunkSize <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(maximumChunkSize),
+                maximumChunkSize,
+                "The maximum chunk size must be greater than zero.");
+        }
+
+        _data =
+            data;
+
+        _maximumChunkSize =
+            maximumChunkSize;
+    }
 
     public override bool CanRead =>
         true;
@@ -17,7 +39,7 @@ internal sealed class ChunkedReadStream(
         false;
 
     public override long Length =>
-        data.Length;
+        _data.Length;
 
     public override long Position
     {
@@ -85,20 +107,20 @@ internal sealed class ChunkedReadStream(
         Span<byte> destination)
     {
         if (_position
-            >= data.Length)
+            >= _data.Length)
         {
             return 0;
         }
 
         int count =
             Math.Min(
-                maximumChunkSize,
+                _maximumChunkSize,
                 Math.Min(
                     destination.Length,
-                    data.Length
+                    _data.Length
                     - _position));
 
-        data.AsSpan(
+        _data.AsSpan(
                 _position,
                 count)
             .CopyTo(
