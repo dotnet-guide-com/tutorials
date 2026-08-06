@@ -23,6 +23,7 @@ on:
       - "csharp-language/csharp-12-features/**"
       - "csharp-language/high-performance-memory-management/**"
       - "csharp-language/modern-patterns-result-pipeline/**"
+      - "dotnet-8-essentials/background-jobs-hostedservice-queues/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -46,6 +47,7 @@ on:
       - "csharp-language/csharp-12-features/**"
       - "csharp-language/high-performance-memory-management/**"
       - "csharp-language/modern-patterns-result-pipeline/**"
+      - "dotnet-8-essentials/background-jobs-hostedservice-queues/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -993,3 +995,108 @@ jobs:
           )"
 
           test "${line_count}" = "5"
+
+  test-background-job-queue:
+    name: Test bounded background job queue
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          dotnet-8-essentials/background-jobs-hostedservice-queues/BackgroundJobQueueMinimal.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          dotnet-8-essentials/background-jobs-hostedservice-queues/BackgroundJobQueueMinimal.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test
+        run: >
+          dotnet test
+          dotnet-8-essentials/background-jobs-hostedservice-queues/BackgroundJobQueueMinimal.slnx
+          --configuration Release
+          --no-build
+
+      - name: Smoke-test API
+        shell: bash
+        run: |
+          app_log="${RUNNER_TEMP}/background-job-queue.log"
+
+          ASPNETCORE_URLS="http://127.0.0.1:5096" \
+            dotnet run \
+              --project dotnet-8-essentials/background-jobs-hostedservice-queues/src/BackgroundJobQueueMinimal/BackgroundJobQueueMinimal.csproj \
+              --configuration Release \
+              --no-build \
+              >"${app_log}" 2>&1 &
+
+          app_pid="$!"
+
+          cleanup() {
+            kill "${app_pid}" 2>/dev/null || true
+            wait "${app_pid}" 2>/dev/null || true
+          }
+
+          trap cleanup EXIT
+
+          for attempt in $(seq 1 40); do
+            if curl \
+              --fail \
+              --silent \
+              http://127.0.0.1:5096/ \
+              >"${RUNNER_TEMP}/background-job-root.json"; then
+              break
+            fi
+
+            if ! kill -0 "${app_pid}" 2>/dev/null; then
+              cat "${app_log}"
+              exit 1
+            fi
+
+            sleep 0.25
+          done
+
+          root="$(
+            cat "${RUNNER_TEMP}/background-job-root.json"
+          )"
+
+          expected_root='{"sample":"bounded-background-job-queue","durability":"in-memory","capacity":4}'
+
+          test "${root}" = "${expected_root}"
+
+          queue="$(
+            curl \
+              --fail \
+              --silent \
+              http://127.0.0.1:5096/jobs/queue
+          )"
+
+          expected_queue='{"capacity":4,"depth":0,"accepting":true}'
+
+          test "${queue}" = "${expected_queue}"
+
+          status="$(
+            curl \
+              --silent \
+              --output "${RUNNER_TEMP}/invalid-job.json" \
+              --write-out '%{http_code}' \
+              --request POST \
+              --header 'Content-Type: application/json' \
+              --data '{"to":"","subject":""}' \
+              http://127.0.0.1:5096/jobs/email
+          )"
+
+          test "${status}" = "400"
