@@ -126,8 +126,11 @@ public sealed class InMemoryJobTracker :
                 out Entry?
                     entry))
         {
-            snapshot =
-                entry.Snapshot;
+            lock (entry.SyncRoot)
+            {
+                snapshot =
+                    entry.Snapshot;
+            }
 
             return true;
         }
@@ -161,15 +164,22 @@ public sealed class InMemoryJobTracker :
                     $"Job '{jobId}' was not found.");
         }
 
-        if (IsTerminal(
-                entry.Snapshot.State))
+        Task<JobSnapshot>
+            completionTask;
+
+        lock (entry.SyncRoot)
         {
-            return entry.Snapshot;
+            if (IsTerminal(
+                    entry.Snapshot.State))
+            {
+                return entry.Snapshot;
+            }
+
+            completionTask =
+                entry.Completion.Task;
         }
 
-        return await entry
-            .Completion
-            .Task
+        return await completionTask
             .WaitAsync(
                 cancellationToken);
     }

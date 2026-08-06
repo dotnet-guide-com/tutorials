@@ -128,6 +128,18 @@ The queue-status endpoint is for demonstration and testing.
 
 It is not an authenticated production admin API.
 
+### Cancellation and concurrency
+
+A producer waiting for bounded capacity uses the HTTP request cancellation
+token. If the request is canceled before the channel accepts the job, the
+temporary tracker registration is removed and the cancellation continues to
+the caller.
+
+Status snapshots returned by `GET /jobs/{jobId}` are synchronized
+independently from the `ConcurrentDictionary` that stores tracker entries.
+Each snapshot read acquires the per-entry lock, ensuring a consistent view of
+terminal state after the worker transitions the job.
+
 ## Prerequisite
 
 - .NET 10 SDK

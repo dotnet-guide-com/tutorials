@@ -161,6 +161,73 @@ public sealed class BackgroundJobQueueTests
         Assert.Equal(
             second.JobId,
             reader.Current.JobId);
+
+        // Second scenario: cancellation of a pending bounded write
+        {
+            BoundedBackgroundJobQueue cancelQueue =
+                CreateQueue(
+                    1);
+
+            EmailJob blocking =
+                CreateJob(
+                    "blocking");
+
+            EmailJob canceled =
+                CreateJob(
+                    "canceled");
+
+            await cancelQueue.EnqueueAsync(
+                blocking,
+                TestContext.Current
+                    .CancellationToken);
+
+            using var cancelSource =
+                new CancellationTokenSource();
+
+            Task canceledWrite =
+                cancelQueue.EnqueueAsync(
+                        canceled,
+                        cancelSource.Token)
+                    .AsTask();
+
+            Assert.False(
+                canceledWrite.IsCompleted);
+
+            cancelSource.Cancel();
+
+            await Assert.ThrowsAsync<
+                OperationCanceledException>(
+                    async () =>
+                        await canceledWrite);
+
+            Assert.Equal(
+                1,
+                cancelQueue.Depth);
+
+            await using
+                IAsyncEnumerator<
+                    EmailJob>
+                    cancelReader =
+                        cancelQueue
+                            .ReadAllAsync(
+                                TestContext
+                                    .Current
+                                    .CancellationToken)
+                            .GetAsyncEnumerator(
+                                TestContext
+                                    .Current
+                                    .CancellationToken);
+
+            Assert.True(
+                await cancelReader
+                    .MoveNextAsync());
+
+            Assert.Equal(
+                blocking.JobId,
+                cancelReader.Current.JobId);
+
+            cancelQueue.Complete();
+        }
     }
 
     [Fact]
@@ -334,6 +401,47 @@ public sealed class BackgroundJobQueueTests
             recorder.ScopeIds
                 .Distinct()
                 .Count());
+
+        // Verify TryGet returns the same terminal state
+        Assert.True(
+            tracker.TryGet(
+                failing.JobId,
+                out JobSnapshot?
+                    tryGetFirst));
+
+        Assert.NotNull(
+            tryGetFirst);
+
+        Assert.Equal(
+            first.State,
+            tryGetFirst.State);
+
+        Assert.Equal(
+            first.FailureCode,
+            tryGetFirst.FailureCode);
+
+        Assert.Equal(
+            first.FailureMessage,
+            tryGetFirst.FailureMessage);
+
+        Assert.True(
+            tracker.TryGet(
+                succeeding.JobId,
+                out JobSnapshot?
+                    tryGetSecond));
+
+        Assert.NotNull(
+            tryGetSecond);
+
+        Assert.Equal(
+            second.State,
+            tryGetSecond.State);
+
+        Assert.Null(
+            tryGetSecond.FailureCode);
+
+        Assert.Null(
+            tryGetSecond.FailureMessage);
 
         using var stop =
             new CancellationTokenSource(

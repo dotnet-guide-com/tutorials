@@ -105,6 +105,17 @@ app.MapPost(
                 cancellationToken);
         }
         catch (
+            OperationCanceledException)
+            when (
+                cancellationToken
+                    .IsCancellationRequested)
+        {
+            tracker.Remove(
+                job.JobId);
+
+            throw;
+        }
+        catch (
             ChannelClosedException)
         {
             tracker.Remove(
