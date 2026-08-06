@@ -28,6 +28,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`csharp-language/csharp-12-features`](csharp-language/csharp-12-features/) | Focused .NET 10 console lab locked to C# 12.0, demonstrating primary constructors with explicit properties, collection expressions and spreads, default lambda parameters, tuple-type aliases, deterministic output, and unit tests | [C# 12 Language Features: Primary Constructors, Collections & More](https://www.dotnet-guide.com/tutorials/csharp-language/csharp-12-features/) |
 | [`csharp-language/high-performance-memory-management`](csharp-language/high-performance-memory-management/) | Focused .NET 10 UTF-8 ingestion sample demonstrating PipeReader framing, segmented ReadOnlySequence handling, span-based numeric parsing, bounded MemoryPool ownership, strict input validation, deterministic output, and tests | [High-Performance C#: Span<T>, Memory<T>, SIMD & Pipelines](https://www.dotnet-guide.com/tutorials/csharp-language/high-performance-memory-management/) |
 | [`csharp-language/modern-patterns-result-pipeline`](csharp-language/modern-patterns-result-pipeline/) | Focused .NET 10 console companion locked to C# 12.0, demonstrating a custom Result type, safe and diagnostic errors, Map/Bind/BindAsync composition, invariant text-import validation, short-circuit persistence, cancellation, deterministic output, and tests | [C# 12 Functional Patterns: Result Type, Error Handling & Composable Pipeline Testing](https://www.dotnet-guide.com/tutorials/csharp-language/modern-patterns-result-pipeline/) |
+| [`dotnet-8-essentials/background-jobs-hostedservice-queues`](dotnet-8-essentials/background-jobs-hostedservice-queues/) | Focused ASP.NET Core Minimal API demonstrating a bounded Channel queue, asynchronous backpressure, a BackgroundService consumer, fresh scoped handlers, safe in-memory job status, exception isolation, cancellation, and integration tests | [.NET 8 Background Jobs: IBackgroundTaskQueue, BackgroundService & Production-Ready Patterns](https://www.dotnet-guide.com/tutorials/dotnet-8-essentials/background-jobs-hostedservice-queues/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -131,6 +132,28 @@ tutorials/
 |           `-- TransactionalOutboxMinimal.Tests/
 |               |-- TransactionalOutboxMinimal.Tests.csproj
 |               `-- OutboxFlowTests.cs
+|-- dotnet-8-essentials/
+|   `-- background-jobs-hostedservice-queues/
+|       |-- BackgroundJobQueueMinimal.slnx
+|       |-- README.md
+|       |-- src/
+|       |   `-- BackgroundJobQueueMinimal/
+|       |       |-- BackgroundJobQueueMinimal.csproj
+|       |       |-- Program.cs
+|       |       |-- Jobs/
+|       |       |   |-- BackgroundJobModels.cs
+|       |       |   |-- IBackgroundJobQueue.cs
+|       |       |   |-- BoundedBackgroundJobQueue.cs
+|       |       |   |-- IJobTracker.cs
+|       |       |   |-- InMemoryJobTracker.cs
+|       |       |   `-- QueuedEmailWorker.cs
+|       |       `-- Services/
+|       |           |-- IEmailJobHandler.cs
+|       |           `-- FakeEmailJobHandler.cs
+|       `-- tests/
+|           `-- BackgroundJobQueueMinimal.Tests/
+|               |-- BackgroundJobQueueMinimal.Tests.csproj
+|               `-- BackgroundJobQueueTests.cs
 |-- blazor/
 |   |-- create-interactive-ui-csharp-12/
 |   |   |-- BlazorTodoMinimal.slnx
