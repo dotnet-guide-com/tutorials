@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ConfigPrecedenceMinimal/ConfigPrecedenceMinimal.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ConfigPrecedenceMinimal.Tests/ConfigPrecedenceMinimal.Tests.csproj" />
+  </Folder>
+</Solution>
