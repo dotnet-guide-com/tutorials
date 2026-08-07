@@ -24,6 +24,7 @@ on:
       - "csharp-language/high-performance-memory-management/**"
       - "csharp-language/modern-patterns-result-pipeline/**"
       - "dotnet-8-essentials/background-jobs-hostedservice-queues/**"
+      - "dotnet-8-essentials/configuration-secrets-environments/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -48,6 +49,7 @@ on:
       - "csharp-language/high-performance-memory-management/**"
       - "csharp-language/modern-patterns-result-pipeline/**"
       - "dotnet-8-essentials/background-jobs-hostedservice-queues/**"
+      - "dotnet-8-essentials/configuration-secrets-environments/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -1100,3 +1102,133 @@ jobs:
           )"
 
           test "${status}" = "400"
+
+  test-config-precedence:
+    name: Test typed configuration precedence sample
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          dotnet-8-essentials/configuration-secrets-environments/ConfigPrecedenceMinimal.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          dotnet-8-essentials/configuration-secrets-environments/ConfigPrecedenceMinimal.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test
+        run: >
+          dotnet test
+          dotnet-8-essentials/configuration-secrets-environments/ConfigPrecedenceMinimal.slnx
+          --configuration Release
+          --no-build
+
+      - name: Verify application has no direct packages
+        shell: bash
+        run: |
+          output="$(
+            dotnet list \
+              dotnet-8-essentials/configuration-secrets-environments/src/ConfigPrecedenceMinimal/ConfigPrecedenceMinimal.csproj \
+              package
+          )"
+
+          printf '%s\n' "${output}"
+
+          printf '%s\n' "${output}" |
+            grep --fixed-strings \
+              "No package references were found"
+
+      - name: Verify configuration precedence and redaction
+        shell: bash
+        env:
+          DOTNET_ENVIRONMENT: Development
+          ASPNETCORE_URLS: http://127.0.0.1:5097
+          CFGPLAY_App__ApiKey: ci-demo-key-1234
+          CFGPLAY_App__TimeoutSeconds: "30"
+        run: |
+          app_log="${RUNNER_TEMP}/config-precedence.log"
+
+          dotnet run \
+            --project dotnet-8-essentials/configuration-secrets-environments/src/ConfigPrecedenceMinimal/ConfigPrecedenceMinimal.csproj \
+            --configuration Release \
+            --no-build \
+            -- \
+            --App:TimeoutSeconds=40 \
+            --Features:AdvancedSearch=false \
+            >"${app_log}" 2>&1 &
+
+          app_pid="$!"
+
+          cleanup() {
+            kill "${app_pid}" 2>/dev/null || true
+            wait "${app_pid}" 2>/dev/null || true
+          }
+
+          trap cleanup EXIT
+
+          for attempt in $(seq 1 40); do
+            if curl \
+              --fail \
+              --silent \
+              http://127.0.0.1:5097/ \
+              >"${RUNNER_TEMP}/config-root.json"; then
+              break
+            fi
+
+            if ! kill -0 "${app_pid}" 2>/dev/null; then
+              cat "${app_log}"
+              exit 1
+            fi
+
+            sleep 0.25
+          done
+
+          root="$(
+            cat "${RUNNER_TEMP}/config-root.json"
+          )"
+
+          expected_root='{"sample":"typed-config-precedence","environment":"Development","serviceBaseUrl":"https://api.example.test","timeoutSeconds":40,"advancedSearch":false,"apiKeyConfigured":true}'
+
+          if [[ "${root}" != "${expected_root}" ]]; then
+            printf 'Unexpected root response:\n%s\n' "${root}"
+            exit 1
+          fi
+
+          diagnostics="$(
+            curl \
+              --fail \
+              --silent \
+              http://127.0.0.1:5097/dev/config
+          )"
+
+          expected_diagnostics='{"environment":"Development","serviceBaseUrl":"https://api.example.test","timeoutSeconds":40,"advancedSearch":false,"apiKey":"[REDACTED]","apiKeyConfigured":true}'
+
+          if [[ "${diagnostics}" != "${expected_diagnostics}" ]]; then
+            printf 'Unexpected diagnostics response:\n%s\n' "${diagnostics}"
+            exit 1
+          fi
+
+          if printf '%s\n%s\n' \
+              "${root}" \
+              "${diagnostics}" |
+              grep --quiet \
+                --fixed-strings \
+                "ci-demo-key-1234"; then
+            echo "Secret-like CI value leaked into an HTTP response."
+            exit 1
+          fi
