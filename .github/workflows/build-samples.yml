@@ -1151,7 +1151,7 @@ jobs:
 
           printf '%s\n' "${output}" |
             grep --fixed-strings \
-              "No package references were found"
+              "No packages were found"
 
       - name: Verify configuration precedence and redaction
         shell: bash
