@@ -25,6 +25,7 @@ on:
       - "csharp-language/modern-patterns-result-pipeline/**"
       - "dotnet-8-essentials/background-jobs-hostedservice-queues/**"
       - "dotnet-8-essentials/configuration-secrets-environments/**"
+      - "dotnet-8-essentials/core-features-get-started/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -50,6 +51,7 @@ on:
       - "csharp-language/modern-patterns-result-pipeline/**"
       - "dotnet-8-essentials/background-jobs-hostedservice-queues/**"
       - "dotnet-8-essentials/configuration-secrets-environments/**"
+      - "dotnet-8-essentials/core-features-get-started/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -1232,3 +1234,197 @@ jobs:
             echo "Secret-like CI value leaked into an HTTP response."
             exit 1
           fi
+
+  test-native-aot-essentials:
+    name: Test Native AOT essentials sample
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install Native AOT prerequisites
+        shell: bash
+        run: |
+          sudo apt-get update
+
+          sudo apt-get install \
+            --yes \
+            clang \
+            zlib1g-dev
+
+      - name: Restore
+        run: >
+          dotnet restore
+          dotnet-8-essentials/core-features-get-started/NativeAotEssentialsMinimal.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          dotnet-8-essentials/core-features-get-started/NativeAotEssentialsMinimal.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test
+        run: >
+          dotnet test
+          dotnet-8-essentials/core-features-get-started/NativeAotEssentialsMinimal.slnx
+          --configuration Release
+          --no-build
+
+      - name: Verify application has no direct packages
+        shell: bash
+        run: |
+          output="$(
+            dotnet list \
+              dotnet-8-essentials/core-features-get-started/src/NativeAotEssentialsMinimal/NativeAotEssentialsMinimal.csproj \
+              package
+          )"
+
+          printf '%s\n' "${output}"
+
+          if ! printf '%s\n' "${output}" |
+              grep \
+                --extended-regexp \
+                --quiet \
+                'No (package references|packages) were found'; then
+            echo "Unexpected application package list."
+            exit 1
+          fi
+
+      - name: Publish Native AOT
+        shell: bash
+        run: |
+          publish_dir="${RUNNER_TEMP}/native-aot-essentials"
+          publish_log="${RUNNER_TEMP}/native-aot-publish.log"
+
+          rm -rf "${publish_dir}"
+
+          set -o pipefail
+
+          dotnet publish \
+            dotnet-8-essentials/core-features-get-started/src/NativeAotEssentialsMinimal/NativeAotEssentialsMinimal.csproj \
+            --configuration Release \
+            --runtime linux-x64 \
+            --output "${publish_dir}" \
+            2>&1 |
+            tee "${publish_log}"
+
+          test -x \
+            "${publish_dir}/NativeAotEssentialsMinimal"
+
+          if grep \
+              --extended-regexp \
+              --ignore-case \
+              'warning (IL[0-9]+|CS[0-9]+|NETSDK[0-9]+)' \
+              "${publish_log}"; then
+            echo "Native AOT publish produced a compiler, SDK, trim, or AOT warning."
+            exit 1
+          fi
+
+      - name: Smoke-test native executable
+        shell: bash
+        run: |
+          publish_dir="${RUNNER_TEMP}/native-aot-essentials"
+          app_log="${RUNNER_TEMP}/native-aot-essentials.log"
+
+          ASPNETCORE_URLS="http://127.0.0.1:5098" \
+          DOTNET_ENVIRONMENT="Production" \
+            "${publish_dir}/NativeAotEssentialsMinimal" \
+            >"${app_log}" 2>&1 &
+
+          app_pid="$!"
+
+          cleanup() {
+            kill "${app_pid}" 2>/dev/null || true
+            wait "${app_pid}" 2>/dev/null || true
+          }
+
+          trap cleanup EXIT
+
+          for attempt in $(seq 1 60); do
+            if curl \
+                --fail \
+                --silent \
+                http://127.0.0.1:5098/ \
+                >"${RUNNER_TEMP}/native-aot-root.json"; then
+              break
+            fi
+
+            if ! kill -0 "${app_pid}" 2>/dev/null; then
+              cat "${app_log}"
+              exit 1
+            fi
+
+            sleep 0.25
+          done
+
+          root="$(
+            cat "${RUNNER_TEMP}/native-aot-root.json"
+          )"
+
+          expected_root='{"sample":"native-aot-essentials","builder":"CreateSlimBuilder","json":"source-generated"}'
+
+          if [[ "${root}" != "${expected_root}" ]]; then
+            printf 'Unexpected root response:\n%s\n' "${root}"
+            exit 1
+          fi
+
+          runtime="$(
+            curl \
+              --fail \
+              --silent \
+              http://127.0.0.1:5098/runtime
+          )"
+
+          printf '%s\n' "${runtime}"
+
+          printf '%s\n' "${runtime}" |
+            grep \
+              --fixed-strings \
+              --quiet \
+              '"dynamicCodeSupported":false'
+
+          printf '%s\n' "${runtime}" |
+            grep \
+              --fixed-strings \
+              --quiet \
+              '"dynamicCodeCompiled":false'
+
+          echo_response="$(
+            curl \
+              --fail \
+              --silent \
+              --request POST \
+              --header 'Content-Type: application/json' \
+              --data '{"message":"  hello   native aot  "}' \
+              http://127.0.0.1:5098/echo
+          )"
+
+          expected_echo='{"message":"HELLO NATIVE AOT","length":16}'
+
+          if [[ "${echo_response}" != "${expected_echo}" ]]; then
+            printf 'Unexpected echo response:\n%s\n' "${echo_response}"
+            exit 1
+          fi
+
+          invalid_status="$(
+            curl \
+              --silent \
+              --output "${RUNNER_TEMP}/native-aot-invalid.json" \
+              --write-out '%{http_code}' \
+              --request POST \
+              --header 'Content-Type: application/json' \
+              --data '{"message":"   "}' \
+              http://127.0.0.1:5098/echo
+          )"
+
+          test "${invalid_status}" = "400"
