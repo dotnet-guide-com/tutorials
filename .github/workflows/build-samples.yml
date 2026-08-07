@@ -1291,12 +1291,12 @@ jobs:
 
           printf '%s\n' "${output}"
 
-          if ! printf '%s\n' "${output}" |
-              grep \
-                --extended-regexp \
-                --quiet \
-                'No (package references|packages) were found'; then
-            echo "Unexpected application package list."
+          if grep \
+              --extended-regexp \
+              --quiet \
+              '<PackageReference\s' \
+              dotnet-8-essentials/core-features-get-started/src/NativeAotEssentialsMinimal/NativeAotEssentialsMinimal.csproj; then
+            echo "Application project declares a direct package reference."
             exit 1
           fi
 
