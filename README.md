@@ -29,6 +29,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`csharp-language/high-performance-memory-management`](csharp-language/high-performance-memory-management/) | Focused .NET 10 UTF-8 ingestion sample demonstrating PipeReader framing, segmented ReadOnlySequence handling, span-based numeric parsing, bounded MemoryPool ownership, strict input validation, deterministic output, and tests | [High-Performance C#: Span<T>, Memory<T>, SIMD & Pipelines](https://www.dotnet-guide.com/tutorials/csharp-language/high-performance-memory-management/) |
 | [`csharp-language/modern-patterns-result-pipeline`](csharp-language/modern-patterns-result-pipeline/) | Focused .NET 10 console companion locked to C# 12.0, demonstrating a custom Result type, safe and diagnostic errors, Map/Bind/BindAsync composition, invariant text-import validation, short-circuit persistence, cancellation, deterministic output, and tests | [C# 12 Functional Patterns: Result Type, Error Handling & Composable Pipeline Testing](https://www.dotnet-guide.com/tutorials/csharp-language/modern-patterns-result-pipeline/) |
 | [`dotnet-8-essentials/background-jobs-hostedservice-queues`](dotnet-8-essentials/background-jobs-hostedservice-queues/) | Focused ASP.NET Core Minimal API demonstrating a bounded Channel queue, asynchronous backpressure, a BackgroundService consumer, fresh scoped handlers, safe in-memory job status, exception isolation, cancellation, and integration tests | [.NET 8 Background Jobs: IBackgroundTaskQueue, BackgroundService & Production-Ready Patterns](https://www.dotnet-guide.com/tutorials/dotnet-8-essentials/background-jobs-hostedservice-queues/) |
+| [`dotnet-8-essentials/configuration-secrets-environments`](dotnet-8-essentials/configuration-secrets-environments/) | Focused .NET 10 Minimal API demonstrating layered configuration precedence, prefixed environment variables, command-line overrides, strongly typed options, startup validation, User Secrets metadata, a lightweight feature flag, and safe Development-only diagnostics | [.NET 8 Configuration & Secrets Management: Typed Options, User Secrets & Feature Flags](https://www.dotnet-guide.com/tutorials/dotnet-8-essentials/configuration-secrets-environments/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -133,27 +134,47 @@ tutorials/
 |               |-- TransactionalOutboxMinimal.Tests.csproj
 |               `-- OutboxFlowTests.cs
 |-- dotnet-8-essentials/
-|   `-- background-jobs-hostedservice-queues/
-|       |-- BackgroundJobQueueMinimal.slnx
+|   |-- background-jobs-hostedservice-queues/
+|   |   |-- BackgroundJobQueueMinimal.slnx
+|   |   |-- README.md
+|   |   |-- src/
+|   |   |   `-- BackgroundJobQueueMinimal/
+|   |   |       |-- BackgroundJobQueueMinimal.csproj
+|   |   |       |-- Program.cs
+|   |   |       |-- Jobs/
+|   |   |       |   |-- BackgroundJobModels.cs
+|   |   |       |   |-- IBackgroundJobQueue.cs
+|   |   |       |   |-- BoundedBackgroundJobQueue.cs
+|   |   |       |   |-- IJobTracker.cs
+|   |   |       |   |-- InMemoryJobTracker.cs
+|   |   |       |   `-- QueuedEmailWorker.cs
+|   |   |       `-- Services/
+|   |   |           |-- IEmailJobHandler.cs
+|   |   |           `-- FakeEmailJobHandler.cs
+|   |   `-- tests/
+|   |       `-- BackgroundJobQueueMinimal.Tests/
+|   |           |-- BackgroundJobQueueMinimal.Tests.csproj
+|   |           `-- BackgroundJobQueueTests.cs
+|   `-- configuration-secrets-environments/
+|       |-- ConfigPrecedenceMinimal.slnx
 |       |-- README.md
 |       |-- src/
-|       |   `-- BackgroundJobQueueMinimal/
-|       |       |-- BackgroundJobQueueMinimal.csproj
+|       |   `-- ConfigPrecedenceMinimal/
+|       |       |-- ConfigPrecedenceMinimal.csproj
 |       |       |-- Program.cs
-|       |       |-- Jobs/
-|       |       |   |-- BackgroundJobModels.cs
-|       |       |   |-- IBackgroundJobQueue.cs
-|       |       |   |-- BoundedBackgroundJobQueue.cs
-|       |       |   |-- IJobTracker.cs
-|       |       |   |-- InMemoryJobTracker.cs
-|       |       |   `-- QueuedEmailWorker.cs
-|       |       `-- Services/
-|       |           |-- IEmailJobHandler.cs
-|       |           `-- FakeEmailJobHandler.cs
+|       |       |-- appsettings.json
+|       |       |-- appsettings.Development.json
+|       |       |-- Diagnostics/
+|       |       |   `-- SafeConfigSnapshot.cs
+|       |       |-- Options/
+|       |       |   |-- AppOptions.cs
+|       |       |   `-- FeatureFlagOptions.cs
+|       |       `-- Validation/
+|       |           `-- AppOptionsValidator.cs
 |       `-- tests/
-|           `-- BackgroundJobQueueMinimal.Tests/
-|               |-- BackgroundJobQueueMinimal.Tests.csproj
-|               `-- BackgroundJobQueueTests.cs
+|           `-- ConfigPrecedenceMinimal.Tests/
+|               |-- ConfigPrecedenceMinimal.Tests.csproj
+|               `-- ConfigurationTests.cs
 |-- blazor/
 |   |-- create-interactive-ui-csharp-12/
 |   |   |-- BlazorTodoMinimal.slnx
