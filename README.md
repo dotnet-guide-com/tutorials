@@ -30,6 +30,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`csharp-language/modern-patterns-result-pipeline`](csharp-language/modern-patterns-result-pipeline/) | Focused .NET 10 console companion locked to C# 12.0, demonstrating a custom Result type, safe and diagnostic errors, Map/Bind/BindAsync composition, invariant text-import validation, short-circuit persistence, cancellation, deterministic output, and tests | [C# 12 Functional Patterns: Result Type, Error Handling & Composable Pipeline Testing](https://www.dotnet-guide.com/tutorials/csharp-language/modern-patterns-result-pipeline/) |
 | [`dotnet-8-essentials/background-jobs-hostedservice-queues`](dotnet-8-essentials/background-jobs-hostedservice-queues/) | Focused ASP.NET Core Minimal API demonstrating a bounded Channel queue, asynchronous backpressure, a BackgroundService consumer, fresh scoped handlers, safe in-memory job status, exception isolation, cancellation, and integration tests | [.NET 8 Background Jobs: IBackgroundTaskQueue, BackgroundService & Production-Ready Patterns](https://www.dotnet-guide.com/tutorials/dotnet-8-essentials/background-jobs-hostedservice-queues/) |
 | [`dotnet-8-essentials/configuration-secrets-environments`](dotnet-8-essentials/configuration-secrets-environments/) | Focused .NET 10 Minimal API demonstrating layered configuration precedence, prefixed environment variables, command-line overrides, strongly typed options, startup validation, User Secrets metadata, a lightweight feature flag, and safe Development-only diagnostics | [.NET 8 Configuration & Secrets Management: Typed Options, User Secrets & Feature Flags](https://www.dotnet-guide.com/tutorials/dotnet-8-essentials/configuration-secrets-environments/) |
+| [`dotnet-8-essentials/core-features-get-started`](dotnet-8-essentials/core-features-get-started/) | Focused .NET 10 Native AOT Minimal API demonstrating CreateSlimBuilder, source-generated JSON, typed DI, AOT-safe endpoints, analyzer-aware publishing, and direct native-binary smoke testing | [.NET 8 Essentials: Core Features & Getting Started](https://www.dotnet-guide.com/tutorials/dotnet-8-essentials/core-features-get-started/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -175,6 +176,24 @@ tutorials/
 |           `-- ConfigPrecedenceMinimal.Tests/
 |               |-- ConfigPrecedenceMinimal.Tests.csproj
 |               `-- ConfigurationTests.cs
+|   `-- core-features-get-started/
+|       |-- NativeAotEssentialsMinimal.slnx
+|       |-- README.md
+|       |-- src/
+|       |   `-- NativeAotEssentialsMinimal/
+|       |       |-- NativeAotEssentialsMinimal.csproj
+|       |       |-- Program.cs
+|       |       |-- Models/
+|       |       |   `-- ApiModels.cs
+|       |       |-- Serialization/
+|       |       |   `-- AppJsonSerializerContext.cs
+|       |       `-- Services/
+|       |           |-- ITextTransformer.cs
+|       |           `-- TextTransformer.cs
+|       `-- tests/
+|           `-- NativeAotEssentialsMinimal.Tests/
+|               |-- NativeAotEssentialsMinimal.Tests.csproj
+|               `-- NativeAotEssentialsTests.cs
 |-- blazor/
 |   |-- create-interactive-ui-csharp-12/
 |   |   |-- BlazorTodoMinimal.slnx
