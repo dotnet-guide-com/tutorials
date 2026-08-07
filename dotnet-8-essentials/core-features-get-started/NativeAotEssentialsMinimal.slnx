@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NativeAotEssentialsMinimal/NativeAotEssentialsMinimal.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/NativeAotEssentialsMinimal.Tests/NativeAotEssentialsMinimal.Tests.csproj" />
+  </Folder>
+</Solution>
