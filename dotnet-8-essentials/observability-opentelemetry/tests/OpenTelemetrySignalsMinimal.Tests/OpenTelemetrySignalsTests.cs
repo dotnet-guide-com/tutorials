@@ -42,20 +42,21 @@ public sealed class OpenTelemetrySignalsTests
 
         ActivitySource.AddActivityListener(listener);
 
-        using ActivitySource source = new(
-            CheckoutTelemetry.ActivitySourceName);
+        using var telemetry =
+            new CheckoutTelemetry();
 
-        using Activity? activity = source.StartActivity(
-            "Checkout.Process",
-            ActivityKind.Internal);
+        using Activity? activity =
+            telemetry.StartCheckout(
+                "web",
+                2);
 
-        if (activity is not null)
-        {
-            activity.SetTag("checkout.channel", "web");
-            activity.SetTag("checkout.item_count", 2);
-            activity.SetTag("checkout.outcome", "accepted");
-            activity.SetStatus(ActivityStatusCode.Ok);
-        }
+        Assert.NotNull(activity);
+
+        activity.SetTag(
+            "checkout.outcome",
+            "accepted");
+        activity.SetStatus(
+            ActivityStatusCode.Ok);
 
         Assert.NotNull(captured);
         Assert.Equal("Checkout.Process", captured.DisplayName);
@@ -75,7 +76,9 @@ public sealed class OpenTelemetrySignalsTests
             (instrument, meterListener) =>
             {
                 if (instrument.Meter.Name ==
-                    CheckoutTelemetry.MeterName)
+                        CheckoutTelemetry.MeterName &&
+                    instrument.Name ==
+                        "checkout.requests")
                 {
                     meterListener.EnableMeasurementEvents(instrument);
                 }
@@ -84,20 +87,21 @@ public sealed class OpenTelemetrySignalsTests
         listener.SetMeasurementEventCallback<long>(
             (instrument, measurement, tags, state) =>
             {
-                capturedTags.AddRange(tags.ToArray());
+                if (measurement == 1)
+                {
+                    capturedTags.AddRange(tags.ToArray());
+                }
             });
-
-        using Meter meter = new(
-            CheckoutTelemetry.MeterName, "1.0.0");
-
-        Counter<long> counter = meter.CreateCounter<long>(
-            "checkout.requests");
 
         listener.Start();
 
-        counter.Add(1,
-            new("checkout.channel", "web"),
-            new("checkout.outcome", "accepted"));
+        using var telemetry =
+            new CheckoutTelemetry();
+
+        telemetry.Record(
+            channel: "web",
+            outcome: "accepted",
+            durationMilliseconds: 12.5);
 
         Assert.NotEmpty(capturedTags);
 
