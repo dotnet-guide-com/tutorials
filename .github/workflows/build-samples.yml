@@ -26,6 +26,7 @@ on:
       - "dotnet-8-essentials/background-jobs-hostedservice-queues/**"
       - "dotnet-8-essentials/configuration-secrets-environments/**"
       - "dotnet-8-essentials/core-features-get-started/**"
+      - "dotnet-8-essentials/observability-opentelemetry/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -52,6 +53,7 @@ on:
       - "dotnet-8-essentials/background-jobs-hostedservice-queues/**"
       - "dotnet-8-essentials/configuration-secrets-environments/**"
       - "dotnet-8-essentials/core-features-get-started/**"
+      - "dotnet-8-essentials/observability-opentelemetry/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -1428,3 +1430,134 @@ jobs:
           )"
 
           test "${invalid_status}" = "400"
+  test-opentelemetry-signals:
+    name: Test correlated OpenTelemetry signals sample
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          dotnet-8-essentials/observability-opentelemetry/OpenTelemetrySignalsMinimal.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          dotnet-8-essentials/observability-opentelemetry/OpenTelemetrySignalsMinimal.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test
+        run: >
+          dotnet test
+          dotnet-8-essentials/observability-opentelemetry/OpenTelemetrySignalsMinimal.slnx
+          --configuration Release
+          --no-build
+
+      - name: Verify OpenTelemetry package baseline
+        shell: bash
+        run: |
+          project="dotnet-8-essentials/observability-opentelemetry/src/OpenTelemetrySignalsMinimal/OpenTelemetrySignalsMinimal.csproj"
+
+          test "$(grep --count '<PackageReference' "${project}")" = "3"
+
+          grep --fixed-strings 'Include="OpenTelemetry.Extensions.Hosting"' "${project}"
+          grep --fixed-strings 'Include="OpenTelemetry.Exporter.Console"' "${project}"
+          grep --fixed-strings 'Include="OpenTelemetry.Instrumentation.AspNetCore"' "${project}"
+
+          test "$(grep --count 'Version="1.17.0"' "${project}")" = "3"
+
+      - name: Smoke-test correlated signals API
+        shell: bash
+        run: |
+          app_log="${RUNNER_TEMP}/otel-signals.log"
+
+          dotnet run \
+            --project dotnet-8-essentials/observability-opentelemetry/src/OpenTelemetrySignalsMinimal/OpenTelemetrySignalsMinimal.csproj \
+            --configuration Release \
+            --no-build \
+            --urls http://127.0.0.1:5099 \
+            >"${app_log}" 2>&1 &
+
+          app_pid="$!"
+
+          cleanup() {
+            kill "${app_pid}" 2>/dev/null || true
+            wait "${app_pid}" 2>/dev/null || true
+          }
+
+          trap cleanup EXIT
+
+          for attempt in $(seq 1 40); do
+            if curl --fail --silent \
+              http://127.0.0.1:5099/ \
+              >"${RUNNER_TEMP}/otel-root.json"; then
+              break
+            fi
+
+            if ! kill -0 "${app_pid}" 2>/dev/null; then
+              cat "${app_log}"
+              exit 1
+            fi
+
+            sleep 0.25
+          done
+
+          root="$(cat "${RUNNER_TEMP}/otel-root.json")"
+
+          expected_root='{"sample":"correlated-opentelemetry-signals","exporter":"console","activitySource":"DotNetGuide.Observability.Checkout","meter":"DotNetGuide.Observability.Checkout"}'
+
+          test "${root}" = "${expected_root}"
+
+          checkout="$(
+            curl --fail --silent \
+              --request POST \
+              --header 'Content-Type: application/json' \
+              --data '{"channel":"WEB","itemCount":2}' \
+              http://127.0.0.1:5099/checkout
+          )"
+
+          printf '%s\n' "${checkout}" |
+            grep --extended-regexp --quiet \
+            '^\{"status":"accepted","channel":"web","itemCount":2,"traceId":"[0-9a-fA-F]{32}"\}$'
+
+          invalid_channel="$(
+            curl --silent \
+              --output "${RUNNER_TEMP}/invalid-channel.json" \
+              --write-out '%{http_code}' \
+              --request POST \
+              --header 'Content-Type: application/json' \
+              --data '{"channel":"customer-92823","itemCount":2}' \
+              http://127.0.0.1:5099/checkout
+          )"
+
+          test "${invalid_channel}" = "400"
+
+          invalid_count="$(
+            curl --silent \
+              --output "${RUNNER_TEMP}/invalid-count.json" \
+              --write-out '%{http_code}' \
+              --request POST \
+              --header 'Content-Type: application/json' \
+              --data '{"channel":"mobile","itemCount":11}' \
+              http://127.0.0.1:5099/checkout
+          )"
+
+          test "${invalid_count}" = "400"
+
+          sleep 1.5
+
+          grep --fixed-strings --quiet 'Checkout.Process' "${app_log}"
+          grep --fixed-strings --quiet 'checkout.requests' "${app_log}"
+          grep --fixed-strings --quiet 'Checkout accepted' "${app_log}"

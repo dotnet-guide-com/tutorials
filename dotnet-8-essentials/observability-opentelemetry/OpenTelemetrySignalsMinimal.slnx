@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/OpenTelemetrySignalsMinimal/OpenTelemetrySignalsMinimal.csproj" />
+  <Project Path="tests/OpenTelemetrySignalsMinimal.Tests/OpenTelemetrySignalsMinimal.Tests.csproj" />
+</Solution>

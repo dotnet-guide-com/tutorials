@@ -31,6 +31,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`dotnet-8-essentials/background-jobs-hostedservice-queues`](dotnet-8-essentials/background-jobs-hostedservice-queues/) | Focused ASP.NET Core Minimal API demonstrating a bounded Channel queue, asynchronous backpressure, a BackgroundService consumer, fresh scoped handlers, safe in-memory job status, exception isolation, cancellation, and integration tests | [.NET 8 Background Jobs: IBackgroundTaskQueue, BackgroundService & Production-Ready Patterns](https://www.dotnet-guide.com/tutorials/dotnet-8-essentials/background-jobs-hostedservice-queues/) |
 | [`dotnet-8-essentials/configuration-secrets-environments`](dotnet-8-essentials/configuration-secrets-environments/) | Focused .NET 10 Minimal API demonstrating layered configuration precedence, prefixed environment variables, command-line overrides, strongly typed options, startup validation, User Secrets metadata, a lightweight feature flag, and safe Development-only diagnostics | [.NET 8 Configuration & Secrets Management: Typed Options, User Secrets & Feature Flags](https://www.dotnet-guide.com/tutorials/dotnet-8-essentials/configuration-secrets-environments/) |
 | [`dotnet-8-essentials/core-features-get-started`](dotnet-8-essentials/core-features-get-started/) | Focused .NET 10 Native AOT Minimal API demonstrating CreateSlimBuilder, source-generated JSON, typed DI, AOT-safe endpoints, analyzer-aware publishing, and direct native-binary smoke testing | [.NET 8 Essentials: Core Features & Getting Started](https://www.dotnet-guide.com/tutorials/dotnet-8-essentials/core-features-get-started/) |
+| [`dotnet-8-essentials/observability-opentelemetry`](dotnet-8-essentials/observability-opentelemetry/) | Focused .NET 10 OpenTelemetry companion demonstrating ASP.NET Core request instrumentation, custom ActivitySource spans, low-cardinality Meter metrics, structured ILogger events, automatic log-to-trace correlation, console export, and deterministic tests without external observability infrastructure | [.NET 8 Observability with OpenTelemetry: Tracing, Metrics & Structured Logging](https://www.dotnet-guide.com/tutorials/dotnet-8-essentials/observability-opentelemetry/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -177,6 +178,7 @@ tutorials/
 |               |-- ConfigPrecedenceMinimal.Tests.csproj
 |               `-- ConfigurationTests.cs
 |   `-- core-features-get-started/
+|   `-- observability-opentelemetry/
 |       |-- NativeAotEssentialsMinimal.slnx
 |       |-- README.md
 |       |-- src/
