@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/EfCoreRelationshipsMinimal/EfCoreRelationshipsMinimal.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/EfCoreRelationshipsMinimal.Tests/EfCoreRelationshipsMinimal.Tests.csproj" />
+  </Folder>
+</Solution>
