@@ -33,6 +33,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`dotnet-8-essentials/core-features-get-started`](dotnet-8-essentials/core-features-get-started/) | Focused .NET 10 Native AOT Minimal API demonstrating CreateSlimBuilder, source-generated JSON, typed DI, AOT-safe endpoints, analyzer-aware publishing, and direct native-binary smoke testing | [.NET 8 Essentials: Core Features & Getting Started](https://www.dotnet-guide.com/tutorials/dotnet-8-essentials/core-features-get-started/) |
 | [`dotnet-8-essentials/observability-opentelemetry`](dotnet-8-essentials/observability-opentelemetry/) | Focused .NET 10 OpenTelemetry companion demonstrating ASP.NET Core request instrumentation, custom ActivitySource spans, low-cardinality Meter metrics, structured ILogger events, automatic log-to-trace correlation, console export, and deterministic tests without external observability infrastructure | [.NET 8 Observability with OpenTelemetry: Tracing, Metrics & Structured Logging](https://www.dotnet-guide.com/tutorials/dotnet-8-essentials/observability-opentelemetry/) |
 | [`ef-core/advanced-modeling-performance`](ef-core/advanced-modeling-performance/) | Focused .NET 10 / EF Core 10 relational-data companion demonstrating DTO projection, no-tracking reads, a compiled hot-path query, named soft-delete filtering, ExecuteUpdate, ExecuteDelete, and explicit change-tracker caveats with deterministic SQLite tests | [EF Core Advanced Modeling & Performance: Owned Types, Converters, JSON/Temporal Tables, Compiled Queries](https://www.dotnet-guide.com/tutorials/ef-core/advanced-modeling-performance/) |
+| [`ef-core/modern-data-access-dotnet`](ef-core/modern-data-access-dotnet/) | Focused .NET 10 / EF Core 10 relationship-loading companion demonstrating one-to-many and many-to-many modeling, an intentional N+1 baseline, eager and filtered Include, split-query loading, explicit loading, SELECT-command counting, and deterministic SQLite verification | [EF Core 8 Fundamentals: Modern Data Access with .NET 8](https://www.dotnet-guide.com/tutorials/ef-core/modern-data-access-dotnet/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -471,8 +472,8 @@ tutorials/
 |               |-- MinimalApiPipeline.Tests.csproj
 |               `-- MinimalApiPipelineTests.cs
 |-- ef-core/
-|   `-- advanced-modeling-performance/
-|       |-- EfCoreHotPathMinimal.slnx
+|   |-- advanced-modeling-performance/
+|   |   |-- EfCoreHotPathMinimal.slnx
 |       |-- README.md
 |       |-- src/
 |       |   `-- EfCoreHotPathMinimal/
@@ -492,6 +493,26 @@ tutorials/
 |           `-- EfCoreHotPathMinimal.Tests/
 |               |-- EfCoreHotPathMinimal.Tests.csproj
 |               `-- EfCoreHotPathTests.cs
+|   `-- modern-data-access-dotnet/
+|       |-- EfCoreRelationshipsMinimal.slnx
+|       |-- README.md
+|       |-- src/
+|       |   `-- EfCoreRelationshipsMinimal/
+|       |       |-- EfCoreRelationshipsMinimal.csproj
+|       |       |-- Program.cs
+|       |       |-- Data/
+|       |       |   |-- RelationshipDatabase.cs
+|       |       |   `-- RelationshipDbContext.cs
+|       |       |-- Diagnostics/
+|       |       |   `-- SelectCountingInterceptor.cs
+|       |       |-- Models/
+|       |       |   `-- RelationshipModels.cs
+|       |       `-- Services/
+|       |           `-- LoadingScenarios.cs
+|       `-- tests/
+|           `-- EfCoreRelationshipsMinimal.Tests/
+|               |-- EfCoreRelationshipsMinimal.Tests.csproj
+|               `-- EfCoreRelationshipsTests.cs
 |-- .github/
 |   `-- workflows/
 |       `-- build-samples.yml
