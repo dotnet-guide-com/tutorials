@@ -28,6 +28,7 @@ on:
       - "dotnet-8-essentials/core-features-get-started/**"
       - "dotnet-8-essentials/observability-opentelemetry/**"
       - "ef-core/advanced-modeling-performance/**"
+      - "ef-core/modern-data-access-dotnet/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -56,6 +57,7 @@ on:
       - "dotnet-8-essentials/core-features-get-started/**"
       - "dotnet-8-essentials/observability-opentelemetry/**"
       - "ef-core/advanced-modeling-performance/**"
+      - "ef-core/modern-data-access-dotnet/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -1653,6 +1655,110 @@ jobs:
         run: |
           if find \
               ef-core/advanced-modeling-performance \
+              -type f \
+              \( \
+                -name '*.db' \
+                -o -name '*.sqlite' \
+                -o -name '*.sqlite3' \
+              \) \
+              -print \
+              -quit |
+              grep \
+                --quiet \
+                .; then
+            echo "Generated SQLite database file found in sample tree."
+            exit 1
+          fi
+
+  test-ef-core-relationships:
+    name: Test EF Core relationship loading sample
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          ef-core/modern-data-access-dotnet/EfCoreRelationshipsMinimal.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          ef-core/modern-data-access-dotnet/EfCoreRelationshipsMinimal.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test
+        run: >
+          dotnet test
+          ef-core/modern-data-access-dotnet/EfCoreRelationshipsMinimal.slnx
+          --configuration Release
+          --no-build
+
+      - name: Verify EF Core package baseline
+        shell: bash
+        run: |
+          project="ef-core/modern-data-access-dotnet/src/EfCoreRelationshipsMinimal/EfCoreRelationshipsMinimal.csproj"
+
+          test "$(
+            grep \
+              --count \
+              '<PackageReference' \
+              "${project}"
+          )" = "1"
+
+          grep \
+            --fixed-strings \
+            'Include="Microsoft.EntityFrameworkCore.Sqlite"' \
+            "${project}"
+
+          grep \
+            --fixed-strings \
+            'Version="10.0.11"' \
+            "${project}"
+
+      - name: Verify exact relationship-loading output
+        shell: bash
+        run: |
+          output="$(
+            dotnet run \
+              --project ef-core/modern-data-access-dotnet/src/EfCoreRelationshipsMinimal/EfCoreRelationshipsMinimal.csproj \
+              --configuration Release \
+              --no-build
+          )"
+
+          expected="$(
+            printf '%s\n' \
+              'EF Core Relationship Loading Lab' \
+              'Seeded graph: categories=2, todos=3, tags=3' \
+              'N+1 baseline: todos=3, SELECTs=4' \
+              'Eager Include: todos=3, SELECTs=1' \
+              'Split graph: categories=2, todos=3, tags=3, SELECTs=3' \
+              'Explicit reference load: todo=Prepare release, category=Work, SELECTs=2'
+          )"
+
+          printf '%s\n' "${output}"
+
+          if [[ "${output}" != "${expected}" ]]; then
+            echo "Unexpected deterministic relationship-loading output."
+            exit 1
+          fi
+
+      - name: Verify no generated database artifacts
+        shell: bash
+        run: |
+          if find \
+              ef-core/modern-data-access-dotnet \
               -type f \
               \( \
                 -name '*.db' \
