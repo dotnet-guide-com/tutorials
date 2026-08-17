@@ -35,6 +35,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | [`ef-core/advanced-modeling-performance`](ef-core/advanced-modeling-performance/) | Focused .NET 10 / EF Core 10 relational-data companion demonstrating DTO projection, no-tracking reads, a compiled hot-path query, named soft-delete filtering, ExecuteUpdate, ExecuteDelete, and explicit change-tracker caveats with deterministic SQLite tests | [EF Core Advanced Modeling & Performance: Owned Types, Converters, JSON/Temporal Tables, Compiled Queries](https://www.dotnet-guide.com/tutorials/ef-core/advanced-modeling-performance/) |
 | [`ef-core/modern-data-access-dotnet`](ef-core/modern-data-access-dotnet/) | Focused .NET 10 / EF Core 10 relationship-loading companion demonstrating one-to-many and many-to-many modeling, an intentional N+1 baseline, eager and filtered Include, split-query loading, explicit loading, SELECT-command counting, and deterministic SQLite verification | [EF Core 8 Fundamentals: Modern Data Access with .NET 8](https://www.dotnet-guide.com/tutorials/ef-core/modern-data-access-dotnet/) |
 | [`ef-core/multitenancy-softdelete-auditing`](ef-core/multitenancy-softdelete-auditing/) | Focused .NET 10 / EF Core 10 multi-tenant data guardrail companion demonstrating fail-closed tenant filtering, named soft-delete filtering, tenant-scoped composite identity, SaveChanges interception, automatic audit metadata, selective deleted-record access, cross-tenant mutation rejection, and deterministic SQLite isolation tests | [EF Core 8 Multi-Tenancy: Tenant Isolation, Soft Deletes, Audit Trails & Query Filters](https://www.dotnet-guide.com/tutorials/ef-core/multitenancy-softdelete-auditing/) |
+| [`ef-core/testing-sqlite-inmemory-vs-inmemory`](ef-core/testing-sqlite-inmemory-vs-inmemory/) | Focused .NET 10 / EF Core 10 provider-contrast companion demonstrating how SQLite in-memory and the EF Core InMemory provider differ on unique constraints, foreign keys, transactions, and database-side cascades while explicitly treating SQLite as a test double rather than production-provider parity | [EF Core Testing: SQLite In-Memory vs InMemory Provider — Which One Can You Actually Trust?](https://www.dotnet-guide.com/tutorials/ef-core/testing-sqlite-inmemory-vs-inmemory/) |
 
 ## Companion articles
 - [Common Microsoft.Extensions.AI mistakes](https://www.dotnet-guide.com/articles/dotnet-ai/microsoft-extensions-ai-common-mistakes/)
@@ -514,7 +515,7 @@ tutorials/
 |           `-- EfCoreRelationshipsMinimal.Tests/
 |               |-- EfCoreRelationshipsMinimal.Tests.csproj
 |               `-- EfCoreRelationshipsTests.cs
-|   `-- multitenancy-softdelete-auditing/
+|   |-- multitenancy-softdelete-auditing/
 |       |-- EfCoreTenantGuardrailsMinimal.slnx
 |       |-- README.md
 |       |-- src/
@@ -538,6 +539,26 @@ tutorials/
 |           `-- EfCoreTenantGuardrailsMinimal.Tests/
 |               |-- EfCoreTenantGuardrailsMinimal.Tests.csproj
 |               `-- TenantGuardrailTests.cs
+|   `-- testing-sqlite-inmemory-vs-inmemory/
+|       |-- EfCoreProviderContrastMinimal.slnx
+|       |-- README.md
+|       |-- src/
+|       |   `-- EfCoreProviderContrastMinimal/
+|       |       |-- EfCoreProviderContrastMinimal.csproj
+|       |       |-- Program.cs
+|       |       |-- Data/
+|       |       |   `-- ProviderDbContext.cs
+|       |       |-- Models/
+|       |       |   `-- ProviderModels.cs
+|       |       |-- Providers/
+|       |       |   |-- InMemoryTestDatabase.cs
+|       |       |   `-- SqliteTestDatabase.cs
+|       |       `-- Services/
+|       |           `-- ProviderContrast.cs
+|       `-- tests/
+|           `-- EfCoreProviderContrastMinimal.Tests/
+|               |-- EfCoreProviderContrastMinimal.Tests.csproj
+|               `-- ProviderContrastTests.cs
 |-- .github/
 |   `-- workflows/
 |       `-- build-samples.yml
