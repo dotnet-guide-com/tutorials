@@ -30,6 +30,7 @@ on:
       - "ef-core/advanced-modeling-performance/**"
       - "ef-core/modern-data-access-dotnet/**"
       - "ef-core/multitenancy-softdelete-auditing/**"
+      - "ef-core/testing-sqlite-inmemory-vs-inmemory/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -60,6 +61,7 @@ on:
       - "ef-core/advanced-modeling-performance/**"
       - "ef-core/modern-data-access-dotnet/**"
       - "ef-core/multitenancy-softdelete-auditing/**"
+      - "ef-core/testing-sqlite-inmemory-vs-inmemory/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -1866,6 +1868,140 @@ jobs:
               -type f \
               \( -name '*.db' -o -name '*.sqlite' -o -name '*.sqlite3' \) \
               -print -quit | grep --quiet .; then
+            echo "Generated SQLite database file found."
+            exit 1
+          fi
+
+  test-ef-core-provider-contrast:
+    name: Test EF Core provider contrast sample
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          ef-core/testing-sqlite-inmemory-vs-inmemory/EfCoreProviderContrastMinimal.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          ef-core/testing-sqlite-inmemory-vs-inmemory/EfCoreProviderContrastMinimal.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test
+        run: >
+          dotnet test
+          ef-core/testing-sqlite-inmemory-vs-inmemory/EfCoreProviderContrastMinimal.slnx
+          --configuration Release
+          --no-build
+
+      - name: Verify EF Core provider baseline
+        shell: bash
+        run: |
+          project="ef-core/testing-sqlite-inmemory-vs-inmemory/src/EfCoreProviderContrastMinimal/EfCoreProviderContrastMinimal.csproj"
+
+          test "$(
+            grep \
+              --count \
+              '<PackageReference' \
+              "${project}"
+          )" = "2"
+
+          grep \
+            --fixed-strings \
+            'Include="Microsoft.EntityFrameworkCore.InMemory"' \
+            "${project}"
+
+          grep \
+            --fixed-strings \
+            'Include="Microsoft.EntityFrameworkCore.Sqlite"' \
+            "${project}"
+
+          test "$(
+            grep \
+              --count \
+              'Version="10.0.11"' \
+              "${project}"
+          )" = "2"
+
+      - name: Verify exact provider-contrast output
+        shell: bash
+        run: |
+          output="$(
+            dotnet run \
+              --project ef-core/testing-sqlite-inmemory-vs-inmemory/src/EfCoreProviderContrastMinimal/EfCoreProviderContrastMinimal.csproj \
+              --configuration Release \
+              --no-build
+          )"
+
+          expected="$(
+            printf '%s\n' \
+              'EF Core Test Provider Contrast Lab' \
+              'Unique index: InMemory=accepted | SQLite=rejected' \
+              'Foreign key: InMemory=accepted | SQLite=rejected' \
+              'Transaction: InMemory=unsupported | SQLite=rollback-ok' \
+              'Database cascade: InMemory=orphan-remains | SQLite=child-removed' \
+              'Guidance: relational behavior -> production provider when practical; SQLite remains a test double.'
+          )"
+
+          printf '%s\n' "${output}"
+
+          if [[ "${output}" != "${expected}" ]]; then
+            echo "Unexpected provider-contrast output."
+            exit 1
+          fi
+
+      - name: Verify provider-contrast boundaries
+        shell: bash
+        run: |
+          sample="ef-core/testing-sqlite-inmemory-vs-inmemory"
+
+          grep -R \
+            --fixed-strings \
+            'Foreign Keys=True' \
+            "${sample}/src"
+
+          grep -R \
+            --fixed-strings \
+            'InMemoryDatabaseRoot' \
+            "${sample}/src"
+
+          if grep -R \
+              -E \
+              'TransactionIgnoredWarning|BenchmarkDotNet|Stopwatch' \
+              "${sample}/src"; then
+            echo "Unexpected ignored-transaction or benchmark code found."
+            exit 1
+          fi
+
+      - name: Verify no generated database artifacts
+        shell: bash
+        run: |
+          if find \
+              ef-core/testing-sqlite-inmemory-vs-inmemory \
+              -type f \
+              \( \
+                -name '*.db' \
+                -o -name '*.sqlite' \
+                -o -name '*.sqlite3' \
+              \) \
+              -print \
+              -quit |
+              grep \
+                --quiet \
+                .; then
             echo "Generated SQLite database file found."
             exit 1
           fi
