@@ -29,6 +29,7 @@ on:
       - "dotnet-8-essentials/observability-opentelemetry/**"
       - "ef-core/advanced-modeling-performance/**"
       - "ef-core/modern-data-access-dotnet/**"
+      - "ef-core/multitenancy-softdelete-auditing/**"
       - ".github/workflows/build-samples.yml"
 
   pull_request:
@@ -58,6 +59,7 @@ on:
       - "dotnet-8-essentials/observability-opentelemetry/**"
       - "ef-core/advanced-modeling-performance/**"
       - "ef-core/modern-data-access-dotnet/**"
+      - "ef-core/multitenancy-softdelete-auditing/**"
       - ".github/workflows/build-samples.yml"
 
   workflow_dispatch:
@@ -1773,3 +1775,98 @@ jobs:
             echo "Generated SQLite database file found in sample tree."
             exit 1
           fi
+
+  test-ef-core-tenant-guardrails:
+    name: Test EF Core tenant guardrails sample
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          ef-core/multitenancy-softdelete-auditing/EfCoreTenantGuardrailsMinimal.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          ef-core/multitenancy-softdelete-auditing/EfCoreTenantGuardrailsMinimal.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test
+        run: >
+          dotnet test
+          ef-core/multitenancy-softdelete-auditing/EfCoreTenantGuardrailsMinimal.slnx
+          --configuration Release
+          --no-build
+
+      - name: Verify EF Core package baseline
+        shell: bash
+        run: |
+          project="ef-core/multitenancy-softdelete-auditing/src/EfCoreTenantGuardrailsMinimal/EfCoreTenantGuardrailsMinimal.csproj"
+
+          test "$(grep --count '<PackageReference' "${project}")" = "1"
+          grep --fixed-strings 'Include="Microsoft.EntityFrameworkCore.Sqlite"' "${project}"
+          grep --fixed-strings 'Version="10.0.11"' "${project}"
+
+      - name: Verify named filter guardrails
+        shell: bash
+        run: |
+          context="ef-core/multitenancy-softdelete-auditing/src/EfCoreTenantGuardrailsMinimal/Data/TenantDbContext.cs"
+          queries="ef-core/multitenancy-softdelete-auditing/src/EfCoreTenantGuardrailsMinimal/Queries/TenantQueries.cs"
+
+          grep --fixed-strings 'TenantFilterName' "${context}"
+          grep --fixed-strings 'SoftDeleteFilterName' "${context}"
+          grep --fixed-strings 'IgnoreQueryFilters' "${queries}"
+
+          if grep --fixed-strings 'IgnoreQueryFilters()' "${queries}"; then
+            echo "Blanket query-filter bypass found in production helper."
+            exit 1
+          fi
+
+      - name: Verify exact tenant-isolation output
+        shell: bash
+        run: |
+          output="$(
+            dotnet run \
+              --project ef-core/multitenancy-softdelete-auditing/src/EfCoreTenantGuardrailsMinimal/EfCoreTenantGuardrailsMinimal.csproj \
+              --configuration Release \
+              --no-build
+          )"
+
+          expected="$(
+            printf '%s\n' \
+              'EF Core Tenant Isolation Lab' \
+              'Visible tasks: alpha=1, beta=1' \
+              'Same local ID: alpha=Alpha plan | beta=Beta plan' \
+              'Alpha including deleted: 2, foreign tenants=0' \
+              'Spoofed insert stamped tenant: alpha' \
+              'Soft delete: visible alpha=1, physical alpha=3, deletedBy=alpha-admin'
+          )"
+
+          printf '%s\n' "${output}"
+          test "${output}" = "${expected}"
+
+      - name: Verify no generated database artifacts
+        shell: bash
+        run: |
+          if find \
+              ef-core/multitenancy-softdelete-auditing \
+              -type f \
+              \( -name '*.db' -o -name '*.sqlite' -o -name '*.sqlite3' \) \
+              -print -quit | grep --quiet .; then
+            echo "Generated SQLite database file found."
+            exit 1
+          fi
+
