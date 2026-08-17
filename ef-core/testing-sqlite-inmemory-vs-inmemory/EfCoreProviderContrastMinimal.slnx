@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/EfCoreProviderContrastMinimal/EfCoreProviderContrastMinimal.csproj" />
+  <Project Path="tests/EfCoreProviderContrastMinimal.Tests/EfCoreProviderContrastMinimal.Tests.csproj" />
+</Solution>
