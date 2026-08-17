@@ -1969,16 +1969,22 @@ jobs:
           sample="ef-core/testing-sqlite-inmemory-vs-inmemory"
 
           grep -R \
+            --include='*.cs' \
+            --include='*.csproj' \
             --fixed-strings \
             'Foreign Keys=True' \
             "${sample}/src"
 
           grep -R \
+            --include='*.cs' \
+            --include='*.csproj' \
             --fixed-strings \
             'InMemoryDatabaseRoot' \
             "${sample}/src"
 
           if grep -R \
+              --include='*.cs' \
+              --include='*.csproj' \
               -E \
               'TransactionIgnoredWarning|BenchmarkDotNet|Stopwatch' \
               "${sample}/src"; then
