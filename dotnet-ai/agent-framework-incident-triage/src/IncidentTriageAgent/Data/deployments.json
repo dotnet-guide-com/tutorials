@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "E-201",
+    "Type": "deployment",
+    "Service": "checkout-api",
+    "ObservedAt": "2026-09-24T14:02:00Z",
+    "Facts": {
+      "deployment": "deploy-1842",
+      "deployment_status": "succeeded",
+      "previous_deployment": "deploy-1839",
+      "change_summary": "pricing-rule refresh and structured logging update",
+      "rollback_performed": "false"
+    }
+  },
+  {
+    "Id": "E-202",
+    "Type": "deployment",
+    "Service": "catalog-api",
+    "ObservedAt": "2026-09-23T19:40:00Z",
+    "Facts": {
+      "deployment": "deploy-991",
+      "deployment_status": "succeeded",
+      "rollback_performed": "false"
+    }
+  }
+]

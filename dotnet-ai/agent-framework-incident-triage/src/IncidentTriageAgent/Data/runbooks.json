@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "RB-CHECKOUT-03",
+    "Service": "checkout-api",
+    "Title": "Checkout API elevated 5xx response",
+    "RecommendedChecks": [
+      "Compare error-rate onset with recent deployments.",
+      "Inspect database connection-pool utilization.",
+      "Check database connection counts before and after deployment.",
+      "Review traces for timeout or connection-acquisition failures.",
+      "Compare configuration with the previous known-good release."
+    ],
+    "Caution": "These checks are diagnostic guidance. Their presence in this runbook does not establish root cause."
+  },
+  {
+    "Id": "RB-CATALOG-02",
+    "Service": "catalog-api",
+    "Title": "Catalog API degradation",
+    "RecommendedChecks": [
+      "Inspect downstream dependency latency.",
+      "Review cache hit rate.",
+      "Check database query duration."
+    ],
+    "Caution": "These checks are diagnostic guidance. Their presence in this runbook does not establish root cause."
+  }
+]

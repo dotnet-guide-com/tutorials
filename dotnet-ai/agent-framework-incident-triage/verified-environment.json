@@ -1,0 +1,40 @@
+{
+  "verifiedDate": "2026-09-26",
+  "targetFramework": "net10.0",
+  "dotnetSdk": "10.0.401",
+  "solutionFormat": "slnx",
+  "directPackages": {
+    "Microsoft.Agents.AI.OpenAI": "1.22.0"
+  },
+  "resolvedPackages": {
+    "Microsoft.Agents.AI": "1.22.0",
+    "Microsoft.Agents.AI.Abstractions": "1.22.0",
+    "Microsoft.Extensions.AI": "10.10.0",
+    "Microsoft.Extensions.AI.Abstractions": "10.10.0",
+    "Microsoft.Extensions.AI.OpenAI": "10.10.0",
+    "OpenAI": "2.13.0",
+    "System.ClientModel": "1.15.0"
+  },
+  "verification": {
+    "build": "pass",
+    "tests": {
+      "status": "pass",
+      "total": 14,
+      "failed": 0,
+      "skipped": 0
+    },
+    "liveAgent": {
+      "status": "pass",
+      "provider": "OpenRouter",
+      "model": "openai/gpt-4o-mini",
+      "streaming": true,
+      "agentSession": true,
+      "functionTools": true
+    }
+  },
+  "security": {
+    "apiKeyStoredInRepository": false,
+    "toolsAreReadOnly": true,
+    "liveModelRequiredForTests": false
+  }
+}

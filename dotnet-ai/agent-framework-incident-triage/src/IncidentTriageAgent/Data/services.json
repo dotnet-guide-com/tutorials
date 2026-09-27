@@ -1,0 +1,25 @@
+[
+  {
+    "Id": "E-101",
+    "Type": "service_health",
+    "Service": "checkout-api",
+    "ObservedAt": "2026-09-24T14:12:00Z",
+    "Facts": {
+      "status": "degraded",
+      "error_rate": "18.7%",
+      "error_spike_started": "2026-09-24T14:09:00Z",
+      "database_pool_utilization": "96%"
+    }
+  },
+  {
+    "Id": "E-102",
+    "Type": "service_health",
+    "Service": "catalog-api",
+    "ObservedAt": "2026-09-24T14:12:00Z",
+    "Facts": {
+      "status": "healthy",
+      "error_rate": "0.2%",
+      "database_pool_utilization": "34%"
+    }
+  }
+]
