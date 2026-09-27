@@ -6,6 +6,7 @@ on:
     paths:
       - "dotnet-ai/provider-agnostic-chat-gateway/**"
       - "dotnet-ai/hybrid-search-ef-core-pgvector/**"
+      - "dotnet-ai/agent-framework-incident-triage/**"
       - "dotnet-aspire/orchestrate-distributed-system/**"
       - "software-architecture/architecture-testing-dotnet/**"
       - "distributed-systems/transactional-outbox-ef-core/**"
@@ -37,6 +38,7 @@ on:
     paths:
       - "dotnet-ai/provider-agnostic-chat-gateway/**"
       - "dotnet-ai/hybrid-search-ef-core-pgvector/**"
+      - "dotnet-ai/agent-framework-incident-triage/**"
       - "dotnet-aspire/orchestrate-distributed-system/**"
       - "software-architecture/architecture-testing-dotnet/**"
       - "distributed-systems/transactional-outbox-ef-core/**"
@@ -2012,3 +2014,35 @@ jobs:
             exit 1
           fi
 
+
+  test-agent-framework-incident-triage:
+    name: Test Agent Framework incident triage sample
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: >
+          dotnet restore
+          dotnet-ai/agent-framework-incident-triage/AgentFrameworkIncidentTriage.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          dotnet-ai/agent-framework-incident-triage/AgentFrameworkIncidentTriage.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test deterministic layers
+        run: >
+          dotnet test
+          dotnet-ai/agent-framework-incident-triage/AgentFrameworkIncidentTriage.slnx
+          --configuration Release
+          --no-build

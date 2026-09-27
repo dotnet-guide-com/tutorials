@@ -11,6 +11,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | --- | --- | --- |
 | [`dotnet-ai/provider-agnostic-chat-gateway`](dotnet-ai/provider-agnostic-chat-gateway/) | One HTTP chat endpoint using Ollama and optional OpenAI providers through `Microsoft.Extensions.AI.IChatClient` | [Build a switchable multi-provider AI gateway with IChatClient](https://www.dotnet-guide.com/tutorials/dotnet-ai/provider-agnostic-chat-gateway/) |
 | [`dotnet-ai/hybrid-search-ef-core-pgvector`](dotnet-ai/hybrid-search-ef-core-pgvector/) | Minimal Reciprocal Rank Fusion demo combining pre-ranked keyword and vector results | [Hybrid Search in .NET with EF Core 10 and pgvector](https://www.dotnet-guide.com/tutorials/dotnet-ai/hybrid-search-ef-core-pgvector/) |
+| [`dotnet-ai/agent-framework-incident-triage`](dotnet-ai/agent-framework-incident-triage/) | Evidence-first Microsoft Agent Framework sample with read-only tools, deterministic incident evidence, `AgentSession` reuse, and correlation-vs-causation boundaries | [Microsoft Agent Framework Tutorial in C#: Build a Tool-Using AI Agent](https://www.dotnet-guide.com/tutorials/dotnet-ai/agent-framework-incident-triage/) |
 | [`dotnet-aspire/orchestrate-distributed-system`](dotnet-aspire/orchestrate-distributed-system/) | Minimal Aspire AppHost coordinating a web project and API with service discovery and startup ordering | [Aspire in .NET: Orchestrate, Run, and Deploy a Distributed System from One App Host](https://www.dotnet-guide.com/tutorials/dotnet-aspire/orchestrate-distributed-system/) |
 | [`software-architecture/architecture-testing-dotnet`](software-architecture/architecture-testing-dotnet/) | Minimal NetArchTest.eNhancedEdition rule that prevents Domain from depending on outer layers | [Architecture Testing in .NET: Enforce Layer and Module Boundaries with NetArchTest and ArchUnitNET](https://www.dotnet-guide.com/tutorials/software-architecture/architecture-testing-dotnet/) |
 | [`distributed-systems/transactional-outbox-ef-core`](distributed-systems/transactional-outbox-ef-core/) | Minimal EF Core and SQLite demonstration that saves business state and an outbox message atomically, then publishes it through a one-shot relay | [Transactional Outbox Pattern in .NET with EF Core (.NET 10): Fix the Dual-Write Problem](https://www.dotnet-guide.com/tutorials/distributed-systems/transactional-outbox-ef-core/) |
@@ -68,6 +69,14 @@ dotnet restore
 dotnet run
 ```
 
+### Agent Framework incident triage
+
+```powershell
+cd dotnet-ai\agent-framework-incident-triage
+dotnet restore
+dotnet test
+```
+
 ## Repository structure
 
 ```text
@@ -81,6 +90,14 @@ tutorials/
 |       |-- HybridSearchMinimal.csproj
 |       |-- Program.cs
 |       `-- README.md
+|   `-- agent-framework-incident-triage/
+|       |-- AgentFrameworkIncidentTriage.slnx
+|       |-- README.md
+|       |-- global.json
+|       |-- verified-environment.json
+|       |-- docs/
+|       |-- src/
+|       `-- tests/
 |-- dotnet-aspire/
 |   `-- orchestrate-distributed-system/
 |       |-- AspireOrchestrationMinimal.slnx
