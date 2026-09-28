@@ -764,6 +764,12 @@ agent interpretation
 
 # Related Reference Documents
 
+For the complete walkthrough that builds and explains this reference implementation, see:
+
+[Build an Evidence-First Incident Triage Agent with Microsoft Agent Framework](https://www.dotnet-guide.com/tutorials/dotnet-ai/agent-framework-incident-triage/)
+
+The tutorial explains the implementation step by step; the documents below provide deeper reference material for individual design decisions.
+
 See:
 
 ```text
