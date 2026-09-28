@@ -1,6 +1,9 @@
 # Microsoft Agent Framework in .NET &mdash; Evidence-First Incident Triage Agent
 
-Full tutorial: [Microsoft Agent Framework Tutorial in C#: Build a Tool-Using AI Agent](https://www.dotnet-guide.com/tutorials/dotnet-ai/agent-framework-incident-triage/)
+> 📘 **Full step-by-step tutorial:**  
+> [Build an Evidence-First Incident Triage Agent with Microsoft Agent Framework](https://www.dotnet-guide.com/tutorials/dotnet-ai/agent-framework-incident-triage/)
+
+This repository contains the verified companion implementation for the tutorial above. The sample focuses on deterministic evidence, read-only function tools, `AgentSession`, streaming, and explicit separation between observed facts, inference, guidance, unknowns, and unproven claims.
 
 A minimal .NET 10 console companion sample for the Microsoft Agent Framework tutorial. It builds a tool-using AI agent that triages a sample incident using deterministic operational evidence, read-only function tools, and a shared agent session &mdash; with no live model required to build or test it.
 
