@@ -9,7 +9,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 
 | Sample | What it demonstrates | Full tutorial |
 | --- | --- | --- |
-| [`dotnet-ai/provider-agnostic-chat-gateway`](dotnet-ai/provider-agnostic-chat-gateway/) | One HTTP chat endpoint using Ollama and optional OpenAI providers through `Microsoft.Extensions.AI.IChatClient` | [Build a switchable multi-provider AI gateway with IChatClient](https://www.dotnet-guide.com/tutorials/dotnet-ai/provider-agnostic-chat-gateway/) |
+| [`dotnet-ai/provider-agnostic-chat-gateway`](dotnet-ai/provider-agnostic-chat-gateway/) | .NET 10 `Microsoft.Extensions.AI` gateway with allow-listed `IChatClient` providers, bounded conversation state, SSE streaming, safe function calling, and deterministic tests | [Microsoft.Extensions.AI Tutorial: Build a Multi-Provider IChatClient Gateway](https://www.dotnet-guide.com/tutorials/dotnet-ai/provider-agnostic-chat-gateway/) |
 | [`dotnet-ai/hybrid-search-ef-core-pgvector`](dotnet-ai/hybrid-search-ef-core-pgvector/) | Minimal Reciprocal Rank Fusion demo combining pre-ranked keyword and vector results | [Hybrid Search in .NET with EF Core 10 and pgvector](https://www.dotnet-guide.com/tutorials/dotnet-ai/hybrid-search-ef-core-pgvector/) |
 | [`dotnet-ai/agent-framework-incident-triage`](dotnet-ai/agent-framework-incident-triage/) | Evidence-first Microsoft Agent Framework sample with read-only tools, deterministic incident evidence, `AgentSession` reuse, and correlation-vs-causation boundaries | [Microsoft Agent Framework Tutorial in C#: Build a Tool-Using AI Agent](https://www.dotnet-guide.com/tutorials/dotnet-ai/agent-framework-incident-triage/) |
 | [`dotnet-aspire/orchestrate-distributed-system`](dotnet-aspire/orchestrate-distributed-system/) | Minimal Aspire AppHost coordinating a web project and API with service discovery and startup ordering | [Aspire in .NET: Orchestrate, Run, and Deploy a Distributed System from One App Host](https://www.dotnet-guide.com/tutorials/dotnet-aspire/orchestrate-distributed-system/) |
@@ -57,9 +57,10 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 
 ```powershell
 cd dotnet-ai\provider-agnostic-chat-gateway
-dotnet restore
-dotnet run --urls http://localhost:5123
-````
+dotnet restore ProviderAgnosticChatGateway.slnx
+dotnet test ProviderAgnosticChatGateway.slnx --configuration Release
+dotnet run --project .\src\ProviderAgnosticChatGateway\ProviderAgnosticChatGateway.csproj
+```
 
 ### Hybrid search RRF sample
 
@@ -83,9 +84,13 @@ dotnet test
 tutorials/
 |-- dotnet-ai/
 |   |-- provider-agnostic-chat-gateway/
-|   |   |-- ChatGatewayMinimal.csproj
-|   |   |-- Program.cs
-|   |   `-- README.md
+|   |   |-- ProviderAgnosticChatGateway.slnx
+|   |   |-- README.md
+|   |   |-- global.json
+|   |   |-- verified-environment.json
+|   |   |-- docs/
+|   |   |-- src/
+|   |   `-- tests/
 |   `-- hybrid-search-ef-core-pgvector/
 |       |-- HybridSearchMinimal.csproj
 |       |-- Program.cs

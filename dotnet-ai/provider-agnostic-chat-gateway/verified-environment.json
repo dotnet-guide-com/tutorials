@@ -1,0 +1,35 @@
+﻿{
+    "generatedUtc":  "2026-09-29T10:08:51.1157255Z",
+    "sdk":  "10.0.401",
+    "targetFramework":  "net10.0",
+    "directPackages":  {
+                           "Microsoft.Extensions.AI":  "10.10.0",
+                           "Microsoft.Extensions.AI.OpenAI":  "10.10.1",
+                           "Azure.AI.OpenAI":  "2.1.0",
+                           "Azure.Identity":  "1.21.0",
+                           "OllamaSharp":  "5.4.30"
+                       },
+    "deterministicVerification":  {
+                                      "restore":  "PASS",
+                                      "releaseBuild":  "PASS",
+                                      "tests":  "PASS"
+                                  },
+    "liveVerification":  {
+                             "ollama":  "NOT RUN BY THIS SCRIPT",
+                             "openai":  "NOT RUN BY THIS SCRIPT",
+                             "openrouter":  "NOT RUN BY THIS SCRIPT",
+                             "azureOpenAI":  "NOT RUN BY THIS SCRIPT"
+                         },
+    "runtimes":  [
+                     "Microsoft.AspNetCore.App 10.0.10 [C:\\Program Files\\dotnet\\shared\\Microsoft.AspNetCore.App]",
+                     "Microsoft.AspNetCore.App 10.0.12 [C:\\Program Files\\dotnet\\shared\\Microsoft.AspNetCore.App]",
+                     "Microsoft.NETCore.App 8.0.3 [C:\\Program Files\\dotnet\\shared\\Microsoft.NETCore.App]",
+                     "Microsoft.NETCore.App 9.0.7 [C:\\Program Files\\dotnet\\shared\\Microsoft.NETCore.App]",
+                     "Microsoft.NETCore.App 10.0.10 [C:\\Program Files\\dotnet\\shared\\Microsoft.NETCore.App]",
+                     "Microsoft.NETCore.App 10.0.12 [C:\\Program Files\\dotnet\\shared\\Microsoft.NETCore.App]",
+                     "Microsoft.WindowsDesktop.App 8.0.3 [C:\\Program Files\\dotnet\\shared\\Microsoft.WindowsDesktop.App]",
+                     "Microsoft.WindowsDesktop.App 9.0.7 [C:\\Program Files\\dotnet\\shared\\Microsoft.WindowsDesktop.App]",
+                     "Microsoft.WindowsDesktop.App 10.0.10 [C:\\Program Files\\dotnet\\shared\\Microsoft.WindowsDesktop.App]",
+                     "Microsoft.WindowsDesktop.App 10.0.12 [C:\\Program Files\\dotnet\\shared\\Microsoft.WindowsDesktop.App]"
+                 ]
+}
