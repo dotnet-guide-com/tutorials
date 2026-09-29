@@ -1,0 +1,11 @@
+﻿**/bin/
+**/obj/
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+.env
+.env.*
+secrets.json
+_automation-backup/

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ProviderAgnosticChatGateway/ProviderAgnosticChatGateway.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ProviderAgnosticChatGateway.Tests/ProviderAgnosticChatGateway.Tests.csproj" />
+  </Folder>
+</Solution>
