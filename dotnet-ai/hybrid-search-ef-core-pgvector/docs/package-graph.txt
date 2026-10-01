@@ -1,0 +1,47 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+Project 'HybridSearch.Api' has the following package references
+   [net10.0]: 
+   Top-level Package                               Requested   Resolved
+   > Azure.AI.OpenAI                               2.1.0       2.1.0   
+   > Microsoft.EntityFrameworkCore                 10.0.12     10.0.12 
+   > Microsoft.EntityFrameworkCore.Design          10.0.12     10.0.12 
+   > Microsoft.EntityFrameworkCore.Relational      10.0.12     10.0.12 
+   > Microsoft.Extensions.AI                       10.10.0     10.10.0 
+   > Microsoft.Extensions.AI.OpenAI                10.10.1     10.10.1 
+   > Npgsql.EntityFrameworkCore.PostgreSQL         10.0.3      10.0.3  
+   > OllamaSharp                                   5.5.0       5.5.0   
+   > Pgvector.EntityFrameworkCore                  0.3.0       0.3.0   
+
+   Transitive Package                                Resolved
+   > Azure.Core                                      1.44.1  
+   > Humanizer.Core                                  2.14.1  
+   > Microsoft.Bcl.AsyncInterfaces                   6.0.0   
+   > Microsoft.Build.Framework                       18.0.2  
+   > Microsoft.CodeAnalysis.Analyzers                3.11.0  
+   > Microsoft.CodeAnalysis.Common                   5.0.0   
+   > Microsoft.CodeAnalysis.CSharp                   5.0.0   
+   > Microsoft.CodeAnalysis.CSharp.Workspaces        5.0.0   
+   > Microsoft.CodeAnalysis.Workspaces.Common        5.0.0   
+   > Microsoft.CodeAnalysis.Workspaces.MSBuild       5.0.0   
+   > Microsoft.EntityFrameworkCore.Abstractions      10.0.12 
+   > Microsoft.EntityFrameworkCore.Analyzers         10.0.12 
+   > Microsoft.Extensions.AI.Abstractions            10.10.1 
+   > Microsoft.Extensions.DependencyModel            10.0.12 
+   > Microsoft.VisualStudio.SolutionPersistence      1.0.52  
+   > Mono.TextTemplating                             3.0.0   
+   > Newtonsoft.Json                                 13.0.4  
+   > Npgsql                                          10.0.3  
+   > OpenAI                                          2.14.0  
+   > Pgvector                                        0.3.2   
+   > System.ClientModel                              1.15.0  
+   > System.CodeDom                                  6.0.0   
+   > System.Composition                              9.0.0   
+   > System.Composition.AttributedModel              9.0.0   
+   > System.Composition.Convention                   9.0.0   
+   > System.Composition.Hosting                      9.0.0   
+   > System.Composition.Runtime                      9.0.0   
+   > System.Composition.TypedParts                   9.0.0   
+   > System.Memory.Data                              10.0.9  
+   > System.Numerics.Tensors                         10.0.12 
+

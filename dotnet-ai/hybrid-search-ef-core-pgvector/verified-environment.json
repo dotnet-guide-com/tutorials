@@ -1,0 +1,29 @@
+{
+    "generatedUtc":  "2026-10-01T15:10:41.9268088Z",
+    "sdk":  "10.0.401",
+    "targetFramework":  "net10.0",
+    "vectorDimensions":  768,
+    "defaultEmbeddingProvider":  "Ollama",
+    "defaultEmbeddingModel":  "nomic-embed-text",
+    "deterministicVerification":  {
+                                      "restore":  "PASS",
+                                      "releaseBuild":  "PASS - 0 warnings / 0 errors required by Directory.Build.props",
+                                      "tests":  "PASS - 13/13"
+                                  },
+    "liveVerification":  {
+                             "companionEndToEnd":  "PASS",
+                             "verifiedUtc":  "2026-10-01T15:10:41.9268088Z",
+                             "database":  "PASS - PostgreSQL 17 + pgvector (Docker)",
+                             "httpIngestion":  "PASS",
+                             "normalizedDocumentReplacement":  "PASS",
+                             "keywordRetrieval":  "PASS - 1 result(s)",
+                             "vectorRetrieval":  "PASS - 1 result(s)",
+                             "hybridRrfRetrieval":  "PASS - 1 result(s)",
+                             "ginIndex":  "PASS",
+                             "hnswCosineIndex":  "PASS",
+                             "storedVectorDimensions":  "PASS - 768",
+                             "ollama":  "LIVE VERIFIED - nomic-embed-text",
+                             "openAI":  "COMPILE/CONSTRUCTION VERIFIED ONLY",
+                             "azureOpenAI":  "COMPILE/CONSTRUCTION VERIFIED ONLY"
+                         }
+}
