@@ -10,7 +10,7 @@ Each sample folder contains a focused implementation of one tutorial topic. The 
 | Sample | What it demonstrates | Full tutorial |
 | --- | --- | --- |
 | [`dotnet-ai/provider-agnostic-chat-gateway`](dotnet-ai/provider-agnostic-chat-gateway/) | .NET 10 `Microsoft.Extensions.AI` gateway with allow-listed `IChatClient` providers, bounded conversation state, SSE streaming, safe function calling, and deterministic tests | [Microsoft.Extensions.AI Tutorial: Build a Multi-Provider IChatClient Gateway](https://www.dotnet-guide.com/tutorials/dotnet-ai/provider-agnostic-chat-gateway/) |
-| [`dotnet-ai/hybrid-search-ef-core-pgvector`](dotnet-ai/hybrid-search-ef-core-pgvector/) | Minimal Reciprocal Rank Fusion demo combining pre-ranked keyword and vector results | [Hybrid Search in .NET with EF Core 10 and pgvector](https://www.dotnet-guide.com/tutorials/dotnet-ai/hybrid-search-ef-core-pgvector/) |
+| [`dotnet-ai/hybrid-search-ef-core-pgvector`](dotnet-ai/hybrid-search-ef-core-pgvector/) | Verified .NET 10 API combining PostgreSQL full-text search (GIN) and pgvector cosine retrieval (HNSW), fused with Reciprocal Rank Fusion | [Hybrid Search in .NET with EF Core 10 and pgvector](https://www.dotnet-guide.com/tutorials/dotnet-ai/hybrid-search-ef-core-pgvector/) |
 | [`dotnet-ai/agent-framework-incident-triage`](dotnet-ai/agent-framework-incident-triage/) | Evidence-first Microsoft Agent Framework sample with read-only tools, deterministic incident evidence, `AgentSession` reuse, and correlation-vs-causation boundaries | [Microsoft Agent Framework Tutorial in C#: Build a Tool-Using AI Agent](https://www.dotnet-guide.com/tutorials/dotnet-ai/agent-framework-incident-triage/) |
 | [`dotnet-aspire/orchestrate-distributed-system`](dotnet-aspire/orchestrate-distributed-system/) | Minimal Aspire AppHost coordinating a web project and API with service discovery and startup ordering | [Aspire in .NET: Orchestrate, Run, and Deploy a Distributed System from One App Host](https://www.dotnet-guide.com/tutorials/dotnet-aspire/orchestrate-distributed-system/) |
 | [`software-architecture/architecture-testing-dotnet`](software-architecture/architecture-testing-dotnet/) | Minimal NetArchTest.eNhancedEdition rule that prevents Domain from depending on outer layers | [Architecture Testing in .NET: Enforce Layer and Module Boundaries with NetArchTest and ArchUnitNET](https://www.dotnet-guide.com/tutorials/software-architecture/architecture-testing-dotnet/) |
@@ -62,13 +62,16 @@ dotnet test ProviderAgnosticChatGateway.slnx --configuration Release
 dotnet run --project .\src\ProviderAgnosticChatGateway\ProviderAgnosticChatGateway.csproj
 ```
 
-### Hybrid search RRF sample
+### Hybrid search with EF Core and pgvector
 
 ```powershell
 cd dotnet-ai\hybrid-search-ef-core-pgvector
-dotnet restore
-dotnet run
+dotnet restore .\HybridSearch.slnx
+dotnet build .\HybridSearch.slnx --configuration Release --no-restore
+dotnet test .\HybridSearch.slnx --configuration Release --no-build
 ```
+
+For the live PostgreSQL + pgvector + Ollama verification path, follow this sample folder's `README.md` and run `.\scripts\verify.ps1`.
 
 ### Agent Framework incident triage
 
@@ -92,10 +95,12 @@ tutorials/
 |   |   |-- src/
 |   |   `-- tests/
 |   `-- hybrid-search-ef-core-pgvector/
-|       |-- HybridSearchMinimal.csproj
-|       |-- Program.cs
-|       `-- README.md
-|   `-- agent-framework-incident-triage/
+|       |-- HybridSearch.slnx
+|       |-- docker-compose.yml
+|       |-- README.md
+|       |-- src/HybridSearch.Api/
+|       |-- tests/HybridSearch.Api.Tests/
+|       `-- scripts/verify.ps1|   `-- agent-framework-incident-triage/
 |       |-- AgentFrameworkIncidentTriage.slnx
 |       |-- README.md
 |       |-- global.json
