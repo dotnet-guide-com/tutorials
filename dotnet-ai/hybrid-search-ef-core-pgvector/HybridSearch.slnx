@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/HybridSearch.Api/HybridSearch.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/HybridSearch.Api.Tests/HybridSearch.Api.Tests.csproj" />
+  </Folder>
+</Solution>

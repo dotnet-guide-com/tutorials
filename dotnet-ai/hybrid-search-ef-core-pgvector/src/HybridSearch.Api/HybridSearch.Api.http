@@ -1,0 +1,26 @@
+@HybridSearchApi = http://localhost:5087
+
+GET {{HybridSearchApi}}/health
+Accept: application/json
+
+###
+
+POST {{HybridSearchApi}}/api/documents
+Content-Type: application/json
+
+{
+  "documentId": "hosted-services",
+  "title": "CancellationToken in hosted services",
+  "text": "Use CancellationToken to request graceful shutdown of a background worker. Hosted services should observe cancellation and finish cleanup before the process exits."
+}
+
+###
+
+POST {{HybridSearchApi}}/api/search
+Content-Type: application/json
+
+{
+  "query": "CancellationToken shutdown",
+  "mode": "hybrid",
+  "top": 5
+}
