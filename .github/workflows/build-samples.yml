@@ -105,7 +105,7 @@ jobs:
           --no-build
 
   build-hybrid-search:
-    name: Build hybrid search RRF sample
+    name: Build and test hybrid search sample
     runs-on: ubuntu-latest
 
     steps:
@@ -120,22 +120,21 @@ jobs:
       - name: Restore
         run: |
           dotnet restore \
-            dotnet-ai/hybrid-search-ef-core-pgvector/HybridSearchMinimal.csproj
+            dotnet-ai/hybrid-search-ef-core-pgvector/HybridSearch.slnx
 
       - name: Build
         run: |
           dotnet build \
-            dotnet-ai/hybrid-search-ef-core-pgvector/HybridSearchMinimal.csproj \
+            dotnet-ai/hybrid-search-ef-core-pgvector/HybridSearch.slnx \
             --configuration Release \
             --no-restore
 
-      - name: Run sample
+      - name: Test
         run: |
-          dotnet run \
-            --project dotnet-ai/hybrid-search-ef-core-pgvector/HybridSearchMinimal.csproj \
+          dotnet test \
+            dotnet-ai/hybrid-search-ef-core-pgvector/HybridSearch.slnx \
             --configuration Release \
             --no-build
-
   build-aspire-orchestration:
     name: Build Aspire orchestration sample
     runs-on: ubuntu-latest
