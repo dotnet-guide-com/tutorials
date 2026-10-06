@@ -7,6 +7,7 @@ on:
       - "dotnet-ai/provider-agnostic-chat-gateway/**"
       - "dotnet-ai/hybrid-search-ef-core-pgvector/**"
       - "dotnet-ai/agent-framework-incident-triage/**"
+      - "dotnet-ai/mcp-server-csharp-dotnet/**"
       - "dotnet-aspire/orchestrate-distributed-system/**"
       - "software-architecture/architecture-testing-dotnet/**"
       - "distributed-systems/transactional-outbox-ef-core/**"
@@ -39,6 +40,7 @@ on:
       - "dotnet-ai/provider-agnostic-chat-gateway/**"
       - "dotnet-ai/hybrid-search-ef-core-pgvector/**"
       - "dotnet-ai/agent-framework-incident-triage/**"
+      - "dotnet-ai/mcp-server-csharp-dotnet/**"
       - "dotnet-aspire/orchestrate-distributed-system/**"
       - "software-architecture/architecture-testing-dotnet/**"
       - "distributed-systems/transactional-outbox-ef-core/**"
@@ -2052,3 +2054,51 @@ jobs:
           dotnet-ai/agent-framework-incident-triage/AgentFrameworkIncidentTriage.slnx
           --configuration Release
           --no-build
+
+  test-mcp-server-csharp-dotnet:
+    name: Test first MCP server sample
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: dotnet-ai/mcp-server-csharp-dotnet
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.401"
+
+      - name: Show selected .NET SDK
+        run: dotnet --version
+
+      - name: Restore
+        run: >
+          dotnet restore
+          FirstMcpServer.slnx
+
+      - name: Build
+        run: >
+          dotnet build
+          FirstMcpServer.slnx
+          --configuration Release
+          --no-restore
+
+      - name: Test deterministic layers
+        run: >
+          dotnet test
+          tests/FirstMcpServer.Tests/FirstMcpServer.Tests.csproj
+          --configuration Release
+          --no-build
+
+      - name: Verify MCP stdio end to end
+        run: >
+          dotnet run
+          --project src/McpClientDemo/McpClientDemo.csproj
+          --configuration Release
+          --no-build
+          --
+          src/FirstMcpServer/bin/Release/net10.0/FirstMcpServer.dll
