@@ -1,0 +1,26 @@
+[
+  {
+    "runbookId": "RB-CHECKOUT-03",
+    "service": "checkout-api",
+    "title": "Checkout API degraded-service investigation",
+    "guidance": [
+      "Compare error-rate onset with recent deployments.",
+      "Inspect database connection-pool utilization.",
+      "Check connection counts before and after deployment.",
+      "Review traces for timeout or connection-acquisition failures.",
+      "Compare configuration with the previous known-good release."
+    ],
+    "caution": "Runbook guidance suggests investigation steps; it does not establish root cause."
+  },
+  {
+    "runbookId": "RB-CATALOG-02",
+    "service": "catalog-api",
+    "title": "Catalog API health investigation",
+    "guidance": [
+      "Confirm upstream dependency health.",
+      "Review recent deployment changes.",
+      "Inspect request latency and error-rate trends."
+    ],
+    "caution": "Runbook guidance is operational guidance, not incident evidence."
+  }
+]
