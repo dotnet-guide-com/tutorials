@@ -1,0 +1,47 @@
+{
+    "status":  "PASS",
+    "verificationTimestamp":  "2026-10-05T21:36:33+05:30",
+    "sdk":  "10.0.401",
+    "targetFramework":  "net10.0",
+    "packages":  {
+                     "ModelContextProtocol":  "2.2.0",
+                     "MicrosoftExtensionsHosting":  "10.0.12",
+                     "xunitV3MtpV2":  "4.0.1"
+                 },
+    "transport":  "stdio",
+    "tests":  {
+                  "status":  "PASS",
+                  "total":  13,
+                  "passed":  13,
+                  "failed":  0,
+                  "skipped":  0
+              },
+    "runtime":  {
+                    "transportType":  "ModelContextProtocol.Client.StdioClientTransport",
+                    "clientType":  "ModelContextProtocol.Client.McpClientImpl",
+                    "discoveredToolCount":  3
+                },
+    "checks":  {
+                   "restore":  "PASS",
+                   "releaseBuild":  "PASS",
+                   "deterministicTests":  "PASS",
+                   "toolDiscovery":  "PASS",
+                   "aiFunctionAssignability":  "PASS",
+                   "serviceHealthCall":  "PASS",
+                   "deploymentCall":  "PASS",
+                   "runbookCall":  "PASS",
+                   "unknownToolRejection":  "PASS",
+                   "stdioEndToEnd":  "PASS"
+               },
+    "exclusions":  [
+                       "LLM-driven tool selection",
+                       "Agent Framework",
+                       "Streamable HTTP",
+                       "OAuth/authentication/authorization",
+                       "MCP resources/prompts/sampling/elicitation/tasks",
+                       "write-capable tools",
+                       "database/Redis",
+                       "cloud deployment",
+                       "production readiness"
+                   ]
+}

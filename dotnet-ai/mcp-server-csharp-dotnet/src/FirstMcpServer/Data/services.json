@@ -1,0 +1,20 @@
+[
+  {
+    "evidenceId": "E-101",
+    "service": "checkout-api",
+    "observedAt": "2026-09-24T14:12:00Z",
+    "status": "degraded",
+    "errorRate": 18.7,
+    "errorSpikeStarted": "2026-09-24T14:09:00Z",
+    "databasePoolUtilization": 96.0
+  },
+  {
+    "evidenceId": "E-102",
+    "service": "catalog-api",
+    "observedAt": "2026-09-24T14:12:00Z",
+    "status": "healthy",
+    "errorRate": 0.2,
+    "errorSpikeStarted": "",
+    "databasePoolUtilization": 41.0
+  }
+]

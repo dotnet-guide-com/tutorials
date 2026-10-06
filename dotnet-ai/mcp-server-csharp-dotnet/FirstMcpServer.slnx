@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FirstMcpServer/FirstMcpServer.csproj" />
+    <Project Path="src/McpClientDemo/McpClientDemo.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FirstMcpServer.Tests/FirstMcpServer.Tests.csproj" />
+  </Folder>
+</Solution>

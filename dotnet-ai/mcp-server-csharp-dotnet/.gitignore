@@ -1,0 +1,33 @@
+# Build outputs
+bin/
+obj/
+TestResults/
+
+# Local verification output
+verification-results/
+
+# IDE / user state
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Secrets / local overrides
+.env
+.env.*
+secrets/
+*.pfx
+*.p12
+
+# Logs / temp
+*.log
+*.tmp
+*.bak
+*~
+
+# Builder safety marker (never publish)
+.dotnet-guide-builder-marker
+
+_verification-metadata-patch-backup/
+_publication-hardening-backup/
